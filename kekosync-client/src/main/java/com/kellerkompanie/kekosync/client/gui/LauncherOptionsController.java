@@ -1,6 +1,7 @@
 package com.kellerkompanie.kekosync.client.gui;
 
 import com.kellerkompanie.kekosync.client.arma.ArmAParameter;
+import com.kellerkompanie.kekosync.client.settings.Settings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -30,7 +31,7 @@ public class LauncherOptionsController implements Initializable {
     }
 
     private void createLauncherOptions() {
-        List<ArmAParameter> parameterList = ArmAParameter.getDefaultParameters();
+        List<ArmAParameter> parameterList = Settings.getInstance().getLaunchParams();
 
         for (ArmAParameter param : parameterList) {
             HBox row = new HBox();

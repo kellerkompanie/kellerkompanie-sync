@@ -1,5 +1,6 @@
 package com.kellerkompanie.kekosync.client.arma;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -7,7 +8,7 @@ import java.util.Objects;
 /**
  * @author Schwaggot
  */
-public class ArmAParameter {
+public class ArmAParameter implements Serializable {
 
     private final ParameterType type;
     private String description;
@@ -33,7 +34,7 @@ public class ArmAParameter {
         this.value = value;
     }
 
-    public static List<ArmAParameter> getDefaultParameters() {
+    public static ArrayList<ArmAParameter> getDefaultParameters() {
         ArmAParameter SHOWSCRIPT_ERRORS = new ArmAParameter("-showScriptErrors", "show script errors", true);
         ArmAParameter NO_PAUSE = new ArmAParameter("-noPause", "no pause", false);
         ArmAParameter WINDOW_MODE = new ArmAParameter("-window", "window mode", false);
@@ -47,7 +48,7 @@ public class ArmAParameter {
         ArmAParameter EX_THREADS = new ArmAParameter("-exThreads", "ExThreads", false, new String[]{"0", "1", "3", "5", "7"}, "0");
 
 
-        List<ArmAParameter> defaultParams = new ArrayList<ArmAParameter>();
+        ArrayList<ArmAParameter> defaultParams = new ArrayList<ArmAParameter>();
         defaultParams.add(SHOWSCRIPT_ERRORS);
         defaultParams.add(NO_PAUSE);
         defaultParams.add(WINDOW_MODE);

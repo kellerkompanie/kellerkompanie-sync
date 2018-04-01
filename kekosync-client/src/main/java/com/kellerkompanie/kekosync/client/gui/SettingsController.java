@@ -1,6 +1,6 @@
 package com.kellerkompanie.kekosync.client.gui;
 
-import com.kellerkompanie.kekosync.client.Settings;
+import com.kellerkompanie.kekosync.client.settings.Settings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,13 +23,13 @@ public class SettingsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        executableLocationTextField.setText(Settings.getArma3Executable());
+        executableLocationTextField.setText(Settings.getInstance().getArmAExecutable());
     }
 
     @FXML
     private void handleExecutableLocationAction(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(new File(Settings.getArma3Executable()).getParentFile());
+        fileChooser.setInitialDirectory(new File(Settings.getInstance().getArmAExecutable()).getParentFile());
 
         Stage stage = (Stage) settingsTabRoot.getScene().getWindow();
         File file = fileChooser.showOpenDialog(stage);
