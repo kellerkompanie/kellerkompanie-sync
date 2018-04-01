@@ -1,6 +1,7 @@
 package com.kellerkompanie.kekosync.server;
 
 import com.salesforce.zsync.ZsyncMake;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -8,6 +9,7 @@ import java.nio.file.*;
 /**
  * @author Schwaggot
  */
+@Slf4j
 class ZsyncGenerator {
 
     private ZsyncMake zsyncMake = new ZsyncMake();
@@ -24,7 +26,7 @@ class ZsyncGenerator {
     private void processFile(Path sourceFilePath) {
 
         Path zsyncFilePath = zsyncMake.make(sourceFilePath);
-        System.out.println(String.format("%s -> %s", sourceFilePath, zsyncFilePath));
+        log.debug("{} -> {}", sourceFilePath, zsyncFilePath);
     }
 
     void cleanDirectory(String directoryPath) throws IOException {
@@ -37,7 +39,7 @@ class ZsyncGenerator {
     private void deleteFile(Path filePath) {
         try {
             Files.delete(filePath);
-            System.out.println(String.format("deleted %s", filePath));
+            log.debug("deleted {}", filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
