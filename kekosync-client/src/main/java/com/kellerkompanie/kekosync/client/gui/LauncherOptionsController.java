@@ -38,6 +38,7 @@ public class LauncherOptionsController implements Initializable {
             CheckBox checkBox = new CheckBox();
             checkBox.setText(param.getDescription());
             checkBox.setSelected(param.isEnabled());
+            checkBox.setOnAction(this::handleCheckBoxStateChanged);
             row.getChildren().add(checkBox);
 
             if (param.getType() == ArmAParameter.ParameterType.COMBO) {
@@ -47,11 +48,22 @@ public class LauncherOptionsController implements Initializable {
                         );
                 ComboBox<String> comboBox = new ComboBox<String>(options);
                 comboBox.getSelectionModel().select(param.getValue());
+                comboBox.setOnAction(this::handleComboBoxStateChanged);
                 row.getChildren().add(comboBox);
             }
 
             parameterVBox.getChildren().add(row);
         }
+    }
+
+    private void handleCheckBoxStateChanged(ActionEvent event) {
+        CheckBox chk = (CheckBox) event.getSource();
+        System.out.println("Action performed on checkbox " + chk.getText());
+    }
+
+    private void handleComboBoxStateChanged(ActionEvent event) {
+        ComboBox cb = (ComboBox) event.getSource();
+        System.out.println("Action performed on checkbox " + cb.getSelectionModel().getSelectedItem());
     }
 
     @FXML
