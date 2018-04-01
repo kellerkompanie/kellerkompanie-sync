@@ -11,6 +11,7 @@ import static com.kellerkompanie.kekosync.server.constants.FileMatcher.zsyncFile
 
 /**
  * @author Schwaggot
+ * @author dth
  */
 @Slf4j
 class ZsyncGenerator {
