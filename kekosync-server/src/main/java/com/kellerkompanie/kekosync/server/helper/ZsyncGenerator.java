@@ -1,6 +1,8 @@
-package com.kellerkompanie.kekosync.server;
+package com.kellerkompanie.kekosync.server.helper;
 
 import com.salesforce.zsync.ZsyncMake;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -14,10 +16,11 @@ import static com.kellerkompanie.kekosync.server.constants.FileMatcher.zsyncFile
  * @author dth
  */
 @Slf4j
-class ZsyncGenerator {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class ZsyncGenerator {
     private static ZsyncMake zsyncMake = new ZsyncMake();
 
-    static void processDirectory(String directoryPath) throws IOException {
+    public static void processDirectory(String directoryPath) throws IOException {
         Files.walk(Paths.get(directoryPath))
                 .filter(p -> sourceFileMatcher.matches(p.getFileName()))
                 .distinct()
@@ -29,7 +32,7 @@ class ZsyncGenerator {
         log.debug("{} -> {}", sourceFilePath, zsyncFilePath);
     }
 
-    static void cleanDirectory(String directoryPath) throws IOException {
+    public static void cleanDirectory(String directoryPath) throws IOException {
         Files.walk(Paths.get(directoryPath))
                 .filter(p -> zsyncFileMatcher.matches(p.getFileName()))
                 .distinct()

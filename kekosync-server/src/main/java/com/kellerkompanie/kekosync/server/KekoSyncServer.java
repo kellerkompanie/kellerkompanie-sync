@@ -1,6 +1,7 @@
 package com.kellerkompanie.kekosync.server;
 
 import com.kellerkompanie.kekosync.server.cli.CommandLineProcessor;
+import com.kellerkompanie.kekosync.server.helper.ZsyncGenerator;
 import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
@@ -16,9 +17,8 @@ public class KekoSyncServer {
             commandLineProcessor.process(args);
         } else {
             String directory = "E:\\kekosync-demo-repository";
-            ZsyncGenerator zg = new ZsyncGenerator();
-            zg.cleanDirectory(directory);
-            zg.processDirectory(directory);
+            ZsyncGenerator.cleanDirectory(directory);
+            ZsyncGenerator.processDirectory(directory);
         }
     }
 }
