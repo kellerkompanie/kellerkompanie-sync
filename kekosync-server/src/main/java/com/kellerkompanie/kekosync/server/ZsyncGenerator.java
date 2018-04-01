@@ -6,42 +6,41 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.nio.file.*;
 
+import static com.kellerkompanie.kekosync.server.constants.FileMatcher.sourceFileMatcher;
+import static com.kellerkompanie.kekosync.server.constants.FileMatcher.zsyncFileMatcher;
+
 /**
  * @author Schwaggot
  */
 @Slf4j
 class ZsyncGenerator {
+    private static ZsyncMake zsyncMake = new ZsyncMake();
 
-    private ZsyncMake zsyncMake = new ZsyncMake();
-    private PathMatcher sourceFileMatcher = FileSystems.getDefault().getPathMatcher("glob:*.{pbo,bisign,bikey,cpp,paa,dll}");
-    private PathMatcher zsyncFileMatcher = FileSystems.getDefault().getPathMatcher("glob:*.{zsync}");
-
-    void processDirectory(String directoryPath) throws IOException {
+    static void processDirectory(String directoryPath) throws IOException {
         Files.walk(Paths.get(directoryPath))
                 .filter(p -> sourceFileMatcher.matches(p.getFileName()))
                 .distinct()
-                .forEach(this::processFile);
+                .forEach(ZsyncGenerator::processFile);
     }
 
-    private void processFile(Path sourceFilePath) {
-
+    private static void processFile(Path sourceFilePath) {
         Path zsyncFilePath = zsyncMake.make(sourceFilePath);
         log.debug("{} -> {}", sourceFilePath, zsyncFilePath);
     }
 
-    void cleanDirectory(String directoryPath) throws IOException {
+    static void cleanDirectory(String directoryPath) throws IOException {
         Files.walk(Paths.get(directoryPath))
                 .filter(p -> zsyncFileMatcher.matches(p.getFileName()))
                 .distinct()
-                .forEach(this::deleteFile);
+                .forEach(ZsyncGenerator::deleteFile);
     }
 
-    private void deleteFile(Path filePath) {
+    private static void deleteFile(Path filePath) {
         try {
             Files.delete(filePath);
             log.debug("deleted {}", filePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("failed to delete {}", filePath, e);
         }
     }
 
