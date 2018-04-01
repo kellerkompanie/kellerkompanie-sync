@@ -23,15 +23,15 @@ public class SettingsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        executableLocationTextField.setText(Settings.ARMA3_EXECUTABLE_LOCATION);
+        executableLocationTextField.setText(Settings.getArma3Executable());
     }
 
     @FXML
     private void handleExecutableLocationAction(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(new File(Settings.ARMA3_EXECUTABLE_LOCATION));
+        fileChooser.setInitialDirectory(new File(Settings.getArma3Executable()).getParentFile());
 
         Stage stage = (Stage) settingsTabRoot.getScene().getWindow();
-        fileChooser.showOpenDialog(stage);
+        File file = fileChooser.showOpenDialog(stage);
     }
 }
