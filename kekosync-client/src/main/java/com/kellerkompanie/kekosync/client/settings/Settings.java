@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import com.kellerkompanie.kekosync.client.arma.ArmALauncher;
 import com.kellerkompanie.kekosync.client.arma.ArmAParameter;
+import com.kellerkompanie.kekosync.core.gsonConverter.PathConverter;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -87,7 +88,7 @@ public class Settings {
     }
 
     private void loadSettings() {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new PathConverter()).create();
         JsonReader reader = null;
         try {
             reader = new JsonReader(new FileReader(SETTINGS_FILE));
@@ -111,7 +112,7 @@ public class Settings {
         }
 
         try (Writer writer = new FileWriter(settingsFile)) {
-            Gson gson = new GsonBuilder().create();
+            Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new PathConverter()).create();
             gson.toJson(settings, writer);
         } catch (IOException e) {
             e.printStackTrace();
