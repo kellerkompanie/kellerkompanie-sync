@@ -44,7 +44,16 @@ public class RebuildRepositoryTask {
     @Getter private String repositoryPath;
 
     public boolean execute() {
-        return checkModIdFileExistence() && checkModgroupFile() && cleanupZsync() && generateZsync();
+        log.debug("step1: checking for .id files");
+        if (!checkModIdFileExistence()) return false;
+        log.debug("step2: generating sample modgroup file if necessary");
+        if (!checkModgroupFile()) return false;
+        log.debug("step3: cleaning zsync");
+        if (!cleanupZsync()) return false;
+        log.debug("step4: regenerating zsync");
+        if (!generateZsync()) return false;
+        log.debug("done.");
+        return true;
     }
 
     private boolean checkModIdFileExistence() {

@@ -2,6 +2,7 @@ package com.kellerkompanie.kekosync.core.entities;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -14,12 +15,12 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Repository {
+public class Repository implements Serializable {
 
     @Getter @Setter private String name;
     @Getter @Setter private UUID uuid;
     private List<ModGroup> modGroups;
-    private URL url;
+    private String url;
 
     public List<ModGroup> getModGroups() {
         return Collections.unmodifiableList(modGroups);

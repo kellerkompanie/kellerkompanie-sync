@@ -2,6 +2,7 @@ package com.kellerkompanie.kekosync.server;
 
 import com.kellerkompanie.kekosync.server.cli.CommandLineProcessor;
 import com.kellerkompanie.kekosync.server.helper.ZsyncGenerator;
+import com.kellerkompanie.kekosync.server.tasks.RebuildRepositoryTask;
 import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
@@ -16,9 +17,13 @@ public class KekoSyncServer {
             CommandLineProcessor commandLineProcessor = new CommandLineProcessor();
             commandLineProcessor.process(args);
         } else {
+            /*
             String directory = "E:\\kekosync-demo-repository";
             ZsyncGenerator.cleanDirectory(directory);
             ZsyncGenerator.processDirectory(directory);
+            */
+            RebuildRepositoryTask rrTask = new RebuildRepositoryTask("F:\\temprepo");
+            rrTask.execute();
         }
     }
 }

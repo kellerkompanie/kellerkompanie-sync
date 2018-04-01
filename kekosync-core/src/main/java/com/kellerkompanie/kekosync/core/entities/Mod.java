@@ -2,6 +2,7 @@ package com.kellerkompanie.kekosync.core.entities;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Mod {
+public class Mod implements Serializable {
     @Getter @Setter private String name;
     @Getter         private UUID uuid;
 }
