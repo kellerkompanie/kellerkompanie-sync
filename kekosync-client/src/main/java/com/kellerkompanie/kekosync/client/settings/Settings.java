@@ -111,7 +111,7 @@ public class Settings {
         }
 
         try (Writer writer = new FileWriter(settingsFile)) {
-            Gson gson = new GsonBuilder().create();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(settings, writer);
         } catch (IOException e) {
             e.printStackTrace();
