@@ -1,4 +1,4 @@
-package com.kellerkompanie.kekosync.core;
+package com.kellerkompanie.kekosync.core.entities;
 
 import lombok.*;
 

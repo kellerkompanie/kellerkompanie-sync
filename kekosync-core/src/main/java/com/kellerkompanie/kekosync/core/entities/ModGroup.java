@@ -1,10 +1,9 @@
-package com.kellerkompanie.kekosync.core;
+package com.kellerkompanie.kekosync.core.entities;
 
 import lombok.*;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
