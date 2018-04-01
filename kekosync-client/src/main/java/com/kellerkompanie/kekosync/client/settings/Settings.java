@@ -112,7 +112,7 @@ public class Settings {
         }
 
         try (Writer writer = new FileWriter(settingsFile)) {
-            Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new PathConverter()).create();
+            Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new PathConverter()).setPrettyPrinting().create();
             gson.toJson(settings, writer);
         } catch (IOException e) {
             e.printStackTrace();
