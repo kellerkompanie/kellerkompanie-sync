@@ -12,6 +12,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.util.List;
 public class KekoSyncLauncher extends Application {
 
     private TabPane tabPane;
+    private Stage primaryStage;
 
     public static void main(String[] args) {
         launch(args);
@@ -31,6 +33,7 @@ public class KekoSyncLauncher extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
         primaryStage.setTitle("KekoSync");
 
         Button buttonStartGame = new Button();
@@ -112,7 +115,16 @@ public class KekoSyncLauncher extends Application {
     private void createSettingsTab() {
         Tab settingsTab = addTab("Settings");
 
+        FileChooser fileChooser = new FileChooser();
 
+        Button button = new Button("Select File");
+        button.setOnAction(e -> {
+            fileChooser.showOpenDialog(primaryStage);
+        });
+
+        VBox vBox = new VBox(button);
+
+        settingsTab.setContent(vBox);
     }
 
     private void startGame(ActionEvent event) {
