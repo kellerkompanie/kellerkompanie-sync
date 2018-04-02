@@ -16,7 +16,6 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class GameServerCurrentlyRunningModset implements Serializable {
     @Getter private String name;
-    @Getter private UUID uuid;
     @Getter private String address;
     @Getter private String port;
 

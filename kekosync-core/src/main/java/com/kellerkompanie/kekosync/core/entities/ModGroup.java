@@ -14,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @EqualsAndHashCode
+@ToString
 public class ModGroup implements Serializable {
 
     @Getter @Setter private String name;

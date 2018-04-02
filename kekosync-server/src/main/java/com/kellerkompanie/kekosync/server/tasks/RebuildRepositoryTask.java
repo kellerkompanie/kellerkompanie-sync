@@ -1,10 +1,13 @@
 package com.kellerkompanie.kekosync.server.tasks;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.kellerkompanie.kekosync.core.constants.Filenames;
+import com.kellerkompanie.kekosync.core.entities.FileindexEntry;
 import com.kellerkompanie.kekosync.core.entities.Mod;
 import com.kellerkompanie.kekosync.core.entities.ModGroup;
 import com.kellerkompanie.kekosync.core.entities.Repository;
+import com.kellerkompanie.kekosync.server.helper.FileindexGenerator;
 import com.kellerkompanie.kekosync.server.helper.ZsyncGenerator;
 import com.kellerkompanie.kekosync.server.helper.UUIDGenerator;
 import lombok.AllArgsConstructor;
@@ -52,6 +55,8 @@ public class RebuildRepositoryTask {
         if (!cleanupZsync()) return false;
         log.debug("step4: regenerating zsync");
         if (!generateZsync()) return false;
+        log.debug("step5: generate file-index");
+        if (!generateFileindex()) return false;
         log.debug("done.");
         return true;
     }
@@ -140,5 +145,28 @@ public class RebuildRepositoryTask {
             log.error("ran into trouble during zsync-generation", e);
             return false;
         }
+    }
+
+    private boolean generateFileindex() {
+        if ( Paths.get(repositoryPath, Filenames.FILENAME_INDEXFILE).toFile().exists() ) {
+            Paths.get(repositoryPath, Filenames.FILENAME_INDEXFILE).toFile().delete();
+        }
+
+        FileindexEntry fileindexEntry = null;
+        try {
+            fileindexEntry = FileindexGenerator.index(repositoryPath);
+        } catch (IOException e) {
+            log.error("ran into trouble during zsync-generation", e);
+            return false;
+        }
+
+        String indexJson = new GsonBuilder().create().toJson(fileindexEntry);
+        try {
+            Files.write(Paths.get(repositoryPath).resolve(Filenames.FILENAME_INDEXFILE), indexJson.getBytes("UTF-8"));
+        } catch (IOException e) {
+            log.error("Could not write modgroup-file.", e);
+            return false;
+        }
+        return true;
     }
 }
