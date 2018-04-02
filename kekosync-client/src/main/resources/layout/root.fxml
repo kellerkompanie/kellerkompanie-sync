@@ -16,12 +16,6 @@
         <Tab fx:id="modsTab" text="Mods">
             <fx:include source="mods.fxml" />
         </Tab>
-        <Tab text="Search Directories">
-            <fx:include source="searchDirectories.fxml" />
-        </Tab>
-        <Tab fx:id="launcherOptionsTab" text="Launcher Options">
-            <fx:include source="launcherOptions.fxml" />
-        </Tab>
         <Tab fx:id="settingsTab" text="Settings">
             <fx:include source="settingsTab.fxml" />
         </Tab>

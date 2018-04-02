@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<VBox VBox.vgrow="ALWAYS" fx:id="settingsTabRoot" maxHeight="-Infinity" maxWidth="Infinity" minHeight="-Infinity"
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import com.kellerkompanie.kekosync.client.arma.ArmAParameter?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<VBox spacing="10" VBox.vgrow="ALWAYS" fx:id="settingsTabRoot" maxHeight="-Infinity" maxWidth="Infinity"
+      minHeight="-Infinity"
       minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.kellerkompanie.kekosync.client.gui.SettingsController">
 
@@ -18,5 +19,134 @@
         <TextField fx:id="executableLocationTextField" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
         <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleExecutableLocationAction"
                 text="Select file..."/>
+    </HBox>
+
+    <Separator/>
+
+    <Label text="Launcher Parameters"/>
+    <HBox spacing="10" maxHeight="Infinity"
+          maxWidth="Infinity" minHeight="-Infinity" minWidth="-Infinity">
+
+
+        <VBox fx:id="paramVBox" spacing="10">
+            <CheckBox text="show script errors" onAction="#handleCheckBoxStateChanged">
+                <id>
+                    <ArmAParameter fx:constant="SHOW_SCRIPT_ERRORS"/>
+                </id>
+            </CheckBox>
+
+            <CheckBox text="no pause" onAction="#handleCheckBoxStateChanged">
+                <id>
+                    <ArmAParameter fx:constant="NO_PAUSE"/>
+                </id>
+            </CheckBox>
+
+            <CheckBox text="window mode" onAction="#handleCheckBoxStateChanged">
+                <id>
+                    <ArmAParameter fx:constant="WINDOW_MODE"/>
+                </id>
+            </CheckBox>
+
+            <CheckBox text="file patching" onAction="#handleCheckBoxStateChanged">
+                <id>
+                    <ArmAParameter fx:constant="FILE_PATCHING"/>
+                </id>
+            </CheckBox>
+
+            <CheckBox text="check signatures" onAction="#handleCheckBoxStateChanged">
+                <id>
+                    <ArmAParameter fx:constant="CHECK_SIGNATURES"/>
+                </id>
+            </CheckBox>
+
+            <CheckBox text="no splash screen" onAction="#handleCheckBoxStateChanged">
+                <id>
+                    <ArmAParameter fx:constant="NO_SPLASH"/>
+                </id>
+            </CheckBox>
+
+            <CheckBox text="default world empty" onAction="#handleCheckBoxStateChanged">
+                <id>
+                    <ArmAParameter fx:constant="DEFUALT_WORLD_EMPTY"/>
+                </id>
+            </CheckBox>
+
+            <CheckBox text="no logs" onAction="#handleCheckBoxStateChanged">
+                <id>
+                    <ArmAParameter fx:constant="NO_LOGS"/>
+                </id>
+            </CheckBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <CheckBox text="CPU count" onAction="#handleCheckBoxStateChanged">
+                    <id>
+                        <ArmAParameter fx:constant="CPU_COUNT"/>
+                    </id>
+                </CheckBox>
+                <ComboBox onAction="#handleComboBoxStateChanged">
+                    <id>
+                        <ArmAParameter fx:constant="CPU_COUNT"/>
+                    </id>
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="1"/>
+                            <String fx:value="2"/>
+                            <String fx:value="3"/>
+                            <String fx:value="4"/>
+                            <String fx:value="5"/>
+                            <String fx:value="6"/>
+                            <String fx:value="7"/>
+                            <String fx:value="8"/>
+                        </FXCollections>
+                    </items>
+                    <value>
+                        <String fx:value="1"/>
+                    </value>
+                </ComboBox>
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <CheckBox text="ExThreads" onAction="#handleCheckBoxStateChanged">
+                    <id>
+                        <ArmAParameter fx:constant="EX_THREADS"/>
+                    </id>
+                </CheckBox>
+                <ComboBox onAction="#handleComboBoxStateChanged">
+                    <id>
+                        <ArmAParameter fx:constant="EX_THREADS"/>
+                    </id>
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="0"/>
+                            <String fx:value="1"/>
+                            <String fx:value="3"/>
+                            <String fx:value="5"/>
+                            <String fx:value="7"/>
+                        </FXCollections>
+                    </items>
+                    <value>
+                        <String fx:value="0"/>
+                    </value>
+                </ComboBox>
+            </HBox>
+        </VBox>
+        <TextArea fx:id="parameterTextArea" editable="false" HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <Separator/>
+
+    <Label text="Search Directories"/>
+    <HBox maxWidth="Infinity" minWidth="-Infinity" minHeight="-Infinity">
+
+        <ListView fx:id="listView" HBox.hgrow="ALWAYS" maxWidth="Infinity" maxHeight="Infinity" minHeight="-Infinity"
+                  minWidth="-Infinity" prefHeight="100"/>
+
+        <VBox spacing="10">
+            <padding>
+                <Insets left="10"/>
+            </padding>
+            <Button onAction="#handleAddAction" text="Add" maxWidth="Infinity"/>
+            <Button onAction="#handleRemoveAction" text="Remove" maxWidth="Infinity"/>
+        </VBox>
     </HBox>
 </VBox>
