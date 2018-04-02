@@ -1,26 +1,35 @@
 package com.kellerkompanie.kekosync.client.arma;
 
+import com.kellerkompanie.kekosync.client.settings.Settings;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * @author Schwaggot
  */
+@Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ArmALauncher {
+    private static ArmALauncher instance;
 
-    private String executableLocation;
-
-    private ArmALauncher() {
+    public static ArmALauncher getInstance() {
+        if(instance == null)
+            instance = new ArmALauncher();
+        return instance;
     }
 
-    public ArmALauncher(String executableLocation) {
-        this.executableLocation = executableLocation;
-    }
-
-    public void startArmA(List<ArmAParameter> params) throws IOException {
+    public void startArmA() {
         List<String> commandLineArguments = new LinkedList<>();
+        String executableLocation = Settings.getInstance().getExecutableLocation();
         commandLineArguments.add(executableLocation);
+
+        Collection<ArmAParameter> params = Settings.getInstance().getLaunchParams();
 
         for (ArmAParameter param : params) {
             commandLineArguments.add(param.getArgument());
@@ -28,7 +37,10 @@ public class ArmALauncher {
 
         ProcessBuilder p = new ProcessBuilder();
         p.command(commandLineArguments);
-        p.start();
+        try {
+            p.start();
+        } catch (IOException e) {
+            log.error("something went wrong while starting ArmA", e);
+        }
     }
-
 }

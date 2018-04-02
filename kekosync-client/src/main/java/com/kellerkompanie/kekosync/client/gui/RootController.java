@@ -1,19 +1,23 @@
 package com.kellerkompanie.kekosync.client.gui;
 
+import com.kellerkompanie.kekosync.client.arma.ArmALauncher;
 import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,6 +28,9 @@ public class RootController extends Application {
 
     @FXML
     private Tab settingTab;
+
+    @FXML
+    private ComboBox serverComboBox;
 
     private Scene scene;
     private Stage stage;
@@ -88,5 +95,11 @@ public class RootController extends Application {
             e.printStackTrace();
         }
         return parent;
+    }
+
+    @FXML
+    private void handleStartGameAction(ActionEvent event) {
+        String selectedServer = serverComboBox.getSelectionModel().getSelectedItem().toString();
+        ArmALauncher.getInstance().startArmA();
     }
 }
