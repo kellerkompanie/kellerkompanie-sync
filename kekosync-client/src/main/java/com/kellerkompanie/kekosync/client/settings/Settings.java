@@ -5,11 +5,17 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import com.kellerkompanie.kekosync.client.arma.ArmAParameter;
 import com.kellerkompanie.kekosync.core.gsonConverter.PathConverter;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 
+/**
+ * @author Schwaggot
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Settings {
 
     private static final File settingsPath = new File(System.getenv("APPDATA") + File.separator + "KekoSync");
@@ -19,30 +25,23 @@ public class Settings {
     private HashSet<Path> searchDirectories;
     private ArrayList<ArmAParameter> launchParams;
 
-    private Settings() {
-        createDefaultSettings();
-        saveSettings();
-    }
-
     public static Settings getInstance() {
         if (instance == null) {
-            instance = createOrLoad();
-        }
-        return instance;
-    }
+            if (!settingsPath.exists()) {
+                if (!settingsPath.mkdirs()) {
+                    throw new IllegalStateException("unable to create settings folder: " + settingsPath);
+                }
+            }
 
-    private static Settings createOrLoad() {
-        if (!settingsPath.exists()) {
-            if (!settingsPath.mkdirs()) {
-                throw new IllegalStateException("unable to create settings folder: " + settingsPath);
+            if (settingsFile.exists()) {
+                instance = loadSettings();
+            } else {
+                instance = new Settings();
+                instance.createDefaultSettings();
+                instance.saveSettings();
             }
         }
-
-        if (!settingsFile.exists()) {
-            return new Settings();
-        } else {
-            return loadSettings();
-        }
+        return instance;
     }
 
     public String getArmAExecutable() {
