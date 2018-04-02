@@ -5,11 +5,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import com.kellerkompanie.kekosync.client.arma.ArmAParameter;
 import com.kellerkompanie.kekosync.core.gsonConverter.PathConverter;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 
+@Slf4j
 public class Settings {
 
     private static final File settingsPath = new File(System.getenv("APPDATA") + File.separator + "KekoSync");
@@ -44,6 +47,7 @@ public class Settings {
                 instance.saveSettings();
             }
         }
+        return instance;
     }
 
     private static Settings loadSettings() {
@@ -86,19 +90,6 @@ public class Settings {
         searchDirectories = new HashSet<>();
         executableLocation = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Arma 3\\arma3_x64.exe";
         launchParams = ArmAParameter.getDefaultParameters();
-    }
-
-    private static Settings loadSettings() {
-        Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new PathConverter()).create();
-        JsonReader reader = null;
-        try {
-            reader = new JsonReader(new FileReader(settingsFile));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        return gson.fromJson(reader, Settings.class);
     }
 
     private void saveSettings() {
