@@ -15,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @EqualsAndHashCode
+@ToString
 public class Repository implements Serializable {
 
     @Getter @Setter private String name;
