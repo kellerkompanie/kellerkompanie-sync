@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import static com.kellerkompanie.kekosync.server.constants.FileMatcher.zsyncFileMatcher;
 
 @Slf4j
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FileindexGenerator {
     public static FileindexEntry index(String directoryPath) throws IOException {
         FileindexEntry fileindexEntry = new FileindexEntry("", 0, true, new ArrayList<>());
