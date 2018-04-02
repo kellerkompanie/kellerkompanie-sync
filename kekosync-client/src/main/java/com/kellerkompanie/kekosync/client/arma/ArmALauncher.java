@@ -32,7 +32,8 @@ public class ArmALauncher {
         Collection<ArmAParameter> params = Settings.getInstance().getLaunchParams();
 
         for (ArmAParameter param : params) {
-            commandLineArguments.add(param.getArgument());
+            if(param.isEnabled())
+                commandLineArguments.add(param.getArgument());
         }
 
         ProcessBuilder p = new ProcessBuilder();

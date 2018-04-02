@@ -54,20 +54,35 @@ public class LauncherOptionsController implements Initializable {
 
             parameterVBox.getChildren().add(row);
         }
+
+        updateTextArea();
     }
 
     private void handleCheckBoxStateChanged(ActionEvent event) {
         CheckBox chk = (CheckBox) event.getSource();
         System.out.println("Action performed on checkbox " + chk.getText());
+        updateTextArea();
     }
 
     private void handleComboBoxStateChanged(ActionEvent event) {
         ComboBox cb = (ComboBox) event.getSource();
         System.out.println("Action performed on checkbox " + cb.getSelectionModel().getSelectedItem());
+        updateTextArea();
     }
 
-    @FXML
-    private void handleChooseExecutableAction(ActionEvent event) {
-        System.out.println("You clicked me!");
+    private void updateTextArea() {
+        List<ArmAParameter> params = Settings.getInstance().getLaunchParams();
+
+        parameterTextArea.clear();
+
+        StringBuilder sb = new StringBuilder();
+        for(ArmAParameter armAParameter : params) {
+            if(armAParameter.isEnabled()) {
+                sb.append(armAParameter.getArgument());
+                sb.append("\n");
+            }
+        }
+
+        parameterTextArea.setText(sb.toString());
     }
 }

@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -42,7 +43,9 @@ public class RootController extends Application {
     @Override
     public void start(Stage primaryStage) {
         stage = primaryStage;
+
         primaryStage.setTitle("KekoSync");
+        primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/drawable/kk-signet-small-color.png")));
 
         double width = Settings.getInstance().getWindowWidth();
         double height = Settings.getInstance().getWindowHeight();
