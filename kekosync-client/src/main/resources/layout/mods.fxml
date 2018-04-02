@@ -1,15 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.TreeView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.geometry.Insets?>
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-      xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.kellerkompanie.kekosync.client.gui.ModsController">
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane maxHeight="Infinity" maxWidth="Infinity" minHeight="-Infinity" minWidth="-Infinity"
+          xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.kellerkompanie.kekosync.client.gui.ModsController">
 
     <padding>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
     </padding>
 
-    <TreeView fx:id="modsTreeView"/>
-</HBox>
+    <VBox GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0">
+        <CheckBox text="Force Compatibility"/>
+
+        <Label text="Modgroups">
+            <padding>
+                <Insets bottom="5.0" top="15.0"/>
+            </padding>
+        </Label>
+
+        <HBox maxHeight="-Infinity" minHeight="-Infinity" spacing="10">
+            <TreeTableView fx:id="treeTableView" maxWidth="Infinity" minWidth="-Infinity" maxHeight="-Infinity"
+                           minHeight="-Infinity" HBox.hgrow="ALWAYS">
+                <columns>
+                    <TreeTableColumn fx:id="nameColumn" prefWidth="200.0" resizable="false" text="name"/>
+                    <TreeTableColumn fx:id="statusColumn" resizable="false" text="status"/>
+                    <TreeTableColumn fx:id="checkColumn" resizable="false"/>
+                </columns>
+            </TreeTableView>
+            <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10">
+                <Button maxWidth="Infinity" text="Add"/>
+                <Button maxWidth="Infinity" text="Remove"/>
+                <Button maxWidth="Infinity" text="Refresh"/>
+            </VBox>
+
+        </HBox>
+
+        <Label text="Optionals">
+            <padding>
+                <Insets bottom="5.0" top="15.0"/>
+            </padding>
+        </Label>
+        <TreeView fx:id="optionalsTreeView" prefHeight="200"/>
+    </VBox>
+
+    <Separator maxHeight="Infinity" orientation="VERTICAL" GridPane.columnIndex="1" GridPane.hgrow="NEVER"
+               GridPane.rowIndex="0">
+        <padding>
+            <Insets left="10.0" right="10.0"/>
+        </padding>
+    </Separator>
+
+    <VBox maxWidth="Infinity" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0">
+        <Label text="Folders">
+            <padding>
+                <Insets bottom="5.0" top="15.0"/>
+            </padding>
+        </Label>
+
+        <TreeView fx:id="foldersTreeView" maxHeight="Infinity"/>
+    </VBox>
+
+</GridPane>

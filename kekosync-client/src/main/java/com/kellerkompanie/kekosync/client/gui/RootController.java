@@ -4,6 +4,7 @@ import com.kellerkompanie.kekosync.client.arma.ArmALauncher;
 import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.application.Application;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -11,8 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Tab;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -25,10 +25,10 @@ import java.util.TimerTask;
 
 public class RootController extends Application {
     @FXML
-    private Tab launcherOptionsTab;
+    private Tab modsTab;
 
     @FXML
-    private Tab settingTab;
+    private TabPane tabPane;
 
     @FXML
     private ComboBox serverComboBox;
