@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class ArmALauncher {
     private static ArmALauncher instance;
 
     public static ArmALauncher getInstance() {
-        if(instance == null)
+        if (instance == null)
             instance = new ArmALauncher();
         return instance;
     }
@@ -29,10 +29,10 @@ public class ArmALauncher {
         String executableLocation = Settings.getInstance().getExecutableLocation();
         commandLineArguments.add(executableLocation);
 
-        Collection<ArmAParameter> params = Settings.getInstance().getLaunchParams();
+        HashMap<String, ArmAParameter> params = Settings.getInstance().getLaunchParams();
 
-        for (ArmAParameter param : params) {
-            if(param.isEnabled())
+        for (ArmAParameter param : params.values()) {
+            if (param.isEnabled())
                 commandLineArguments.add(param.getArgument());
         }
 

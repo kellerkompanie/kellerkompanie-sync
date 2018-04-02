@@ -1,8 +1,10 @@
 package com.kellerkompanie.kekosync.client.arma;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -10,60 +12,67 @@ import java.util.Objects;
  */
 public class ArmAParameter implements Serializable {
 
+    public static final String SHOW_SCRIPT_ERRORS = "SHOW_SCRIPT_ERRORS";
+    public static final String NO_PAUSE = "NO_PAUSE";
+    public static final String WINDOW_MODE = "WINDOW_MODE";
+    public static final String FILE_PATCHING = "FILE_PATCHING";
+    public static final String CHECK_SIGNATURES = "CHECK_SIGNATURES";
+    public static final String NO_SPLASH = "NO_SPLASH";
+    public static final String DEFUALT_WORLD_EMPTY = "DEFUALT_WORLD_EMPTY";
+    public static final String NO_LOGS = "NO_LOGS";
+    public static final String CPU_COUNT = "CPU_COUNT";
+    public static final String EX_THREADS = "EX_THREADS";
+
     private final ParameterType type;
-    private String description;
     private String argument;
+    @Getter
+    @Setter
     private boolean enabled;
-    private String[] values;
+    @Getter
+    @Setter
     private String value;
 
-    public ArmAParameter(String argument, String description, boolean enabled) {
-        this(ParameterType.BOOLEAN, argument, description, enabled);
+    public ArmAParameter(String argument, boolean enabled) {
+        this(ParameterType.BOOLEAN, argument, enabled);
     }
 
-    public ArmAParameter(ParameterType parameterType, String argument, String description, boolean enabled) {
+    public ArmAParameter(ParameterType parameterType, String argument, boolean enabled) {
         this.type = parameterType;
-        this.description = description;
         this.argument = argument;
         this.enabled = enabled;
     }
 
-    public ArmAParameter(String argument, String description, boolean enabled, String[] values, String value) {
-        this(ParameterType.COMBO, argument, description, enabled);
-        this.values = values;
+    public ArmAParameter(String argument, boolean enabled, String value) {
+        this(ParameterType.COMBO, argument, enabled);
         this.value = value;
     }
 
-    public static ArrayList<ArmAParameter> getDefaultParameters() {
-        ArmAParameter SHOWSCRIPT_ERRORS = new ArmAParameter("-showScriptErrors", "show script errors", true);
-        ArmAParameter NO_PAUSE = new ArmAParameter("-noPause", "no pause", false);
-        ArmAParameter WINDOW_MODE = new ArmAParameter("-window", "window mode", false);
-        ArmAParameter FILE_PATCHING = new ArmAParameter("-filePatching", "file patching", false);
-        ArmAParameter CHECK_SIGNATURES = new ArmAParameter("-checkSignatures", "check signatures", false);
-        ArmAParameter NO_SPLASH = new ArmAParameter("-nosplash", "no splash screen", true);
-        ArmAParameter DEFUALT_WORLD_EMPTY = new ArmAParameter("-world=empty", "default world empty", true);
-        ArmAParameter NO_LOGS = new ArmAParameter("-nologs", "no logs", false);
+    public static HashMap<String, ArmAParameter> getDefaultParameters() {
+        ArmAParameter showScriptErrorsParam = new ArmAParameter("-showScriptErrors", true);
+        ArmAParameter noPauseParamm = new ArmAParameter("-noPause", false);
+        ArmAParameter windowModeParam = new ArmAParameter("-window", false);
+        ArmAParameter filePatchingParam = new ArmAParameter("-filePatching", false);
+        ArmAParameter checkSignaturesParam = new ArmAParameter("-checkSignatures", false);
+        ArmAParameter noSplashParam = new ArmAParameter("-nosplash", true);
+        ArmAParameter worldEmptyParam = new ArmAParameter("-world=empty", true);
+        ArmAParameter noLogsParam = new ArmAParameter("-nologs", false);
 
-        ArmAParameter CPU_COUNT = new ArmAParameter("-cpuCount", "CPU count", false, new String[]{"1", "2", "3", "4", "5", "6", "7", "8"}, "1");
-        ArmAParameter EX_THREADS = new ArmAParameter("-exThreads", "ExThreads", false, new String[]{"0", "1", "3", "5", "7"}, "0");
+        ArmAParameter cpuCountParam = new ArmAParameter("-cpuCount", false, "1");
+        ArmAParameter threadsParam = new ArmAParameter("-exThreads", false, "0");
 
+        HashMap<String, ArmAParameter> defaultParams = new HashMap<>();
+        defaultParams.put(SHOW_SCRIPT_ERRORS, showScriptErrorsParam);
+        defaultParams.put(NO_PAUSE, noPauseParamm);
+        defaultParams.put(WINDOW_MODE, windowModeParam);
+        defaultParams.put(FILE_PATCHING, filePatchingParam);
+        defaultParams.put(CHECK_SIGNATURES, checkSignaturesParam);
+        defaultParams.put(NO_SPLASH, noSplashParam);
+        defaultParams.put(DEFUALT_WORLD_EMPTY, worldEmptyParam);
+        defaultParams.put(NO_LOGS, noLogsParam);
+        defaultParams.put(CPU_COUNT, cpuCountParam);
+        defaultParams.put(EX_THREADS, threadsParam);
 
-        ArrayList<ArmAParameter> defaultParams = new ArrayList<ArmAParameter>();
-        defaultParams.add(SHOWSCRIPT_ERRORS);
-        defaultParams.add(NO_PAUSE);
-        defaultParams.add(WINDOW_MODE);
-        defaultParams.add(FILE_PATCHING);
-        defaultParams.add(CHECK_SIGNATURES);
-        defaultParams.add(NO_SPLASH);
-        defaultParams.add(DEFUALT_WORLD_EMPTY);
-        defaultParams.add(NO_LOGS);
-        defaultParams.add(CPU_COUNT);
-        defaultParams.add(EX_THREADS);
         return defaultParams;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public String getArgument() {
@@ -77,16 +86,8 @@ public class ArmAParameter implements Serializable {
         }
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
     public ParameterType getType() {
         return type;
-    }
-
-    public String[] getValues() {
-        return values;
     }
 
     public String getValue() {

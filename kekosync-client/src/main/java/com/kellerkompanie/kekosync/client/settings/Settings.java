@@ -26,7 +26,7 @@ public class Settings {
     @Getter
     private String executableLocation;
     private HashSet<Path> searchDirectories;
-    private ArrayList<ArmAParameter> launchParams;
+    private HashMap<String, ArmAParameter> launchParams;
     @Getter
     private double windowWidth = 800;
     @Getter
@@ -87,7 +87,7 @@ public class Settings {
         saveSettings();
     }
 
-    public List<ArmAParameter> getLaunchParams() {
+    public HashMap<String, ArmAParameter> getLaunchParams() {
         return launchParams;
     }
 
@@ -135,6 +135,18 @@ public class Settings {
 
     public void updateWindowMaximized(boolean maximized) {
         this.windowMaximized = maximized;
+        saveSettings();
+    }
+
+    public void updateLaunchParam(String key, boolean selected) {
+        ArmAParameter param = launchParams.get(key);
+        param.setEnabled(selected);
+        saveSettings();
+    }
+
+    public void updateLaunchParam(String key, String value) {
+        ArmAParameter param = launchParams.get(key);
+        param.setValue(value);
         saveSettings();
     }
 }
