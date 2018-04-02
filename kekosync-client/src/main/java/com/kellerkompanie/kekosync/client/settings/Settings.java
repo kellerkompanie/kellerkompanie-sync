@@ -5,25 +5,28 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import com.kellerkompanie.kekosync.client.arma.ArmAParameter;
 import com.kellerkompanie.kekosync.core.gsonConverter.PathConverter;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 
-/**
- * @author Schwaggot
- */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Settings {
 
     private static final File settingsPath = new File(System.getenv("APPDATA") + File.separator + "KekoSync");
     private static final File settingsFile = new File(settingsPath, File.separator + "settings.json");
     private static Settings instance;
+    @Getter
     private String executableLocation;
     private HashSet<Path> searchDirectories;
     private ArrayList<ArmAParameter> launchParams;
+    @Getter
+    private double windowWidth = 800;
+    @Getter
+    private double windowHeight = 600;
+    @Getter
+    private double windowX = 0;
+    @Getter
+    private double windowY = 0;
 
     public static Settings getInstance() {
         if (instance == null) {
@@ -41,11 +44,19 @@ public class Settings {
                 instance.saveSettings();
             }
         }
-        return instance;
     }
 
-    public String getArmAExecutable() {
-        return executableLocation;
+    private static Settings loadSettings() {
+        Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new PathConverter()).create();
+        JsonReader reader = null;
+        try {
+            reader = new JsonReader(new FileReader(settingsFile));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return gson.fromJson(reader, Settings.class);
     }
 
     public void setArmAExecutable(String executableLocation) {
@@ -91,11 +102,13 @@ public class Settings {
     }
 
     private void saveSettings() {
+        log.debug("saving settings");
+
         if (!settingsFile.exists()) {
             try {
                 settingsFile.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("ran into trouble while creating settings file", e);
                 System.exit(1);
             }
         }
@@ -104,10 +117,28 @@ public class Settings {
             Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new PathConverter()).setPrettyPrinting().create();
             gson.toJson(this, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("ran into trouble while writing settings to file", e);
             System.exit(1);
         }
     }
 
+    public void updateWindowSize(double width, double height) {
+        this.windowWidth = width;
+        this.windowHeight = height;
+        saveSettings();
+    }
 
+    public void updateWindowPosition(double x, double y) {
+        this.windowX = x;
+        this.windowY = y;
+        saveSettings();
+    }
+
+    @Getter
+    boolean windowMaximized = false;
+
+    public void updateWindowMaximized(boolean maximized) {
+        this.windowMaximized = maximized;
+        saveSettings();
+    }
 }

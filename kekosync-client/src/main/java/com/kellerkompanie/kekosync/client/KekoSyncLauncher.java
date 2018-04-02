@@ -19,7 +19,7 @@ public class KekoSyncLauncher {
     }
 
     private void startGame(ActionEvent event) {
-        ArmALauncher armALauncher = new ArmALauncher(Settings.getInstance().getArmAExecutable());
+        ArmALauncher armALauncher = new ArmALauncher(Settings.getInstance().getExecutableLocation());
         try {
             armALauncher.startArmA(new LinkedList<ArmAParameter>());
         } catch (IOException e) {
