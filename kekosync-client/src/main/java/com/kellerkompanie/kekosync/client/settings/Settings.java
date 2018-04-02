@@ -5,7 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import com.kellerkompanie.kekosync.client.arma.ArmAParameter;
 import com.kellerkompanie.kekosync.core.gsonConverter.PathConverter;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -13,6 +16,8 @@ import java.nio.file.Path;
 import java.util.*;
 
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class Settings {
 
     private static final File settingsPath = new File(System.getenv("APPDATA") + File.separator + "KekoSync");
@@ -63,7 +68,7 @@ public class Settings {
         return gson.fromJson(reader, Settings.class);
     }
 
-    public void setArmAExecutable(String executableLocation) {
+    public void setExecutableLocation(String executableLocation) {
         this.executableLocation = executableLocation;
         saveSettings();
     }
