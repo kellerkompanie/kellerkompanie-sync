@@ -3,7 +3,6 @@ package com.kellerkompanie.kekosync.client.settings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
-import com.kellerkompanie.kekosync.client.arma.ArmALauncher;
 import com.kellerkompanie.kekosync.client.arma.ArmAParameter;
 import com.kellerkompanie.kekosync.core.gsonConverter.PathConverter;
 
@@ -13,95 +12,86 @@ import java.util.*;
 
 public class Settings {
 
-    private static final String SEARCH_DIRECTORIES = "searchDirs";
-    private static final String EXECUTABLE_LOCATION = "arma3location";
-    private static final String LAUNCH_PARAMS = "launchParams";
-
-    private static final String SETTINGS_PATH = System.getenv("APPDATA") + File.separator + "KekoSync";
-    private static final String SETTINGS_FILE = SETTINGS_PATH + File.separator + "settings.json";
+    private static final File settingsPath = new File(System.getenv("APPDATA") + File.separator + "KekoSync");
+    private static final File settingsFile = new File(settingsPath, File.separator + "settings.json");
     private static Settings instance;
-    private HashMap<String, Serializable> settings;
+    private String executableLocation;
+    private HashSet<Path> searchDirectories;
+    private ArrayList<ArmAParameter> launchParams;
 
     private Settings() {
-        File settingsFile = new File(SETTINGS_FILE);
-        File settingsPath = new File(SETTINGS_PATH);
-
-        if(!settingsPath.exists()) {
-            if (!settingsPath.mkdirs()) {
-                throw new IllegalStateException("unable to create settings folder: " + SETTINGS_PATH);
-            }
-        }
-
-        if (!settingsFile.exists()) {
-            createDefaultSettings();
-            saveSettings();
-        } else {
-            loadSettings();
-        }
+        createDefaultSettings();
+        saveSettings();
     }
 
     public static Settings getInstance() {
         if (instance == null) {
-            instance = new Settings();
+            instance = createOrLoad();
         }
         return instance;
     }
 
+    private static Settings createOrLoad() {
+        if (!settingsPath.exists()) {
+            if (!settingsPath.mkdirs()) {
+                throw new IllegalStateException("unable to create settings folder: " + settingsPath);
+            }
+        }
+
+        if (!settingsFile.exists()) {
+            return new Settings();
+        } else {
+            return loadSettings();
+        }
+    }
+
     public String getArmAExecutable() {
-        return (String) settings.get(EXECUTABLE_LOCATION);
+        return executableLocation;
     }
 
     public void setArmAExecutable(String executableLocation) {
-        settings.put(EXECUTABLE_LOCATION, executableLocation);
+        this.executableLocation = executableLocation;
         saveSettings();
     }
 
     public Set<Path> getSearchDirectories() {
-        return (Set<Path>) settings.get(SEARCH_DIRECTORIES);
+        return Collections.unmodifiableSet(searchDirectories);
     }
 
     public void addSearchDirectory(Path searchDir) {
-        getSearchDirectories().add(searchDir);
+        searchDirectories.add(searchDir);
         saveSettings();
     }
 
     public void removeSearchDirectory(Path path) {
-        getSearchDirectories().remove(path);
+        searchDirectories.remove(path);
         saveSettings();
     }
 
     public List<ArmAParameter> getLaunchParams() {
-        return (List<ArmAParameter>) settings.get(LAUNCH_PARAMS);
+        return launchParams;
     }
 
     private void createDefaultSettings() {
-        settings = new HashMap<>();
-
-        HashSet<Path> searchDirectories = new HashSet<>();
-        settings.put(SEARCH_DIRECTORIES, searchDirectories);
-
-        String executableLocaton = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Arma 3\\arma3_x64.exe";
-        settings.put(EXECUTABLE_LOCATION, executableLocaton);
-
-        ArrayList<ArmAParameter> defaultParams = ArmAParameter.getDefaultParameters();
-        settings.put(LAUNCH_PARAMS, defaultParams);
+        searchDirectories = new HashSet<>();
+        executableLocation = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Arma 3\\arma3_x64.exe";
+        launchParams = ArmAParameter.getDefaultParameters();
     }
 
-    private void loadSettings() {
+    private static Settings loadSettings() {
         Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new PathConverter()).create();
         JsonReader reader = null;
         try {
-            reader = new JsonReader(new FileReader(SETTINGS_FILE));
+            reader = new JsonReader(new FileReader(settingsFile));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.exit(1);
         }
 
-        settings = gson.fromJson(reader, settings.getClass());
+        return gson.fromJson(reader, Settings.class);
     }
 
     private void saveSettings() {
-        File settingsFile = new File(SETTINGS_FILE);
         if (!settingsFile.exists()) {
             try {
                 settingsFile.createNewFile();
@@ -113,7 +103,7 @@ public class Settings {
 
         try (Writer writer = new FileWriter(settingsFile)) {
             Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new PathConverter()).setPrettyPrinting().create();
-            gson.toJson(settings, writer);
+            gson.toJson(this, writer);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
