@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class RootController extends Application {
     @FXML
@@ -61,28 +63,16 @@ public class RootController extends Application {
         stage.maximizedProperty().addListener(this::onWindowMaximizedChanged);
     }
 
-    private static final int SAVE_THRESHOLD = 5000;
-    private long timestmapLastWindowMovement = -1;
-    private long timestampLastWindowResize = -1;
-
     private void onWindowPositionChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         double x = stage.getX();
         double y = stage.getY();
-
-        long currentTimestamp = System.currentTimeMillis();
-        if(timestmapLastWindowMovement != -1 && (currentTimestamp - timestmapLastWindowMovement) > SAVE_THRESHOLD) {
-            Settings.getInstance().updateWindowPosition(x, y);
-        }
+        Settings.getInstance().updateWindowPosition(x, y);
     }
 
     private void onWindowSizeChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         double width = scene.getWidth();
         double height = scene.getHeight();
-
-        long currentTimestamp = System.currentTimeMillis();
-        if(timestampLastWindowResize != -1 && (currentTimestamp - timestampLastWindowResize) > SAVE_THRESHOLD) {
-            Settings.getInstance().updateWindowSize(width, height);
-        }
+        Settings.getInstance().updateWindowSize(width, height);
     }
 
     private void onWindowMaximizedChanged(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
