@@ -8,7 +8,7 @@ import lombok.Setter;
 public class ModItem {
     @Getter
     @Setter
-    private boolean checked = true;
+    private ModItem.CheckedState checked = CheckedState.CHECKED;
     @Getter
     @Setter
     private String name = "mod";
@@ -18,5 +18,9 @@ public class ModItem {
 
     enum Status {
         OK, INCOMPLETE, MISSING
+    }
+
+    enum CheckedState {
+        CHECKED, UNCHECKED, INDETERMINATE
     }
 }
