@@ -2,4 +2,5 @@ rootProject.name = 'kekosync'
 include 'kekosync-core'
 include 'kekosync-client'
 include 'kekosync-server'
+include 'kekosync-hoster'
 
