@@ -138,7 +138,7 @@ public class ExampleRunthroughRunner {
 
         FileindexEntry limitedFileindexEntry = limitFileindexToModgroups(rootindexEntry, onlyAceGroup, moreAceGroup);
 
-        syncFileindexTree(limitedFileindexEntry, Paths.get("F:\\temprepo\\output"), repoBaseURL);
+        syncFileindexTree(limitedFileindexEntry, Paths.get("E:\\kekosync-local"), repoBaseURL);
         System.out.println("done");
 
         //Zsync zsync = new Zsync();

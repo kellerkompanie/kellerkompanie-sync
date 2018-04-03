@@ -20,6 +20,8 @@ import java.util.*;
 @AllArgsConstructor
 public class Settings {
 
+    public static final String REPO_URL = "http://localhost/repo/";
+
     private static final File settingsPath = new File(System.getenv("APPDATA") + File.separator + "KekoSync");
     private static final File settingsFile = new File(settingsPath, File.separator + "settings.json");
     private static Settings instance;

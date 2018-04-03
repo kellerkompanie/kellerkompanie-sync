@@ -5,16 +5,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 @AllArgsConstructor
-public class ModItem {
+public abstract class CustomTableItem {
     @Getter
     @Setter
-    private ModItem.CheckedState checked = CheckedState.CHECKED;
+    private CustomTableItem.CheckedState checked;
+
     @Getter
     @Setter
-    private String name = "mod";
-    @Getter
-    @Setter
-    private Status status = Status.OK;
+    private Type type;
+
+    enum Type {
+        MOD_GROUP, MOD, ROOT
+    }
 
     enum Status {
         OK, INCOMPLETE, MISSING
@@ -23,4 +25,7 @@ public class ModItem {
     enum CheckedState {
         CHECKED, UNCHECKED, INDETERMINATE
     }
+
+    public abstract Status getStatus();
+    public abstract String getName();
 }

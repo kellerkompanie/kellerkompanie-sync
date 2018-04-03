@@ -42,7 +42,7 @@
                 <Insets bottom="5.0" top="15.0"/>
             </padding>
         </Label>
-        <TreeView fx:id="optionalsTreeView" prefHeight="200"/>
+        <ListView fx:id="optionalsListView" prefHeight="200"/>
     </VBox>
 
     <Separator maxHeight="Infinity" orientation="VERTICAL" GridPane.columnIndex="1" GridPane.hgrow="NEVER"

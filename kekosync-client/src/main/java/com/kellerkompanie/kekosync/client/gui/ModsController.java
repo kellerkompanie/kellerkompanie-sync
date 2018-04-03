@@ -1,9 +1,12 @@
 package com.kellerkompanie.kekosync.client.gui;
 
 import com.kellerkompanie.kekosync.client.settings.Settings;
+import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
+import com.kellerkompanie.kekosync.core.entities.Mod;
+import com.kellerkompanie.kekosync.core.entities.ModGroup;
+import com.kellerkompanie.kekosync.core.entities.Repository;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -18,36 +21,40 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
 public class ModsController implements Initializable {
 
-    TreeItem<ModItem> rootNode = new TreeItem<>(new ModItem(ModItem.CheckedState.INDETERMINATE, "root", ModItem.Status.INCOMPLETE));
-    TreeItem<ModItem> mainNode = new TreeItem<>(new ModItem(ModItem.CheckedState.CHECKED, "kellerkompanie-main", ModItem.Status.OK));
-    TreeItem<ModItem> optionalNode = new TreeItem<>(new ModItem(ModItem.CheckedState.UNCHECKED, "kellerkompanie-optional", ModItem.Status.OK));
+
+    /*TreeItem<CustomTableItem> rootNode = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.INDETERMINATE, "root", CustomTableItem.Status.INCOMPLETE));
+    TreeItem<CustomTableItem> mainNode = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.CHECKED, "kellerkompanie-main", CustomTableItem.Status.OK));
+    TreeItem<CustomTableItem> optionalNode = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.UNCHECKED, "kellerkompanie-optional", CustomTableItem.Status.OK));
 
 
-    TreeItem<ModItem> node1 = new TreeItem<>(new ModItem(ModItem.CheckedState.INDETERMINATE, "@CBA_A3", ModItem.Status.OK));
-    TreeItem<ModItem> node2 = new TreeItem<>(new ModItem(ModItem.CheckedState.CHECKED, "@ace", ModItem.Status.OK));
-    TreeItem<ModItem> node3 = new TreeItem<>(new ModItem(ModItem.CheckedState.CHECKED, "@acex", ModItem.Status.MISSING));
-    TreeItem<ModItem> node4 = new TreeItem<>(new ModItem(ModItem.CheckedState.UNCHECKED, "@task_force_radio", ModItem.Status.OK));
-    TreeItem<ModItem> node5 = new TreeItem<>(new ModItem(ModItem.CheckedState.UNCHECKED, "@3denEnhanced", ModItem.Status.INCOMPLETE));
-    TreeItem<ModItem> node6 = new TreeItem<>(new ModItem(ModItem.CheckedState.CHECKED, "@AresModAchilles", ModItem.Status.OK));
+    TreeItem<CustomTableItem> node1 = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.INDETERMINATE, "@CBA_A3", CustomTableItem.Status.OK));
+    TreeItem<CustomTableItem> node2 = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.CHECKED, "@ace", CustomTableItem.Status.OK));
+    TreeItem<CustomTableItem> node3 = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.CHECKED, "@acex", CustomTableItem.Status.MISSING));
+    TreeItem<CustomTableItem> node4 = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.UNCHECKED, "@task_force_radio", CustomTableItem.Status.OK));
+    TreeItem<CustomTableItem> node5 = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.UNCHECKED, "@3denEnhanced", CustomTableItem.Status.INCOMPLETE));
+    TreeItem<CustomTableItem> node6 = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.CHECKED, "@AresModAchilles", CustomTableItem.Status.OK));*/
+
+    TreeItem<CustomTableItem> rootNode = new TreeItem<>(new RootTableItem(CustomTableItem.CheckedState.CHECKED, CustomTableItem.Type.ROOT));
 
     @FXML
-    private TreeView optionalsTreeView;
+    private ListView optionalsListView;
     @FXML
     private TreeView foldersTreeView;
     @FXML
-    private TreeTableView<ModItem> treeTableView;
+    private TreeTableView<CustomTableItem> treeTableView;
 
     @FXML
-    private TreeTableColumn<ModItem, ModItem.CheckedState> checkColumn;
+    private TreeTableColumn<CustomTableItem, CustomTableItem.CheckedState> checkColumn;
     @FXML
-    private TreeTableColumn<ModItem, String> nameColumn;
+    private TreeTableColumn<CustomTableItem, String> nameColumn;
     @FXML
-    private TreeTableColumn<ModItem, ModItem.Status> statusColumn;
+    private TreeTableColumn<CustomTableItem, CustomTableItem.Status> statusColumn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -75,23 +82,9 @@ public class ModsController implements Initializable {
     }
 
     private void populateOptionals() {
-        TreeItem<String> root = new TreeItem<>();
-        root.setExpanded(true);
-
-        TreeItem<String> itemEden = new TreeItem<>();
-        itemEden.setValue("@3denEnhanced");
-        root.getChildren().add(itemEden);
-
-        TreeItem<String> itemJSRS = new TreeItem<>();
-        itemJSRS.setValue("@JSRS");
-        root.getChildren().add(itemJSRS);
-
-        TreeItem<String> itemBlastcore = new TreeItem<>();
-        itemBlastcore.setValue("@Blastcore");
-        root.getChildren().add(itemBlastcore);
-
-        optionalsTreeView.setRoot(root);
-        optionalsTreeView.setShowRoot(false);
+        optionalsListView.getItems().add("@3denEnhanced");
+        optionalsListView.getItems().add("@JSRS");
+        optionalsListView.getItems().add("@Blastcore");
     }
 
     private void populatePath(TreeItem<String> item, Path path) {
@@ -111,19 +104,38 @@ public class ModsController implements Initializable {
     }
 
     private void populateModGroups() {
-        mainNode.getChildren().addAll(node1, node2, node3, node4);
-        optionalNode.getChildren().addAll(node5, node6);
+        Repository repository = null;
+        try {
+            repository = LauncherUtils.getRepository();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
 
-        rootNode.getChildren().addAll(mainNode, optionalNode);
+        List<ModGroup> modGroups = repository.getModGroups();
+
+        for(ModGroup modGroup : modGroups) {
+            ModGroupTableItem modGroupTableItem = new ModGroupTableItem(modGroup);
+            TreeItem<CustomTableItem> modGroupTreeItem = new TreeItem<>(modGroupTableItem);
+
+            for(Mod mod : modGroup.getMods()) {
+                ModTableItem modTableItem = new ModTableItem(mod);
+                TreeItem<CustomTableItem> modTreeItem = new TreeItem<>(modTableItem);
+                modGroupTreeItem.getChildren().add(modTreeItem);
+            }
+
+            rootNode.getChildren().add(modGroupTreeItem);
+        }
+
         rootNode.setExpanded(true);
 
         nameColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("name"));
 
         statusColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("status"));
         statusColumn.setCellFactory(col -> {
-            TreeTableCell<ModItem, ModItem.Status> cell = new TreeTableCell<ModItem, ModItem.Status>() {
+            TreeTableCell<CustomTableItem, CustomTableItem.Status> cell = new TreeTableCell<CustomTableItem, CustomTableItem.Status>() {
                 @Override
-                public void updateItem(ModItem.Status item, boolean empty) {
+                public void updateItem(CustomTableItem.Status item, boolean empty) {
                     super.updateItem(item, empty);
                     if (empty) {
                         setText(null);
@@ -161,13 +173,13 @@ public class ModsController implements Initializable {
         treeTableView.setShowRoot(false);
         treeTableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
 
-        checkColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ModItem, ModItem.CheckedState>, ObservableValue<ModItem.CheckedState>>() {
+        checkColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<CustomTableItem, CustomTableItem.CheckedState>, ObservableValue<CustomTableItem.CheckedState>>() {
             @Override
-            public ObservableValue<ModItem.CheckedState> call(TreeTableColumn.CellDataFeatures<ModItem, ModItem.CheckedState> param) {
-                TreeItem<ModItem> treeItem = param.getValue();
-                ModItem emp = treeItem.getValue();
+            public ObservableValue<CustomTableItem.CheckedState> call(TreeTableColumn.CellDataFeatures<CustomTableItem, CustomTableItem.CheckedState> param) {
+                TreeItem<CustomTableItem> treeItem = param.getValue();
+                CustomTableItem emp = treeItem.getValue();
                 //SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(emp.isChecked());
-                ObservableValue<ModItem.CheckedState> val = new ObservableValue<ModItem.CheckedState>() {
+                ObservableValue<CustomTableItem.CheckedState> val = new ObservableValue<CustomTableItem.CheckedState>() {
                     @Override
                     public void addListener(InvalidationListener listener) {
 
@@ -179,24 +191,24 @@ public class ModsController implements Initializable {
                     }
 
                     @Override
-                    public void addListener(ChangeListener<? super ModItem.CheckedState> listener) {
+                    public void addListener(ChangeListener<? super CustomTableItem.CheckedState> listener) {
 
                     }
 
                     @Override
-                    public void removeListener(ChangeListener<? super ModItem.CheckedState> listener) {
+                    public void removeListener(ChangeListener<? super CustomTableItem.CheckedState> listener) {
 
                     }
 
                     @Override
-                    public ModItem.CheckedState getValue() {
+                    public CustomTableItem.CheckedState getValue() {
                         return emp.getChecked();
                     }
                 };
 
-                /*booleanProp.addListener(new ChangeListener<ModItem.CheckedState>() {
+                /*booleanProp.addListener(new ChangeListener<CustomTableItem.CheckedState>() {
                     @Override
-                    public void changed(ObservableValue<? extends ModItem.CheckedState> observable, ModItem.CheckedState oldValue, ModItem.CheckedState newValue) {
+                    public void changed(ObservableValue<? extends CustomTableItem.CheckedState> observable, CustomTableItem.CheckedState oldValue, CustomTableItem.CheckedState newValue) {
 
                     }
                 });*/
@@ -205,15 +217,15 @@ public class ModsController implements Initializable {
         });
 
         /*checkColumn.setCellFactory(p -> {
-            CheckBoxTreeTableCell<ModItem, Boolean> cell = new CheckBoxTreeTableCell<>();
+            CheckBoxTreeTableCell<CustomTableItem, Boolean> cell = new CheckBoxTreeTableCell<>();
             cell.setAlignment(Pos.CENTER);
             return cell;
         });*/
 
         checkColumn.setCellFactory(col -> {
-            CheckBoxTreeTableCell<ModItem, ModItem.CheckedState> cell = new CheckBoxTreeTableCell<ModItem, ModItem.CheckedState>() {
+            CheckBoxTreeTableCell<CustomTableItem, CustomTableItem.CheckedState> cell = new CheckBoxTreeTableCell<CustomTableItem, CustomTableItem.CheckedState>() {
                 @Override
-                public void updateItem(ModItem.CheckedState item, boolean empty) {
+                public void updateItem(CustomTableItem.CheckedState item, boolean empty) {
                     super.updateItem(item, empty);
                     if (empty) {
                         setStyle("-fx-background-color: transparent");
