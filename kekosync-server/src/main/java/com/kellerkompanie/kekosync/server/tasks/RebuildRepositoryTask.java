@@ -19,11 +19,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.kellerkompanie.kekosync.server.helper.FileindexGenerator.getModId;
 
 /**
  * @author dth
@@ -85,16 +84,6 @@ public class RebuildRepositoryTask {
         return true;
     }
 
-    private static UUID getModId(Path modsubdirectory) {
-        try {
-            String stringValue = new String(Files.readAllBytes(modsubdirectory.resolve(Filenames.FILENAME_MODID)), "UTF-8");
-            return UUID.fromString(stringValue);
-        } catch (IOException e) {
-            log.error("error while reading {}/.id", modsubdirectory.toString(), e);
-            return null;
-        }
-    }
-
     private boolean checkModgroupFile() {
         if ( Paths.get(repositoryPath, Filenames.FILENAME_MODGROUPS).toFile().exists() ) return true;
 
@@ -110,11 +99,11 @@ public class RebuildRepositoryTask {
         subdirectories.remove(0); //remove repositoryPath itself from the list
 
         //we seem to have to generate an example :-(
-        List<Mod> modList = new ArrayList<>(subdirectories.size());
+        Set<Mod> modSet = new HashSet<>(subdirectories.size());
         for (Path subdirectory: subdirectories) {
-            modList.add(new Mod(subdirectory.getFileName().toString(), getModId(subdirectory)));
+            modSet.add(new Mod(subdirectory.getFileName().toString(), getModId(subdirectory)));
         }
-        ModGroup allModsGroup = new ModGroup("all", UUIDGenerator.generateUUID(), modList);
+        ModGroup allModsGroup = new ModGroup("all", UUIDGenerator.generateUUID(), modSet);
 
         Repository repository = new Repository("example-repository", UUIDGenerator.generateUUID(), Arrays.asList(allModsGroup), null);
         String repositoryJson = new Gson().toJson(repository);
@@ -160,7 +149,7 @@ public class RebuildRepositoryTask {
             return false;
         }
 
-        String indexJson = new GsonBuilder().create().toJson(fileindexEntry);
+        String indexJson = new GsonBuilder().setPrettyPrinting().create().toJson(fileindexEntry);
         try {
             Files.write(Paths.get(repositoryPath).resolve(Filenames.FILENAME_INDEXFILE), indexJson.getBytes("UTF-8"));
         } catch (IOException e) {

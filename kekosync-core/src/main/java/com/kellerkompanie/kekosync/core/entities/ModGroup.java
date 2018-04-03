@@ -5,6 +5,7 @@ import lombok.*;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -13,16 +14,16 @@ import java.util.UUID;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"uuid"})
 @ToString
 public class ModGroup implements Serializable {
 
     @Getter @Setter private String name;
     private UUID uuid;
-    private List<Mod> mods;
+    private Set<Mod> mods;
 
-    public List<Mod> getMods() {
-        return Collections.unmodifiableList(mods);
+    public Set<Mod> getMods() {
+        return Collections.unmodifiableSet(mods);
     }
 
     public void addMod(Mod mod) {

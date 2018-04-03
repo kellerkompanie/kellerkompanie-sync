@@ -12,7 +12,7 @@ import java.util.UUID;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"uuid"})
 @ToString
 public class Mod implements Serializable {
     @Getter @Setter private String name;
