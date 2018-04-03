@@ -1,5 +1,6 @@
 package com.kellerkompanie.kekosync.server.helper;
 
+import com.kellerkompanie.kekosync.core.constants.Filenames;
 import com.kellerkompanie.kekosync.core.entities.FileindexEntry;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -11,30 +12,38 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.kellerkompanie.kekosync.core.helper.HashHelper.convertToHex;
+import static com.kellerkompanie.kekosync.core.helper.HashHelper.generateSHA512;
 import static com.kellerkompanie.kekosync.server.constants.FileMatcher.zsyncFileMatcher;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FileindexGenerator {
     public static FileindexEntry index(String directoryPath) throws IOException {
-        FileindexEntry fileindexEntry = new FileindexEntry("", 0, true, new ArrayList<>());
-        fillEntry(Paths.get(directoryPath), fileindexEntry);
+        FileindexEntry fileindexEntry = new FileindexEntry("", 0, true, null, null, new ArrayList<>());
+        fillEntry(Paths.get(directoryPath), fileindexEntry, 1);
         return fileindexEntry;
     }
 
-    private static void fillEntry(Path path, FileindexEntry fileindexEntry) {
+    private static void fillEntry(Path path, FileindexEntry fileindexEntry, int level) {
         long size = 0;
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path)) {
             for (Path entry: directoryStream) {
                 if ( Files.isDirectory(entry) ) {
-                    FileindexEntry newfileindexEntry = new FileindexEntry(entry.getFileName().toString(), 0, true, new ArrayList<>());
-                    fillEntry(entry, newfileindexEntry);
+                    String uuid = null;
+                    if ( level == 1 ) { //we are on the first level and there might be .id files there! oh joy, let's read them to annotate this entry proper!
+                        uuid = getModId(entry).toString();
+                    }
+                    FileindexEntry newfileindexEntry = new FileindexEntry(entry.getFileName().toString(), 0, true, uuid, null, new ArrayList<>());
+                    fillEntry(entry, newfileindexEntry, level+1);
                     fileindexEntry.addChild(newfileindexEntry);
                     size += newfileindexEntry.getSize();
                 } else {
-                    FileindexEntry newfileindexEntry = new FileindexEntry(entry.getFileName().toString(), Files.size(entry), false, new ArrayList<>());
+                    String fileHash = convertToHex(generateSHA512(entry));
+                    FileindexEntry newfileindexEntry = new FileindexEntry(entry.getFileName().toString(), Files.size(entry), false, null, fileHash, new ArrayList<>());
                     fileindexEntry.addChild(newfileindexEntry);
                     size += newfileindexEntry.getSize();
                 }
@@ -43,5 +52,15 @@ public final class FileindexGenerator {
             log.error("Error while indexing", ex);
         }
         fileindexEntry.setSize(size);
+    }
+
+    public static UUID getModId(Path modsubdirectory) {
+        try {
+            String stringValue = new String(Files.readAllBytes(modsubdirectory.resolve(Filenames.FILENAME_MODID)), "UTF-8");
+            return UUID.fromString(stringValue);
+        } catch (IOException e) {
+            log.error("error while reading {}/.id", modsubdirectory.toString(), e);
+            return null;
+        }
     }
 }
