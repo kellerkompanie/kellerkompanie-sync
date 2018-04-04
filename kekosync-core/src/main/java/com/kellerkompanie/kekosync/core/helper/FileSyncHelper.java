@@ -61,9 +61,9 @@ public final class FileSyncHelper {
                 String filehash = convertToHex(generateSHA512(localfile));
                 String localfilehash = fileindexEntry.getHash();
                 if ((Files.size(localfile) == fileindexEntry.getSize()) && (filehash.equals(localfilehash))) {
-                    System.out.println(localfile.toString() + " - file is locally the same.");
+                    log.debug("{} - file is locally the same.", localfile);
                 } else {
-                    System.out.println(localfile.toString() + " - file needs to be synced.");
+                    log.debug("{} - file needs to be synced.", localfile);
                     //yeah! we need real syncing!
                     if (!pretend) {
                         Zsync zsync = new Zsync();
@@ -74,7 +74,7 @@ public final class FileSyncHelper {
                     }
                 }
             } else {
-                System.out.println(localfile.toString() + " - file does not exist locally. Will download traditionally.");
+                log.debug("{} - file does not exist locally. Will download traditionally.", localfile);
 
                 if (!pretend) HttpHelper.downloadFile(remotepath + fileindexEntry.getName(), localfile, fileindexEntry.getSize());
             }
@@ -93,14 +93,14 @@ public final class FileSyncHelper {
             String filehash = convertToHex(generateSHA512(localfile));
             String localfilehash = fileindexEntry.getHash();
             if ((Files.size(localfile) == fileindexEntry.getSize()) && (filehash.equals(localfilehash))) {
-                System.out.println(localfile.toString() + " - file is locally the same.");
+                log.debug("{} - file is locally the same.", localfile);
                 return FileindexWithSyncEntry.fromFileindexEntry(fileindexEntry, FileindexWithSyncEntry.SyncStatus.LOCAL_INSYNC);
             } else {
-                System.out.println(localfile.toString() + " - file needs to be synced.");
+                log.debug("{} - file needs to be synced.", localfile);
                 return FileindexWithSyncEntry.fromFileindexEntry(fileindexEntry, FileindexWithSyncEntry.SyncStatus.LOCAL_WITHCHANGES);
             }
         } else {
-            System.out.println(localfile.toString() + " - file does not exist locally. Will download traditionally.");
+            log.debug("{} - file does not exist locally. Will download traditionally.", localfile);
 
             return FileindexWithSyncEntry.fromFileindexEntry(fileindexEntry, FileindexWithSyncEntry.SyncStatus.LOCAL_MISSING);
         }
