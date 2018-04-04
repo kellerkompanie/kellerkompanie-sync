@@ -22,7 +22,7 @@ public class FileLocationHelper {
                 for (Path entry : directoryStream) {
                     if (Files.isDirectory(entry)) {
                         UUID localDirModId = getModId(entry);
-                        if ( localDirModId != null && localDirModId.equals(mod.getUuid()) ) return entry;
+                        if ( localDirModId != null && localDirModId.equals(mod.getUuid()) ) return localDirectory;
                     }
                 }
             } catch (IOException e) {
