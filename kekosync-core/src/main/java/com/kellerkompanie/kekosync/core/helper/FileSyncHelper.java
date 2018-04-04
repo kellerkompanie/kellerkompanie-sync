@@ -22,12 +22,27 @@ import static com.kellerkompanie.kekosync.core.helper.HashHelper.generateSHA512;
 @Slf4j
 public final class FileSyncHelper {
     public static FileindexEntry limitFileindexToModgroups(FileindexEntry fileindexEntry, ModGroup... modGroups) {
+        return limitFileindexToModgroups(fileindexEntry, Arrays.asList(modGroups));
+    }
+
+    public static FileindexEntry limitFileindexToModgroups(FileindexEntry fileindexEntry, Iterable<ModGroup> modGroups) {
+        List<Mod> modList = new ArrayList<>();
+        for ( ModGroup modGroup : modGroups ) {
+            modList.addAll(modGroup.getMods());
+        }
+
+        return limitFileindexToMods(fileindexEntry, modList);
+    }
+
+    public static FileindexEntry limitFileindexToMods(FileindexEntry fileindexEntry, Mod... mods) {
+        return limitFileindexToMods(fileindexEntry, Arrays.asList(mods));
+    }
+
+    public static FileindexEntry limitFileindexToMods(FileindexEntry fileindexEntry, Iterable<Mod> mods) {
         FileindexEntry limitedFileindexEntry = SerializationUtils.clone(fileindexEntry);
         HashMap<UUID, Mod> modsWeWant = new HashMap<>();
-        for ( ModGroup modGroup : modGroups ) {
-            for ( Mod mod : modGroup.getMods() ) {
-                modsWeWant.put(mod.getUuid(), mod);
-            }
+        for ( Mod mod : mods ) {
+            modsWeWant.put(mod.getUuid(), mod);
         }
 
         Iterator<FileindexEntry> fileindexEntryIterator = limitedFileindexEntry.getChildren().iterator();
