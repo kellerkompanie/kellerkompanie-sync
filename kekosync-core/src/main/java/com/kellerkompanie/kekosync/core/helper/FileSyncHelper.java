@@ -49,11 +49,11 @@ public final class FileSyncHelper {
         return limitedFileindexEntry;
     }
 
-    public static void syncFileindexFile(FileindexEntry fileindexEntry, Path localpath, String remotepath) throws IOException {
+    private static void syncFileindexFile(FileindexEntry fileindexEntry, Path localpath, String remotepath) throws IOException {
         syncFileindexFile(fileindexEntry, localpath, remotepath, false);
     }
 
-    public static void syncFileindexFile(FileindexEntry fileindexEntry, Path localpath, String remotepath, boolean pretend) throws IOException {
+    private static void syncFileindexFile(FileindexEntry fileindexEntry, Path localpath, String remotepath, boolean pretend) throws IOException {
         //first let's find out if the file exists locally .. if not .. then we need to fully get it anyways ..
         Path localfile = localpath.resolve(fileindexEntry.getName());
         try {
@@ -86,7 +86,7 @@ public final class FileSyncHelper {
         }
     }
 
-    public static FileindexWithSyncEntry checksyncFileindexFile(FileindexEntry fileindexEntry, Path localpath) throws IOException {
+    private static FileindexWithSyncEntry checksyncFileindexFile(FileindexEntry fileindexEntry, Path localpath) throws IOException {
         //first let's find out if the file exists locally .. if not .. then we need to fully get it anyways ..
         Path localfile = localpath.resolve(fileindexEntry.getName());
         if (Files.exists(localfile)) {
@@ -139,7 +139,7 @@ public final class FileSyncHelper {
                 if ( currentFileindexEntry.getName().endsWith(".zsync" ) ) continue; //we don't need to sync those.
                 newChildren.add(checksyncFileindexFile(currentFileindexEntry, localpath));
             } else {
-                newChildren.add(checksyncFileindexFile(currentFileindexEntry, localpath.resolve(currentFileindexEntry.getName())));
+                newChildren.add(checksyncFileindexTree(currentFileindexEntry, localpath.resolve(currentFileindexEntry.getName())));
             }
         }
         return FileindexWithSyncEntry.fromFileindexEntry(fileindexEntry, FileindexWithSyncEntry.SyncStatus.UNKNOWN, newChildren);
