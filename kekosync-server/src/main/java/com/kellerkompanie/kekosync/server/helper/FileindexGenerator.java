@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static com.kellerkompanie.kekosync.core.helper.FileLocationHelper.getModId;
 import static com.kellerkompanie.kekosync.core.helper.HashHelper.convertToHex;
 import static com.kellerkompanie.kekosync.core.helper.HashHelper.generateSHA512;
 
@@ -50,15 +51,5 @@ public final class FileindexGenerator {
             log.error("Error while indexing", ex);
         }
         fileindexEntry.setSize(size);
-    }
-
-    public static UUID getModId(Path modsubdirectory) {
-        try {
-            String stringValue = new String(Files.readAllBytes(modsubdirectory.resolve(Filenames.FILENAME_MODID)), "UTF-8");
-            return UUID.fromString(stringValue);
-        } catch (IOException e) {
-            log.error("error while reading {}/.id", modsubdirectory.toString(), e);
-            return null;
-        }
     }
 }
