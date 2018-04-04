@@ -86,7 +86,7 @@ public final class FileSyncHelper {
         }
     }
 
-    public static FileindexWithSyncEntry checksyncFileindexFile(FileindexEntry fileindexEntry, Path localpath, String remotepath) throws IOException {
+    public static FileindexWithSyncEntry checksyncFileindexFile(FileindexEntry fileindexEntry, Path localpath) throws IOException {
         //first let's find out if the file exists locally .. if not .. then we need to fully get it anyways ..
         Path localfile = localpath.resolve(fileindexEntry.getName());
         if (Files.exists(localfile)) {
@@ -132,20 +132,14 @@ public final class FileSyncHelper {
         }
     }
 
-    public static FileindexWithSyncEntry checksyncFileindexTree(FileindexEntry fileindexEntry, Path localpath, String remotepath) throws IOException {
+    public static FileindexWithSyncEntry checksyncFileindexTree(FileindexEntry fileindexEntry, Path localpath) throws IOException {
         List<FileindexWithSyncEntry> newChildren = new ArrayList<>();
         for ( FileindexEntry currentFileindexEntry : fileindexEntry.getChildren() ) {
             if ( !currentFileindexEntry.isDirectory() ) {
                 if ( currentFileindexEntry.getName().endsWith(".zsync" ) ) continue; //we don't need to sync those.
-                newChildren.add(checksyncFileindexFile(currentFileindexEntry, localpath, remotepath));
+                newChildren.add(checksyncFileindexFile(currentFileindexEntry, localpath));
             } else {
-                String newremotepath = null;
-                try {
-                    newremotepath = remotepath + URLEncoder.encode(currentFileindexEntry.getName(),"UTF-8") + "/";
-                } catch (UnsupportedEncodingException e) {
-                    log.error("encoding UTF-8 is missing, trololol.", e);
-                }
-                newChildren.add(checksyncFileindexFile(currentFileindexEntry, localpath.resolve(currentFileindexEntry.getName()), newremotepath));
+                newChildren.add(checksyncFileindexFile(currentFileindexEntry, localpath.resolve(currentFileindexEntry.getName())));
             }
         }
         return FileindexWithSyncEntry.fromFileindexEntry(fileindexEntry, FileindexWithSyncEntry.SyncStatus.UNKNOWN, newChildren);
