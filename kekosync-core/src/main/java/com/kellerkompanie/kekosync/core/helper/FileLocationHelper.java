@@ -5,21 +5,29 @@ import com.kellerkompanie.kekosync.core.entities.Mod;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.UUID;
 
 @Slf4j
 public class FileLocationHelper {
-    public static Path getModPath(Mod mod, Path... localDirectories) {
-        return getModPath(mod, localDirectories);
+    public static Path getModLocalRootpath(Mod mod, Path... localDirectories) {
+        return getModLocalRootpath(mod, localDirectories);
     }
 
-    public static Path getModPath(Mod mod, Iterable<Path> localDirectories) {
+    public static Path getModLocalRootpath(Mod mod, Iterable<Path> localDirectories) {
         for ( Path localDirectory : localDirectories ) {
-            UUID localDirModId = getModId(localDirectory);
-            if ( localDirModId != null && localDirModId.equals(mod.getUuid()) ) return localDirectory;
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(localDirectory)) {
+                for (Path entry : directoryStream) {
+                    if (Files.isDirectory(entry)) {
+                        UUID localDirModId = getModId(entry);
+                        if ( localDirModId != null && localDirModId.equals(mod.getUuid()) ) return entry;
+                    }
+                }
+            } catch (IOException e) {
+                log.error("Error while traversing directories", e);
+            }
         }
         return null;
     }
