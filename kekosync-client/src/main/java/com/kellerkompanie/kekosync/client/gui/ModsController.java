@@ -27,19 +27,6 @@ import java.util.Set;
 
 public class ModsController implements Initializable {
 
-
-    /*TreeItem<CustomTableItem> rootNode = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.INDETERMINATE, "root", CustomTableItem.Status.INCOMPLETE));
-    TreeItem<CustomTableItem> mainNode = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.CHECKED, "kellerkompanie-main", CustomTableItem.Status.OK));
-    TreeItem<CustomTableItem> optionalNode = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.UNCHECKED, "kellerkompanie-optional", CustomTableItem.Status.OK));
-
-
-    TreeItem<CustomTableItem> node1 = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.INDETERMINATE, "@CBA_A3", CustomTableItem.Status.OK));
-    TreeItem<CustomTableItem> node2 = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.CHECKED, "@ace", CustomTableItem.Status.OK));
-    TreeItem<CustomTableItem> node3 = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.CHECKED, "@acex", CustomTableItem.Status.MISSING));
-    TreeItem<CustomTableItem> node4 = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.UNCHECKED, "@task_force_radio", CustomTableItem.Status.OK));
-    TreeItem<CustomTableItem> node5 = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.UNCHECKED, "@3denEnhanced", CustomTableItem.Status.INCOMPLETE));
-    TreeItem<CustomTableItem> node6 = new TreeItem<>(new CustomTableItem(CustomTableItem.CheckedState.CHECKED, "@AresModAchilles", CustomTableItem.Status.OK));*/
-
     TreeItem<CustomTableItem> rootNode = new TreeItem<>(new RootTableItem(CustomTableItem.CheckedState.CHECKED, CustomTableItem.Type.ROOT));
 
     @FXML
@@ -161,13 +148,6 @@ public class ModsController implements Initializable {
             return cell;
         });
 
-        /*nameColumn.prefWidthProperty().bind(
-                treeTableView.widthProperty()
-                        .subtract(checkColumn.widthProperty())
-                        .subtract(statusColumn.widthProperty())
-                        .subtract(2)  // a border stroke?
-        );*/
-
         treeTableView.setRoot(rootNode);
         treeTableView.getSelectionModel().setCellSelectionEnabled(false);
         treeTableView.setShowRoot(false);
@@ -178,7 +158,6 @@ public class ModsController implements Initializable {
             public ObservableValue<CustomTableItem.CheckedState> call(TreeTableColumn.CellDataFeatures<CustomTableItem, CustomTableItem.CheckedState> param) {
                 TreeItem<CustomTableItem> treeItem = param.getValue();
                 CustomTableItem emp = treeItem.getValue();
-                //SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(emp.isChecked());
                 ObservableValue<CustomTableItem.CheckedState> val = new ObservableValue<CustomTableItem.CheckedState>() {
                     @Override
                     public void addListener(InvalidationListener listener) {
@@ -206,21 +185,9 @@ public class ModsController implements Initializable {
                     }
                 };
 
-                /*booleanProp.addListener(new ChangeListener<CustomTableItem.CheckedState>() {
-                    @Override
-                    public void changed(ObservableValue<? extends CustomTableItem.CheckedState> observable, CustomTableItem.CheckedState oldValue, CustomTableItem.CheckedState newValue) {
-
-                    }
-                });*/
                 return val;
             }
         });
-
-        /*checkColumn.setCellFactory(p -> {
-            CheckBoxTreeTableCell<CustomTableItem, Boolean> cell = new CheckBoxTreeTableCell<>();
-            cell.setAlignment(Pos.CENTER);
-            return cell;
-        });*/
 
         checkColumn.setCellFactory(col -> {
             CheckBoxTreeTableCell<CustomTableItem, CustomTableItem.CheckedState> cell = new CheckBoxTreeTableCell<CustomTableItem, CustomTableItem.CheckedState>() {
@@ -232,13 +199,13 @@ public class ModsController implements Initializable {
                     } else {
                         switch (item) {
                             case CHECKED:
-                                setStyle("-fx-background-color: green");
+                                //setStyle("-fx-background-color: green");
                                 break;
                             case UNCHECKED:
-                                setStyle("-fx-background-color: red");
+                                //setStyle("-fx-background-color: red");
                                 break;
                             case INDETERMINATE:
-                                setStyle("-fx-background-color: orange");
+                                //setStyle("-fx-background-color: orange");
                                 break;
                         }
                     }
