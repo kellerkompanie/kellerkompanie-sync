@@ -8,12 +8,13 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.UUID;
 
 @Slf4j
 public class FileLocationHelper {
     public static Path getModLocalRootpath(Mod mod, Path... localDirectories) {
-        return getModLocalRootpath(mod, localDirectories);
+        return getModLocalRootpath(mod, Arrays.asList(localDirectories));
     }
 
     public static Path getModLocalRootpath(Mod mod, Iterable<Path> localDirectories) {
