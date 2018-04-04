@@ -3,7 +3,7 @@ package com.kellerkompanie.kekosync.server.tasks;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kellerkompanie.kekosync.core.constants.Filenames;
-import com.kellerkompanie.kekosync.core.entities.FileindexEntry;
+import com.kellerkompanie.kekosync.core.helper.FileindexEntry;
 import com.kellerkompanie.kekosync.core.entities.Mod;
 import com.kellerkompanie.kekosync.core.entities.ModGroup;
 import com.kellerkompanie.kekosync.core.entities.Repository;

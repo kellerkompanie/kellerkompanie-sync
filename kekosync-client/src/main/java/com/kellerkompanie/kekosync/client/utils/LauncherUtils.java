@@ -1,7 +1,7 @@
 package com.kellerkompanie.kekosync.client.utils;
 
 import com.google.gson.Gson;
-import com.kellerkompanie.kekosync.client.helper.HttpHelper;
+import com.kellerkompanie.kekosync.core.helper.HttpHelper;
 import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.kellerkompanie.kekosync.core.constants.Filenames;
 import com.kellerkompanie.kekosync.core.entities.Repository;

@@ -1,7 +1,7 @@
 package com.kellerkompanie.kekosync.server.helper;
 
 import com.kellerkompanie.kekosync.core.constants.Filenames;
-import com.kellerkompanie.kekosync.core.entities.FileindexEntry;
+import com.kellerkompanie.kekosync.core.helper.FileindexEntry;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,11 +13,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.kellerkompanie.kekosync.core.helper.HashHelper.convertToHex;
 import static com.kellerkompanie.kekosync.core.helper.HashHelper.generateSHA512;
-import static com.kellerkompanie.kekosync.server.constants.FileMatcher.zsyncFileMatcher;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

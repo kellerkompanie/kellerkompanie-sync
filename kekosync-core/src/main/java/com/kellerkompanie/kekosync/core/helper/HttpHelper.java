@@ -1,4 +1,4 @@
-package com.kellerkompanie.kekosync.client.helper;
+package com.kellerkompanie.kekosync.core.helper;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

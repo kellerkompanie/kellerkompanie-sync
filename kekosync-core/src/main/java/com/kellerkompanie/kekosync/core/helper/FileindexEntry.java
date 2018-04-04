@@ -1,10 +1,9 @@
-package com.kellerkompanie.kekosync.core.entities;
+package com.kellerkompanie.kekosync.core.helper;
 
 import lombok.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @AllArgsConstructor
