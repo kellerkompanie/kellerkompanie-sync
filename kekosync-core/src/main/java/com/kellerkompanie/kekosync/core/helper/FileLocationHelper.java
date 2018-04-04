@@ -7,11 +7,16 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.UUID;
 
 @Slf4j
 public class FileLocationHelper {
     public static Path getModPath(Mod mod, Path... localDirectories) {
+        return getModPath(mod, localDirectories);
+    }
+
+    public static Path getModPath(Mod mod, Iterable<Path> localDirectories) {
         for ( Path localDirectory : localDirectories ) {
             UUID localDirModId = getModId(localDirectory);
             if ( localDirModId != null && localDirModId.equals(mod.getUuid()) ) return localDirectory;
