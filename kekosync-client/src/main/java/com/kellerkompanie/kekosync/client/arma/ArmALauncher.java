@@ -25,7 +25,7 @@ public class ArmALauncher {
         return instance;
     }
 
-    public void startArmA() {
+    public void startArmA(List<String> modsToStart) {
         List<String> commandLineArguments = new LinkedList<>();
         String executableLocation = Settings.getInstance().getExecutableLocation();
         commandLineArguments.add(executableLocation);
@@ -35,6 +35,10 @@ public class ArmALauncher {
         for (ArmAParameter param : params.values()) {
             if (param.isEnabled())
                 commandLineArguments.add(param.getArgument());
+        }
+
+        for(String modPath : modsToStart) {
+            commandLineArguments.add("-mod=" + modPath);
         }
 
         ProcessBuilder p = new ProcessBuilder();

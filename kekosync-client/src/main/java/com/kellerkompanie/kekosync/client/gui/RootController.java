@@ -18,13 +18,12 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class RootController extends Application implements Initializable {
     @FXML
@@ -104,8 +103,25 @@ public class RootController extends Application implements Initializable {
 
     @FXML
     private void handleStartGameAction(ActionEvent event) {
-        String selectedServer = serverComboBox.getSelectionModel().getSelectedItem().toString();
-        ArmALauncher.getInstance().startArmA();
+        TreeTableView treeTableView = (TreeTableView) tabPane.lookup("#treeTableView");
+        System.out.println(treeTableView);
+
+        LinkedList<String> modsToStart = new LinkedList<String>();
+        for(Object modGroupObj : treeTableView.getRoot().getChildren()) {
+            CheckBoxTreeItem<CustomTableItem> modGroupTreeItem = (CheckBoxTreeItem<CustomTableItem>) modGroupObj;
+            for(Object modObj : modGroupTreeItem.getChildren()) {
+                CheckBoxTreeItem<CustomTableItem> modTreeItem = (CheckBoxTreeItem<CustomTableItem>) modObj;
+
+                CustomTableItem customTableItem = modTreeItem.getValue();
+                if (customTableItem.getChecked()) {
+                    String folderPath = customTableItem.getLocation();
+                    String name = customTableItem.getName();
+                    modsToStart.add(folderPath + File.separator + name);
+                }
+            }
+        }
+
+        ArmALauncher.getInstance().startArmA(modsToStart);
     }
 
     @Override

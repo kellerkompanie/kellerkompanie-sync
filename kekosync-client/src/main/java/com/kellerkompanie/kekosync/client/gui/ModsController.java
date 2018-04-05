@@ -1,16 +1,14 @@
 package com.kellerkompanie.kekosync.client.gui;
 
-import com.kellerkompanie.kekosync.core.helper.ModStatusHelper;
 import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
 import com.kellerkompanie.kekosync.core.entities.Mod;
 import com.kellerkompanie.kekosync.core.entities.ModGroup;
 import com.kellerkompanie.kekosync.core.entities.Repository;
-import com.kellerkompanie.kekosync.core.helper.FileSyncHelper;
-import com.kellerkompanie.kekosync.core.helper.FileindexEntry;
-import com.kellerkompanie.kekosync.core.helper.FileindexWithSyncEntry;
+import com.kellerkompanie.kekosync.core.helper.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -44,7 +42,7 @@ public class ModsController implements Initializable {
     private TreeTableView<CustomTableItem> treeTableView;
 
     @FXML
-    private TreeTableColumn<CustomTableItem, CustomTableItem.CheckedState> checkColumn;
+    private TreeTableColumn<CustomTableItem, Boolean> checkColumn;
     @FXML
     private TreeTableColumn<CustomTableItem, String> nameColumn;
     @FXML
@@ -57,10 +55,27 @@ public class ModsController implements Initializable {
         initalizeModsTreeTableView();
         updateModsTreeTableView();
         updateSearchDirectoriesTreeView();
-        populateOptionals();
+        updateCurrentlyRunningModpack();
+
+
+
+// all cell types must have a skin that copes with row graphics
+        /*salaryColumn.setCellFactory(e -> {
+            TreeTableCell cell = new ProgressBarTreeTableCell() {
+
+                @Override
+                protected Skin<?> createDefaultSkin() {
+                    return new DefaultTreeTableCell.DefaultTreeTableCellSkin<>(this);
+                }
+
+            };
+            return cell;
+        });*/
     }
 
     private void initalizeModsTreeTableView() {
+        treeTableView.setRowFactory(item -> new CheckBoxTreeTableRow<>());
+
         nameColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("name"));
         locationColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("location"));
 
@@ -70,46 +85,23 @@ public class ModsController implements Initializable {
         treeTableView.setShowRoot(false);
         treeTableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
 
-        checkColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<CustomTableItem, CustomTableItem.CheckedState>, ObservableValue<CustomTableItem.CheckedState>>() {
+
+        checkColumn.setCellFactory(p -> new DefaultTreeTableCell<>());
+
+        /*checkColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<CustomTableItem, Boolean>, ObservableValue<Boolean>>() {
             @Override
-            public ObservableValue<CustomTableItem.CheckedState> call(TreeTableColumn.CellDataFeatures<CustomTableItem, CustomTableItem.CheckedState> param) {
+            public ObservableValue<Boolean> call(TreeTableColumn.CellDataFeatures<CustomTableItem, Boolean> param) {
                 TreeItem<CustomTableItem> treeItem = param.getValue();
                 CustomTableItem emp = treeItem.getValue();
-                ObservableValue<CustomTableItem.CheckedState> val = new ObservableValue<CustomTableItem.CheckedState>() {
-                    @Override
-                    public void addListener(InvalidationListener listener) {
-
-                    }
-
-                    @Override
-                    public void removeListener(InvalidationListener listener) {
-
-                    }
-
-                    @Override
-                    public void addListener(ChangeListener<? super CustomTableItem.CheckedState> listener) {
-
-                    }
-
-                    @Override
-                    public void removeListener(ChangeListener<? super CustomTableItem.CheckedState> listener) {
-
-                    }
-
-                    @Override
-                    public CustomTableItem.CheckedState getValue() {
-                        return emp.getChecked();
-                    }
-                };
-
-                return val;
+                SimpleBooleanProperty sbp = new SimpleBooleanProperty();
+                return sbp;
             }
-        });
+        });*/
 
-        checkColumn.setCellFactory(col -> {
-            CheckBoxTreeTableCell<CustomTableItem, CustomTableItem.CheckedState> cell = new CheckBoxTreeTableCell<CustomTableItem, CustomTableItem.CheckedState>() {
+        /*checkColumn.setCellFactory(col -> {
+            CheckBoxTreeTableCell<CustomTableItem, Boolean> cell = new CheckBoxTreeTableCell<CustomTableItem, Boolean>() {
                 @Override
-                public void updateItem(CustomTableItem.CheckedState item, boolean empty) {
+                public void updateItem(Boolean item, boolean empty) {
                     super.updateItem(item, empty);
                     if (empty) {
                         setStyle("-fx-background-color: transparent");
@@ -132,7 +124,7 @@ public class ModsController implements Initializable {
             cell.setAlignment(Pos.CENTER);
 
             return cell;
-        });
+        });*/
 
         statusColumn.setCellFactory(col -> {
             TreeTableCell<CustomTableItem, FileindexWithSyncEntry.SyncStatus> cell = new TreeTableCell<CustomTableItem, FileindexWithSyncEntry.SyncStatus>() {
@@ -176,8 +168,6 @@ public class ModsController implements Initializable {
 
         treeTableView.setEditable(true);
 
-
-
         expandAllCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
                 for (Object child : searchDirectoriesTreeView.getRoot().getChildren()) {
@@ -206,10 +196,23 @@ public class ModsController implements Initializable {
         searchDirectoriesTreeView.setShowRoot(false);
     }
 
-    private void populateOptionals() {
-        optionalsListView.getItems().add("@3denEnhanced");
-        optionalsListView.getItems().add("@JSRS");
-        optionalsListView.getItems().add("@Blastcore");
+    private void updateCurrentlyRunningModpack() {
+        optionalsListView.getItems().clear();
+
+        String currentModpack = null;
+        try {
+            currentModpack = HttpHelper.readUrl("http://server.kellerkompanie.com/info.php");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String mods[] = currentModpack.split("\n");
+        Arrays.sort(mods);
+
+        for(String mod : mods) {
+            mod = mod.trim();
+            if(!mod.isEmpty() && !mod.startsWith("<"))
+                optionalsListView.getItems().add(mod);
+        }
     }
 
     private void populatePath(TreeItem<String> item, Path path) {
@@ -241,13 +244,16 @@ public class ModsController implements Initializable {
         List<ModGroup> modGroups = repository.getModGroups();
         FileindexEntry limitedFileindexEntry = FileSyncHelper.limitFileindexToModgroups(rootFileindexEntry, modGroups);
 
-        TreeItem<CustomTableItem> rootNode = new TreeItem<>(new RootTableItem(CustomTableItem.CheckedState.CHECKED, CustomTableItem.Type.ROOT));
+        TreeItem<CustomTableItem> rootNode = new TreeItem<>(new RootTableItem());
 
         for (ModGroup modGroup : modGroups) {
             System.out.println("ModsController: checking modGroup '" + modGroup.getName() + "'");
 
             ModGroupTableItem modGroupTableItem = new ModGroupTableItem(modGroup);
-            TreeItem<CustomTableItem> modGroupTreeItem = new TreeItem<>(modGroupTableItem);
+            CheckBoxTreeItem<CustomTableItem> modGroupTreeItem = new CheckBoxTreeItem<>(modGroupTableItem);
+
+            modGroupTreeItem.selectedProperty().addListener((observable, oldValue, newValue) -> modGroupTableItem.setChecked(newValue));
+            modGroupTreeItem.indeterminateProperty().addListener((observable, oldValue, newValue) -> modGroupTableItem.setIndeterminate(newValue));
 
             /*for (Path searchDirectory : Settings.getInstance().getSearchDirectories()) {
                 System.out.println("ModsController: comparing modGroup '" + modGroup.getName() + "' against directory: " + searchDirectory);
@@ -270,9 +276,12 @@ public class ModsController implements Initializable {
             ArrayList<FileindexWithSyncEntry.SyncStatus> statusList = new ArrayList<>(modGroup.getMods().size());
             for (Mod mod : modGroup.getMods()) {
                 ModTableItem modTableItem = new ModTableItem(mod);
-                TreeItem<CustomTableItem> modTreeItem = new TreeItem<>(modTableItem);
+                CheckBoxTreeItem<CustomTableItem> modTreeItem = new CheckBoxTreeItem<>(modTableItem);
                 modGroupTreeItem.getChildren().add(modTreeItem);
                 modGroupTableItem.addChild(modTableItem);
+
+                modTreeItem.selectedProperty().addListener((observable, oldValue, newValue) -> modTableItem.setChecked(newValue));
+                modTreeItem.indeterminateProperty().addListener((observable, oldValue, newValue) -> modTableItem.setIndeterminate(newValue));
 
                 FileindexWithSyncEntry.SyncStatus modStatus = ModStatusHelper.checkStatusForMod(limitedFileindexEntry, mod, Settings.getInstance().getSearchDirectories());
                 modTableItem.setStatus(modStatus);
@@ -360,5 +369,9 @@ public class ModsController implements Initializable {
 
     public void handleRefreshAction(ActionEvent actionEvent) {
         updateModsTreeTableView();
+    }
+
+    public void handleRefreshCurrentlyRunningModpackAction(ActionEvent actionEvent) {
+        updateCurrentlyRunningModpack();
     }
 }

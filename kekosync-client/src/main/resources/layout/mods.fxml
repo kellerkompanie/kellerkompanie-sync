@@ -21,13 +21,14 @@
         </Label>
 
         <HBox maxHeight="-Infinity" minHeight="-Infinity" spacing="10">
-            <TreeTableView fx:id="treeTableView" maxWidth="Infinity" minWidth="-Infinity" maxHeight="-Infinity"
+            <TreeTableView id="treeTableView" fx:id="treeTableView" maxWidth="Infinity" minWidth="-Infinity" maxHeight="-Infinity"
                            minHeight="-Infinity" HBox.hgrow="ALWAYS">
                 <columns>
+                    <TreeTableColumn fx:id="checkColumn" resizable="false"/>
                     <TreeTableColumn fx:id="nameColumn" prefWidth="200.0" text="name"/>
                     <TreeTableColumn fx:id="locationColumn" prefWidth="200.0" text="location"/>
                     <TreeTableColumn fx:id="statusColumn" text="status"/>
-                    <TreeTableColumn fx:id="checkColumn" resizable="false"/>
+
                 </columns>
             </TreeTableView>
             <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10">
@@ -40,12 +41,16 @@
 
         </HBox>
 
-        <Label text="Optionals">
+        <Label text="Server currently running on:">
             <padding>
                 <Insets bottom="5.0" top="15.0"/>
             </padding>
         </Label>
-        <ListView fx:id="optionalsListView" prefHeight="200"/>
+        <HBox spacing="10">
+            <ListView fx:id="optionalsListView" prefHeight="200" minWidth="-Infinity" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+            <Button text="Refresh" onAction="#handleRefreshCurrentlyRunningModpackAction" alignment="CENTER"/>
+        </HBox>
+
     </VBox>
 
     <Separator maxHeight="Infinity" orientation="VERTICAL" GridPane.columnIndex="1" GridPane.hgrow="NEVER"

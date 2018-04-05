@@ -1,7 +1,6 @@
 package com.kellerkompanie.kekosync.client.gui;
 
 import com.kellerkompanie.kekosync.core.entities.ModGroup;
-import com.kellerkompanie.kekosync.core.helper.FileindexWithSyncEntry;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -13,8 +12,9 @@ public class ModGroupTableItem extends CustomTableItem {
     private List<ModTableItem> children = new ArrayList<>();
 
     public ModGroupTableItem(ModGroup modGroup) {
-        super(CheckedState.UNCHECKED, Type.MOD_GROUP, FileindexWithSyncEntry.SyncStatus.UNKNOWN);
+        super();
         this.modGroup = modGroup;
+        setType(Type.MOD_GROUP);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class ModGroupTableItem extends CustomTableItem {
 
     @Override
     public void setLocation(Path path) {
-        for(ModTableItem modTableItem : children) {
+        for (ModTableItem modTableItem : children) {
             modTableItem.setLocation(path);
         }
     }
