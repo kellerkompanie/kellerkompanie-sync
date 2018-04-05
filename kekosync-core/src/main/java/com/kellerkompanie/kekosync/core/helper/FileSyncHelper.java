@@ -157,6 +157,14 @@ public final class FileSyncHelper {
                 newChildren.add(checksyncFileindexTree(currentFileindexEntry, localpath.resolve(currentFileindexEntry.getName())));
             }
         }
-        return FileindexWithSyncEntry.fromFileindexEntry(fileindexEntry, FileindexWithSyncEntry.SyncStatus.UNKNOWN, newChildren);
+        FileindexWithSyncEntry.SyncStatus combinedSyncStatus = FileindexWithSyncEntry.SyncStatus.LOCAL_INSYNC;
+        for ( FileindexWithSyncEntry newChild : newChildren ) {
+            if ( combinedSyncStatus.equals(FileindexWithSyncEntry.SyncStatus.LOCAL_INSYNC) && newChild.getSyncStatus().equals(FileindexWithSyncEntry.SyncStatus.LOCAL_WITHCHANGES) )
+                combinedSyncStatus = FileindexWithSyncEntry.SyncStatus.LOCAL_WITHCHANGES;
+            if ( newChild.getSyncStatus().equals(FileindexWithSyncEntry.SyncStatus.LOCAL_MISSING) )
+                combinedSyncStatus = FileindexWithSyncEntry.SyncStatus.LOCAL_MISSING;
+        }
+
+        return FileindexWithSyncEntry.fromFileindexEntry(fileindexEntry, combinedSyncStatus, newChildren);
     }
 }
