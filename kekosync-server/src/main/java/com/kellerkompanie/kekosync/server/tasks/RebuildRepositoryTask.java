@@ -3,6 +3,7 @@ package com.kellerkompanie.kekosync.server.tasks;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kellerkompanie.kekosync.core.constants.Filenames;
+import com.kellerkompanie.kekosync.core.helper.FileLocationHelper;
 import com.kellerkompanie.kekosync.core.helper.FileindexEntry;
 import com.kellerkompanie.kekosync.core.entities.Mod;
 import com.kellerkompanie.kekosync.core.entities.ModGroup;
@@ -21,8 +22,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.kellerkompanie.kekosync.server.helper.FileindexGenerator.getModId;
 
 /**
  * @author dth
@@ -101,7 +100,7 @@ public class RebuildRepositoryTask {
         //we seem to have to generate an example :-(
         Set<Mod> modSet = new HashSet<>(subdirectories.size());
         for (Path subdirectory: subdirectories) {
-            modSet.add(new Mod(subdirectory.getFileName().toString(), getModId(subdirectory)));
+            modSet.add(new Mod(subdirectory.getFileName().toString(), FileLocationHelper.getModId(subdirectory)));
         }
         ModGroup allModsGroup = new ModGroup("all", UUIDGenerator.generateUUID(), modSet);
 
