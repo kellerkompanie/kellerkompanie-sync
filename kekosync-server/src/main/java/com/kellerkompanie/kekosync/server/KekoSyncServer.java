@@ -22,7 +22,7 @@ public class KekoSyncServer {
             ZsyncGenerator.cleanDirectory(directory);
             ZsyncGenerator.processDirectory(directory);
             */
-            RebuildRepositoryTask rrTask = new RebuildRepositoryTask("E:\\kekosync-demo-repository");
+            RebuildRepositoryTask rrTask = new RebuildRepositoryTask("C:\\wamp64\\www\\repo");
             rrTask.execute();
         }
     }

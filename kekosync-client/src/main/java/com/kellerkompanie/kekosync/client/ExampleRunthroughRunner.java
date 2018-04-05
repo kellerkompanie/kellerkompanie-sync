@@ -1,6 +1,8 @@
 package com.kellerkompanie.kekosync.client;
 
 import com.google.gson.Gson;
+import com.kellerkompanie.kekosync.core.helper.FileLocationHelper;
+import com.kellerkompanie.kekosync.core.helper.FileindexWithSyncEntry;
 import com.kellerkompanie.kekosync.core.helper.HttpHelper;
 import com.kellerkompanie.kekosync.core.constants.Filenames;
 import com.kellerkompanie.kekosync.core.helper.FileindexEntry;
@@ -9,11 +11,11 @@ import com.kellerkompanie.kekosync.core.entities.ModGroup;
 import com.kellerkompanie.kekosync.core.entities.Repository;
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static com.kellerkompanie.kekosync.core.helper.FileSyncHelper.limitFileindexToModgroups;
-import static com.kellerkompanie.kekosync.core.helper.FileSyncHelper.syncFileindexTree;
+import static com.kellerkompanie.kekosync.core.helper.FileSyncHelper.*;
 import static com.kellerkompanie.kekosync.core.helper.HashHelper.generateSHA512;
 
 @Slf4j
@@ -45,10 +47,13 @@ public class ExampleRunthroughRunner {
             if ( mod.getName().equals("@acex") ) moreAceGroup.addMod(mod);
         }
 
-        FileindexEntry limitedFileindexEntry = limitFileindexToModgroups(rootindexEntry, onlyAceGroup, moreAceGroup);
+        FileindexEntry limitedFileindexEntry = limitFileindexToModgroups(rootindexEntry, allModGroup);
 
-        syncFileindexTree(limitedFileindexEntry, Paths.get("E:\\kekosync-local"), repoBaseURL);
+//        syncFileindexTree(limitedFileindexEntry, Paths.get("E:\\kekosync-local"), repoBaseURL);
+        FileindexWithSyncEntry fileindexWithSyncEntry = checksyncFileindexTree(limitedFileindexEntry, Paths.get("E:\\kekosync-local"));
+
         System.out.println("done");
+
 
         //Zsync zsync = new Zsync();
         //URI zsyncFileBaseURL = URI.create(repoBaseURL + "/@ace/ace_advanced_ballistics.dll.zync");
