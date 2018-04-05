@@ -28,7 +28,10 @@ public class ZsyncGenerator {
     }
 
     private static void processFile(Path sourceFilePath) {
-        Path zsyncFilePath = zsyncMake.make(sourceFilePath);
+        //Path zsyncFilePath = zsyncMake.make(sourceFilePath);
+        ZsyncMake.Options options = new ZsyncMake.Options();
+        options.setBlockSize(8192); //trying to stay compatible with lé arma3sync.
+        Path zsyncFilePath = zsyncMake.writeToFile(sourceFilePath, options).getOutputFile();
         log.debug("{} -> {}", sourceFilePath, zsyncFilePath);
     }
 
