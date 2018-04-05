@@ -41,7 +41,7 @@ public class ModsController implements Initializable {
     @FXML
     private ListView optionalsListView;
     @FXML
-    private TreeView foldersTreeView;
+    private TreeView searchDirectoriesTreeView;
     @FXML
     private TreeTableView<CustomTableItem> treeTableView;
 
@@ -52,13 +52,13 @@ public class ModsController implements Initializable {
     @FXML
     private TreeTableColumn<CustomTableItem, String> locationColumn;
     @FXML
-    private TreeTableColumn<CustomTableItem, CustomTableItem.Status> statusColumn;
+    private TreeTableColumn<CustomTableItem, FileindexWithSyncEntry.SyncStatus> statusColumn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initalizeModsTreeTableView();
         updateModsTreeTableView();
-        populateFolders();
+        updateSearchDirectoriesTreeView();
         populateOptionals();
     }
 
@@ -137,22 +137,28 @@ public class ModsController implements Initializable {
         });
 
         statusColumn.setCellFactory(col -> {
-            TreeTableCell<CustomTableItem, CustomTableItem.Status> cell = new TreeTableCell<CustomTableItem, CustomTableItem.Status>() {
+            TreeTableCell<CustomTableItem, FileindexWithSyncEntry.SyncStatus> cell = new TreeTableCell<CustomTableItem, FileindexWithSyncEntry.SyncStatus>() {
                 @Override
-                public void updateItem(CustomTableItem.Status item, boolean empty) {
+                public void updateItem(FileindexWithSyncEntry.SyncStatus item, boolean empty) {
                     super.updateItem(item, empty);
                     if (empty) {
                         setText(null);
                     } else {
                         setText(item.toString());
                         switch (item) {
-                            case OK:
-                                setStyle("-fx-text-fill: green");
+                            case LOCAL_MISSING:
+                                setStyle("-fx-text-fill: red");
                                 break;
-                            case INCOMPLETE:
+                            case LOCAL_WITHCHANGES:
                                 setStyle("-fx-text-fill: orange");
                                 break;
-                            case MISSING:
+                            case LOCAL_INSYNC:
+                                setStyle("-fx-text-fill: green");
+                                break;
+                            case REMOTE_MISSING:
+                                setStyle("-fx-text-fill: red");
+                                break;
+                            case UNKNOWN:
                                 setStyle("-fx-text-fill: red");
                                 break;
                         }
@@ -176,7 +182,7 @@ public class ModsController implements Initializable {
 
         expandAllCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
-                for (Object child : foldersTreeView.getRoot().getChildren()) {
+                for (Object child : searchDirectoriesTreeView.getRoot().getChildren()) {
                     TreeItem<String> treeItem = (TreeItem<String>) child;
                     treeItem.setExpanded(new_val);
                 }
@@ -184,7 +190,7 @@ public class ModsController implements Initializable {
         });
     }
 
-    private void populateFolders() {
+    private void updateSearchDirectoriesTreeView() {
         // TODO update folders after changes in search directories
         Set<Path> searchDirectories = Settings.getInstance().getSearchDirectories();
 
@@ -198,8 +204,8 @@ public class ModsController implements Initializable {
             populatePath(item, path);
         }
 
-        foldersTreeView.setRoot(root);
-        foldersTreeView.setShowRoot(false);
+        searchDirectoriesTreeView.setRoot(root);
+        searchDirectoriesTreeView.setShowRoot(false);
     }
 
     private void populateOptionals() {

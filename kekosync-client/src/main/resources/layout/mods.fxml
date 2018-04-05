@@ -64,7 +64,7 @@
             </padding>
         </Label>
 
-        <TreeView fx:id="foldersTreeView" maxHeight="Infinity"/>
+        <TreeView fx:id="searchDirectoriesTreeView" maxHeight="Infinity"/>
     </VBox>
 
 </GridPane>

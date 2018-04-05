@@ -1,6 +1,7 @@
 package com.kellerkompanie.kekosync.client.gui;
 
 import com.kellerkompanie.kekosync.core.entities.ModGroup;
+import com.kellerkompanie.kekosync.core.helper.FileindexWithSyncEntry;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -17,8 +18,8 @@ public class ModGroupTableItem extends CustomTableItem {
     }
 
     @Override
-    public Status getStatus() {
-        return Status.INCOMPLETE;
+    public FileindexWithSyncEntry.SyncStatus getStatus() {
+        return FileindexWithSyncEntry.SyncStatus.UNKNOWN;
     }
 
     @Override
