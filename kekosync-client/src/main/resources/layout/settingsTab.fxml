@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.kellerkompanie.kekosync.client.arma.*?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import com.kellerkompanie.kekosync.client.arma.ArmAParameter?>
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
+<?import java.lang.*?>
 <VBox spacing="10" VBox.vgrow="ALWAYS" fx:id="settingsTabRoot" maxHeight="-Infinity" maxWidth="Infinity"
       minHeight="-Infinity"
       minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
@@ -16,7 +16,7 @@
     </padding>
     <HBox alignment="CENTER_LEFT" spacing="10">
         <Label alignment="CENTER" text="ArmA3 executable location:"/>
-        <TextField fx:id="executableLocationTextField" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+        <TextField fx:id="executableLocationTextField" HBox.hgrow="ALWAYS" maxWidth="Infinity" minWidth="-Infinity"/>
         <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleExecutableLocationAction"
                 text="Select file..."/>
     </HBox>
@@ -145,8 +145,8 @@
             <padding>
                 <Insets left="10"/>
             </padding>
-            <Button onAction="#handleAddAction" text="Add" maxWidth="Infinity"/>
-            <Button onAction="#handleRemoveAction" text="Remove" maxWidth="Infinity"/>
+            <Button onAction="#handleAddAction" text="Add" maxWidth="Infinity" alignment="CENTER"/>
+            <Button onAction="#handleRemoveAction" text="Remove" maxWidth="Infinity" alignment="CENTER"/>
         </VBox>
     </HBox>
 </VBox>

@@ -12,7 +12,7 @@
     </padding>
 
     <VBox GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0">
-        <CheckBox text="Force Compatibility"/>
+        <CheckBox text="Force Compatibility" disable="true"/>
 
         <Label text="Modgroups">
             <padding>
@@ -25,14 +25,17 @@
                            minHeight="-Infinity" HBox.hgrow="ALWAYS">
                 <columns>
                     <TreeTableColumn fx:id="nameColumn" prefWidth="200.0" resizable="false" text="name"/>
+                    <TreeTableColumn fx:id="locationColumn" prefWidth="200.0" resizable="false" text="location"/>
                     <TreeTableColumn fx:id="statusColumn" resizable="false" text="status"/>
                     <TreeTableColumn fx:id="checkColumn" resizable="false"/>
                 </columns>
             </TreeTableView>
             <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10">
-                <Button maxWidth="Infinity" text="Add"/>
-                <Button maxWidth="Infinity" text="Remove"/>
-                <Button maxWidth="Infinity" text="Refresh"/>
+                <Button maxWidth="Infinity" text="Add" alignment="CENTER"/>
+                <Button maxWidth="Infinity" text="Remove" alignment="CENTER"/>
+                <Button maxWidth="Infinity" text="Refresh" alignment="CENTER" onAction="#handleRefreshAction"/>
+                <Button maxWidth="Infinity" text="Download" alignment="CENTER"/>
+                <Button maxWidth="Infinity" text="Change Location" alignment="CENTER" onAction="#handleChangeLocationAction"/>
             </VBox>
 
         </HBox>
@@ -53,6 +56,8 @@
     </Separator>
 
     <VBox maxWidth="Infinity" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0">
+        <CheckBox fx:id="expandAllCheckBox" text="Expand All"/>
+
         <Label text="Folders">
             <padding>
                 <Insets bottom="5.0" top="15.0"/>

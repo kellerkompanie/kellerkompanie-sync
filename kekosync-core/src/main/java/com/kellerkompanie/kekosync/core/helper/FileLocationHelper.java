@@ -37,7 +37,7 @@ public class FileLocationHelper {
             String stringValue = new String(Files.readAllBytes(modsubdirectory.resolve(Filenames.FILENAME_MODID)), "UTF-8");
             return UUID.fromString(stringValue);
         } catch (IOException e) {
-            log.error("error while reading {}/.id", modsubdirectory.toString(), e);
+            log.debug("error while reading {}/.id", modsubdirectory.toString(), e);
             return null;
         }
     }
