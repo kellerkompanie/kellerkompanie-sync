@@ -30,6 +30,9 @@ public class RootController extends Application implements Initializable {
     private Tab modsTab;
 
     @FXML
+    private Tab settingsTab;
+
+    @FXML
     private TabPane tabPane;
 
     @FXML
@@ -126,6 +129,12 @@ public class RootController extends Application implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        ArmAParameter param = Settings.getInstance().getLaunchParams().get(ArmAParameter.SERVER);
+        if(param != null) {
+            if(param.isEnabled())
+                serverComboBox.getSelectionModel().select("server.kellerkompanie.com");
+        }
+
         serverComboBox.setOnAction((e) -> {
             String selected = (String) serverComboBox.getSelectionModel().getSelectedItem();
             Settings.getInstance().updateLaunchParam(ArmAParameter.SERVER, !selected.isEmpty());

@@ -137,19 +137,24 @@ public class ModsController implements Initializable {
                         setText(item.toString());
                         switch (item) {
                             case LOCAL_MISSING:
-                                setStyle("-fx-text-fill: red");
+                                setText("UPDATE");
+                                setStyle("-fx-font-weight: bold; -fx-text-fill: darkred");
                                 break;
                             case LOCAL_WITHCHANGES:
-                                setStyle("-fx-text-fill: orange");
+                                setText("UPDATE");
+                                setStyle("-fx-font-weight: bold; -fx-text-fill: orange");
                                 break;
                             case LOCAL_INSYNC:
-                                setStyle("-fx-text-fill: green");
+                                setText("OK");
+                                setStyle("-fx-font-weight: bold; -fx-text-fill: green");
                                 break;
                             case REMOTE_MISSING:
-                                setStyle("-fx-text-fill: red");
+                                setText("REMOTE MISSING");
+                                setStyle("-fx-font-weight: bold; -fx-text-fill: firebrick");
                                 break;
                             case UNKNOWN:
-                                setStyle("-fx-text-fill: red");
+                                setText("MISSING");
+                                setStyle("-fx-font-weight: bold; -fx-text-fill: firebrick");
                                 break;
                         }
                     }

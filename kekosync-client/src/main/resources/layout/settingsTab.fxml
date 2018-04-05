@@ -130,7 +130,7 @@
                 </ComboBox>
             </HBox>
         </VBox>
-        <TextArea fx:id="parameterTextArea" editable="false" HBox.hgrow="ALWAYS"/>
+        <TextArea id="parameterTextArea" fx:id="parameterTextArea" editable="false" HBox.hgrow="ALWAYS"/>
     </HBox>
 
     <Separator/>
