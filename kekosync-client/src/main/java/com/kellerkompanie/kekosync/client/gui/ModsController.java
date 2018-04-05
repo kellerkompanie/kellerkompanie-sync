@@ -7,8 +7,6 @@ import com.kellerkompanie.kekosync.core.entities.ModGroup;
 import com.kellerkompanie.kekosync.core.entities.Repository;
 import com.kellerkompanie.kekosync.core.helper.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -17,9 +15,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTreeTableCell;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
-import javafx.util.Callback;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.URL;
@@ -29,17 +26,22 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.kellerkompanie.kekosync.core.helper.FileSyncHelper.limitFileindexToModgroups;
+
+@Slf4j
 public class ModsController implements Initializable {
 
 
     @FXML
     private CheckBox expandAllCheckBox;
     @FXML
+    private CheckBox expandAllModsCheckBox;
+    @FXML
     private ListView optionalsListView;
     @FXML
     private TreeView searchDirectoriesTreeView;
     @FXML
-    private TreeTableView<CustomTableItem> treeTableView;
+    private CustomTreeTableView<CustomTableItem> treeTableView;
 
     @FXML
     private TreeTableColumn<CustomTableItem, Boolean> checkColumn;
@@ -56,7 +58,6 @@ public class ModsController implements Initializable {
         updateModsTreeTableView();
         updateSearchDirectoriesTreeView();
         updateCurrentlyRunningModpack();
-
 
 
 // all cell types must have a skin that copes with row graphics
@@ -181,6 +182,15 @@ public class ModsController implements Initializable {
                 }
             }
         });
+
+        expandAllModsCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
+                for (Object child : treeTableView.getRoot().getChildren()) {
+                    CheckBoxTreeItem<CustomTableItem> treeItem = (CheckBoxTreeItem<CustomTableItem>) child;
+                    treeItem.setExpanded(new_val);
+                }
+            }
+        });
     }
 
     private void updateSearchDirectoriesTreeView() {
@@ -213,9 +223,9 @@ public class ModsController implements Initializable {
         String mods[] = currentModpack.split("\n");
         Arrays.sort(mods);
 
-        for(String mod : mods) {
+        for (String mod : mods) {
             mod = mod.trim();
-            if(!mod.isEmpty() && !mod.startsWith("<"))
+            if (!mod.isEmpty() && !mod.startsWith("<"))
                 optionalsListView.getItems().add(mod);
         }
     }
@@ -306,6 +316,13 @@ public class ModsController implements Initializable {
         TreeTableColumn.SortType sortType = nameColumn.getSortType();
         nameColumn.setSortType(sortType);
         nameColumn.setSortable(true);
+
+        if(expandAllModsCheckBox.isSelected()) {
+            for (Object child : treeTableView.getRoot().getChildren()) {
+                CheckBoxTreeItem<CustomTableItem> treeItem = (CheckBoxTreeItem<CustomTableItem>) child;
+                treeItem.setExpanded(true);
+            }
+        }
     }
 
     private void createContextMenu() {
@@ -335,28 +352,7 @@ public class ModsController implements Initializable {
         treeTableView.setContextMenu(contextMenu);
     }
 
-    private void openChooseLocationDialog() {
-        List<String> choices = Settings.getInstance().getSearchDirectories()
-                .stream()
-                .map(Path::toString)
-                .collect(Collectors.toList());
 
-        ChoiceDialog<String> dialog = new ChoiceDialog<>(null, choices);
-
-        dialog.setTitle("Change Location");
-        dialog.setHeaderText("Select a folder to where to download");
-        dialog.setContentText("Search directory:");
-
-        Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()) {
-            TreeItem<CustomTableItem> selectedItem = treeTableView.getSelectionModel().getSelectedItem();
-            if(selectedItem != null) {
-                Path path = Paths.get(result.get());
-                selectedItem.getValue().setLocation(path);
-                treeTableView.refresh();
-            }
-        }
-    }
 
     public void handleChangeLocationAction(ActionEvent actionEvent) {
         TreeItem<CustomTableItem> selectedItem = treeTableView.getSelectionModel().getSelectedItem();
@@ -374,9 +370,160 @@ public class ModsController implements Initializable {
 
     public void handleRefreshAction(ActionEvent actionEvent) {
         updateModsTreeTableView();
+        updateSearchDirectoriesTreeView();
     }
 
     public void handleRefreshCurrentlyRunningModpackAction(ActionEvent actionEvent) {
         updateCurrentlyRunningModpack();
+    }
+
+    public void handleDownloadAction(ActionEvent actionEvent) {
+
+        if(!checkMissingLocations()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Locations Missing");
+            alert.setHeaderText("Locations Missing");
+            alert.setContentText("In order to proceed with the download, locations must be set for all Mods and Modgroups");
+
+            alert.showAndWait();
+
+            log.info("some locations are missing, not continuing download");
+            return;
+        }
+
+
+        for (Object modGroupObj : treeTableView.getRoot().getChildren()) {
+            CheckBoxTreeItem<CustomTableItem> modGroupTreeItem = (CheckBoxTreeItem<CustomTableItem>) modGroupObj;
+            ModGroupTableItem modGroupTableItem = (ModGroupTableItem) modGroupTreeItem.getValue();
+            ModGroup modGroup = modGroupTableItem.getModGroup();
+
+            boolean modGroupChecked = modGroupTableItem.getChecked();
+            boolean modGroupIndeterminate = modGroupTableItem.getIndeterminate();
+
+            FileindexEntry rootIndexEntry = null;
+            try {
+                rootIndexEntry = LauncherUtils.getFileIndexEntry();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (modGroupChecked) {
+                FileindexEntry limitedFileindexEntry = limitFileindexToModgroups(rootIndexEntry, modGroup);
+                try {
+                    FileSyncHelper.syncFileindexTree(limitedFileindexEntry, Paths.get(modGroupTableItem.getLocation()), Settings.REPO_URL);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else if (modGroupIndeterminate) {
+                for (Object modObj : modGroupTreeItem.getChildren()) {
+                    CheckBoxTreeItem<CustomTableItem> modTreeItem = (CheckBoxTreeItem<CustomTableItem>) modObj;
+
+                    ModTableItem modTableItem = (ModTableItem) modTreeItem.getValue();
+                    if (modTableItem.getChecked()) {
+                        ModGroup tempModGroup = new ModGroup("tempModGroup", UUID.randomUUID(), new HashSet<>());
+                        tempModGroup.addMod(modTableItem.getMod());
+                        FileindexEntry limitedFileIndexEntry = limitFileindexToModgroups(rootIndexEntry, tempModGroup);
+                        try {
+                            FileSyncHelper.syncFileindexTree(limitedFileIndexEntry, Paths.get(modTableItem.getLocation()), Settings.REPO_URL);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks if there are locations set for all selected items,
+     * if there are locations missing, open selection dialog to choose the locations
+     *
+     * @return true if all locations are satisfied afterwards, false if locations are still missing
+     */
+    private boolean checkMissingLocations() {
+        List<CustomTableItem> selectedTableItems = treeTableView.getSelectedTableItems();
+        for(CustomTableItem selectedTableItem : selectedTableItems) {
+            if(selectedTableItem.getLocation() == null) {
+                switch (selectedTableItem.getType()) {
+                    case MOD_GROUP:
+                        boolean modGroupLocationSet = openChooseModGroupLocationDialog(selectedTableItem);
+                        if (!modGroupLocationSet)
+                            return false;
+                        break;
+                    case MOD:
+                        boolean modLocationSet = openChooseModLocationDialog(selectedTableItem);
+                        if (!modLocationSet)
+                            return false;
+                        break;
+                    case ROOT:
+                    default:
+                        break;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean openChooseModGroupLocationDialog(CustomTableItem customTableItem) {
+        List<String> choices = Settings.getInstance().getSearchDirectories()
+                .stream()
+                .map(Path::toString)
+                .collect(Collectors.toList());
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(null, choices);
+
+        dialog.setTitle("Change Location");
+        dialog.setHeaderText("Select a folder to where to download Modgroup: " + customTableItem.getName());
+        dialog.setContentText("Search directory:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            Path path = Paths.get(result.get());
+            customTableItem.setLocation(path);
+            treeTableView.refresh();
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean openChooseModLocationDialog(CustomTableItem customTableItem) {
+        List<String> choices = Settings.getInstance().getSearchDirectories()
+                .stream()
+                .map(Path::toString)
+                .collect(Collectors.toList());
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(null, choices);
+
+        dialog.setTitle("Change Mod Location");
+        dialog.setHeaderText("Select a folder to where to download mod: " + customTableItem.getName());
+        dialog.setContentText("Search directory:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            Path path = Paths.get(result.get());
+            customTableItem.setLocation(path);
+            treeTableView.refresh();
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean openChooseLocationDialog() {
+        TreeItem<CustomTableItem> selectedItem = treeTableView.getSelectionModel().getSelectedItem();
+        CustomTableItem selectedTableItem = selectedItem.getValue();
+
+        if(selectedTableItem != null) {
+            switch (selectedTableItem.getType()) {
+                case MOD_GROUP:
+                    return openChooseModGroupLocationDialog(selectedTableItem);
+                case MOD:
+                    return openChooseModLocationDialog(selectedTableItem);
+            }
+        }
+        return false;
     }
 }

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.kellerkompanie.kekosync.client.gui.CustomTreeTableView?>
+<?import com.kellerkompanie.kekosync.client.gui.ToggleSwitch?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -11,18 +13,22 @@
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
     </padding>
 
-    <VBox GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0">
-        <CheckBox text="Force Compatibility" disable="true"/>
+    <VBox GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" spacing="10">
+        <HBox alignment="CENTER_LEFT" spacing="5" disable="true">
+            <ToggleSwitch minWidth="-Infinity" maxWidth="-Infinity"/>
+            <Label text="Force Compatibility"/>
+        </HBox>
 
         <Label text="Modgroups">
             <padding>
-                <Insets bottom="5.0" top="15.0"/>
+                <Insets top="5.0"/>
             </padding>
         </Label>
 
         <HBox maxHeight="-Infinity" minHeight="-Infinity" spacing="10">
-            <TreeTableView id="treeTableView" fx:id="treeTableView" maxWidth="Infinity" minWidth="-Infinity" maxHeight="-Infinity"
-                           minHeight="-Infinity" HBox.hgrow="ALWAYS">
+            <CustomTreeTableView id="treeTableView" fx:id="treeTableView" maxWidth="Infinity" minWidth="-Infinity"
+                                 maxHeight="-Infinity"
+                                 minHeight="-Infinity" HBox.hgrow="ALWAYS">
                 <columns>
                     <TreeTableColumn fx:id="checkColumn" resizable="false"/>
                     <TreeTableColumn fx:id="nameColumn" prefWidth="200.0" text="name"/>
@@ -30,13 +36,15 @@
                     <TreeTableColumn fx:id="statusColumn" text="status"/>
 
                 </columns>
-            </TreeTableView>
+            </CustomTreeTableView>
             <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10">
                 <Button maxWidth="Infinity" text="Add" alignment="CENTER"/>
                 <Button maxWidth="Infinity" text="Remove" alignment="CENTER"/>
                 <Button maxWidth="Infinity" text="Refresh" alignment="CENTER" onAction="#handleRefreshAction"/>
-                <Button maxWidth="Infinity" text="Download" alignment="CENTER"/>
-                <Button maxWidth="Infinity" text="Change Location" alignment="CENTER" onAction="#handleChangeLocationAction"/>
+                <Button maxWidth="Infinity" text="Download" alignment="CENTER" onAction="#handleDownloadAction"/>
+                <Button maxWidth="Infinity" text="Change Location" alignment="CENTER"
+                        onAction="#handleChangeLocationAction"/>
+                <CheckBox fx:id="expandAllModsCheckBox" text="Expand All"/>
             </VBox>
 
         </HBox>
@@ -47,7 +55,8 @@
             </padding>
         </Label>
         <HBox spacing="10">
-            <ListView fx:id="optionalsListView" prefHeight="200" minWidth="-Infinity" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+            <ListView fx:id="optionalsListView" prefHeight="200" minWidth="-Infinity" maxWidth="Infinity"
+                      HBox.hgrow="ALWAYS"/>
             <Button text="Refresh" onAction="#handleRefreshCurrentlyRunningModpackAction" alignment="CENTER"/>
         </HBox>
 

@@ -4,11 +4,13 @@ import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.kellerkompanie.kekosync.core.entities.Mod;
 import com.kellerkompanie.kekosync.core.helper.FileLocationHelper;
 import com.kellerkompanie.kekosync.core.helper.FileindexWithSyncEntry;
+import lombok.Getter;
 
 import java.nio.file.Path;
 
 public class ModTableItem extends CustomTableItem {
 
+    @Getter
     private Mod mod;
     private Path modLocation;
 
