@@ -37,8 +37,10 @@ public class ModStatusHelper {
         for ( FileindexWithSyncEntry.SyncStatus syncStatus : syncStatuses ) {
             if ( combinedSyncStatus.equals(FileindexWithSyncEntry.SyncStatus.LOCAL_INSYNC) && syncStatus.equals(FileindexWithSyncEntry.SyncStatus.LOCAL_WITHCHANGES) )
                 combinedSyncStatus = FileindexWithSyncEntry.SyncStatus.LOCAL_WITHCHANGES;
-            if ( syncStatus.equals(FileindexWithSyncEntry.SyncStatus.LOCAL_MISSING) )
+            if ( !combinedSyncStatus.equals(FileindexWithSyncEntry.SyncStatus.UNKNOWN) && syncStatus.equals(FileindexWithSyncEntry.SyncStatus.LOCAL_MISSING) )
                 combinedSyncStatus = FileindexWithSyncEntry.SyncStatus.LOCAL_MISSING;
+            if ( syncStatus.equals(FileindexWithSyncEntry.SyncStatus.UNKNOWN) )
+                combinedSyncStatus = FileindexWithSyncEntry.SyncStatus.UNKNOWN;
         }
         return combinedSyncStatus;
     }
