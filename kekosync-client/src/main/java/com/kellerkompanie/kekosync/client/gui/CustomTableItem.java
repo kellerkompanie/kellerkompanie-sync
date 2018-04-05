@@ -17,6 +17,10 @@ public abstract class CustomTableItem {
     @Setter
     private Type type;
 
+    @Getter
+    @Setter
+    private FileindexWithSyncEntry.SyncStatus status;
+
     enum Type {
         MOD_GROUP, MOD, ROOT
     }
@@ -25,7 +29,6 @@ public abstract class CustomTableItem {
         CHECKED, UNCHECKED, INDETERMINATE
     }
 
-    public abstract FileindexWithSyncEntry.SyncStatus getStatus();
     public abstract String getName();
     public abstract String getLocation();
     public abstract void setLocation(Path path);

@@ -7,7 +7,7 @@ import java.nio.file.Path;
 public class RootTableItem extends CustomTableItem {
 
     public RootTableItem(CheckedState checked, Type type) {
-        super(checked, type);
+        super(checked, type, FileindexWithSyncEntry.SyncStatus.UNKNOWN);
     }
 
     @Override

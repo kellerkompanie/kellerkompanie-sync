@@ -13,13 +13,18 @@ public class ModGroupTableItem extends CustomTableItem {
     private List<ModTableItem> children = new ArrayList<>();
 
     public ModGroupTableItem(ModGroup modGroup) {
-        super(CheckedState.UNCHECKED, Type.MOD_GROUP);
+        super(CheckedState.UNCHECKED, Type.MOD_GROUP, FileindexWithSyncEntry.SyncStatus.UNKNOWN);
         this.modGroup = modGroup;
     }
 
     @Override
     public FileindexWithSyncEntry.SyncStatus getStatus() {
         return FileindexWithSyncEntry.SyncStatus.UNKNOWN;
+    }
+
+    @Override
+    public void setStatus(FileindexWithSyncEntry.SyncStatus status) {
+
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.kellerkompanie.kekosync.client.gui;
 
+import com.kellerkompanie.kekosync.client.helper.ModStatusHelper;
 import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
 import com.kellerkompanie.kekosync.core.entities.Mod;
@@ -241,6 +242,8 @@ public class ModsController implements Initializable {
         }
 
         List<ModGroup> modGroups = repository.getModGroups();
+        FileindexEntry limitedFileindexEntry = FileSyncHelper.limitFileindexToModgroups(rootFileindexEntry, modGroups);
+
         TreeItem<CustomTableItem> rootNode = new TreeItem<>(new RootTableItem(CustomTableItem.CheckedState.CHECKED, CustomTableItem.Type.ROOT));
 
         for (ModGroup modGroup : modGroups) {
@@ -249,9 +252,7 @@ public class ModsController implements Initializable {
             ModGroupTableItem modGroupTableItem = new ModGroupTableItem(modGroup);
             TreeItem<CustomTableItem> modGroupTreeItem = new TreeItem<>(modGroupTableItem);
 
-            FileindexEntry limitedFileindexEntry = FileSyncHelper.limitFileindexToModgroups(rootFileindexEntry, modGroup);
-
-            for (Path searchDirectory : Settings.getInstance().getSearchDirectories()) {
+            /*for (Path searchDirectory : Settings.getInstance().getSearchDirectories()) {
                 System.out.println("ModsController: comparing modGroup '" + modGroup.getName() + "' against directory: " + searchDirectory);
 
                 FileindexWithSyncEntry fileindexWithSyncEntry = null;
@@ -262,13 +263,21 @@ public class ModsController implements Initializable {
                 }
                 FileindexWithSyncEntry.SyncStatus syncStatus = fileindexWithSyncEntry.getSyncStatus();
                 System.out.println("ModsController: modsGroup '" + modGroup.getName() + "' syncStatus: " + syncStatus);
-            }
+                modGroupTableItem.setStatus(syncStatus);
+
+                for(FileindexWithSyncEntry child : fileindexWithSyncEntry.getChildren()) {
+                    System.out.println("ModsController: '" + child.getName() + "' syncStatus: " + syncStatus);
+                }
+            }*/
 
             for (Mod mod : modGroup.getMods()) {
                 ModTableItem modTableItem = new ModTableItem(mod);
                 TreeItem<CustomTableItem> modTreeItem = new TreeItem<>(modTableItem);
                 modGroupTreeItem.getChildren().add(modTreeItem);
                 modGroupTableItem.addChild(modTableItem);
+
+                FileindexWithSyncEntry.SyncStatus status = ModStatusHelper.checkStatusForMod(limitedFileindexEntry, mod, Settings.getInstance().getSearchDirectories());
+                modTableItem.setStatus(status);
             }
 
             rootNode.getChildren().add(modGroupTreeItem);

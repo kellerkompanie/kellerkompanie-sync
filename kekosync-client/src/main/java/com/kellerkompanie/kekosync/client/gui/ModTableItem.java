@@ -13,7 +13,7 @@ public class ModTableItem extends CustomTableItem {
     private Path modLocation;
 
     public ModTableItem(Mod mod) {
-        super(CheckedState.UNCHECKED, Type.MOD_GROUP);
+        super(CheckedState.UNCHECKED, Type.MOD_GROUP, FileindexWithSyncEntry.SyncStatus.UNKNOWN);
         this.mod = mod;
     }
 
