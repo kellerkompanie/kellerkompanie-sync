@@ -28,10 +28,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ModsController implements Initializable {
@@ -270,15 +267,19 @@ public class ModsController implements Initializable {
                 }
             }*/
 
+            ArrayList<FileindexWithSyncEntry.SyncStatus> statusList = new ArrayList<>(modGroup.getMods().size());
             for (Mod mod : modGroup.getMods()) {
                 ModTableItem modTableItem = new ModTableItem(mod);
                 TreeItem<CustomTableItem> modTreeItem = new TreeItem<>(modTableItem);
                 modGroupTreeItem.getChildren().add(modTreeItem);
                 modGroupTableItem.addChild(modTableItem);
 
-                FileindexWithSyncEntry.SyncStatus status = ModStatusHelper.checkStatusForMod(limitedFileindexEntry, mod, Settings.getInstance().getSearchDirectories());
-                modTableItem.setStatus(status);
+                FileindexWithSyncEntry.SyncStatus modStatus = ModStatusHelper.checkStatusForMod(limitedFileindexEntry, mod, Settings.getInstance().getSearchDirectories());
+                modTableItem.setStatus(modStatus);
+                statusList.add(modStatus);
             }
+            FileindexWithSyncEntry.SyncStatus modsGroupStatus = ModStatusHelper.combineStatus(statusList);
+            modGroupTableItem.setStatus(modsGroupStatus);
 
             rootNode.getChildren().add(modGroupTreeItem);
         }

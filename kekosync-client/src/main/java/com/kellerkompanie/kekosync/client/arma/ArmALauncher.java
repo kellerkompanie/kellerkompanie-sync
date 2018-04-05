@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Schwaggot
@@ -29,7 +30,7 @@ public class ArmALauncher {
         String executableLocation = Settings.getInstance().getExecutableLocation();
         commandLineArguments.add(executableLocation);
 
-        HashMap<String, ArmAParameter> params = Settings.getInstance().getLaunchParams();
+        Map<String, ArmAParameter> params = Settings.getInstance().getLaunchParams();
 
         for (ArmAParameter param : params.values()) {
             if (param.isEnabled())

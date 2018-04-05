@@ -23,6 +23,10 @@ public class ArmAParameter implements Serializable {
     public static final String CPU_COUNT = "CPU_COUNT";
     public static final String EX_THREADS = "EX_THREADS";
 
+    public static final String PORT= "PORT";
+    public static final String SERVER= "SERVER";
+    public static final String PASSWORD= "PASSWORD";
+
     private final ParameterType type;
     private String argument;
     @Getter
@@ -60,6 +64,10 @@ public class ArmAParameter implements Serializable {
         ArmAParameter cpuCountParam = new ArmAParameter("-cpuCount", false, "1");
         ArmAParameter threadsParam = new ArmAParameter("-exThreads", false, "0");
 
+        ArmAParameter portParam = new ArmAParameter("-port", false, "2302");
+        ArmAParameter serverParam = new ArmAParameter("-connect", false, "server.kellerkompanie.com");
+        ArmAParameter passwordParam = new ArmAParameter("-password", false, "keko");
+
         HashMap<String, ArmAParameter> defaultParams = new HashMap<>();
         defaultParams.put(SHOW_SCRIPT_ERRORS, showScriptErrorsParam);
         defaultParams.put(NO_PAUSE, noPauseParamm);
@@ -71,6 +79,9 @@ public class ArmAParameter implements Serializable {
         defaultParams.put(NO_LOGS, noLogsParam);
         defaultParams.put(CPU_COUNT, cpuCountParam);
         defaultParams.put(EX_THREADS, threadsParam);
+        defaultParams.put(PORT, portParam);
+        defaultParams.put(SERVER, serverParam);
+        defaultParams.put(PASSWORD, passwordParam);
 
         return defaultParams;
     }

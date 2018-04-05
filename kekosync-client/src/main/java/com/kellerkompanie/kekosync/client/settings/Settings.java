@@ -89,8 +89,8 @@ public class Settings {
         saveSettings();
     }
 
-    public HashMap<String, ArmAParameter> getLaunchParams() {
-        return launchParams;
+    public Map<String, ArmAParameter> getLaunchParams() {
+        return Collections.unmodifiableMap(launchParams);
     }
 
     private void createDefaultSettings() {
@@ -141,12 +141,30 @@ public class Settings {
     }
 
     public void updateLaunchParam(String key, boolean selected) {
+        if(!launchParams.containsKey(key)) {
+            ArmAParameter defaultParam = ArmAParameter.getDefaultParameters().get(key);
+            if(defaultParam != null) {
+                launchParams.put(key, defaultParam);
+            } else {
+                throw new IllegalArgumentException("this launch parameter key does not exist: " + key);
+            }
+        }
+
         ArmAParameter param = launchParams.get(key);
         param.setEnabled(selected);
         saveSettings();
     }
 
     public void updateLaunchParam(String key, String value) {
+        if(!launchParams.containsKey(key)) {
+            ArmAParameter defaultParam = ArmAParameter.getDefaultParameters().get(key);
+            if(defaultParam != null) {
+                launchParams.put(key, defaultParam);
+            } else {
+                throw new IllegalArgumentException("this launch parameter key does not exist: " + key);
+            }
+        }
+
         ArmAParameter param = launchParams.get(key);
         param.setValue(value);
         saveSettings();

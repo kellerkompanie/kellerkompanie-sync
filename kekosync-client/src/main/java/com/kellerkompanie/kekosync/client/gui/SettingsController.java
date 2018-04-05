@@ -16,10 +16,7 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 public class SettingsController implements Initializable {
 
@@ -42,7 +39,7 @@ public class SettingsController implements Initializable {
         updateExecutableTextField();
         updateListView();
 
-        HashMap<String, ArmAParameter> params = Settings.getInstance().getLaunchParams();
+        Map<String, ArmAParameter> params = Settings.getInstance().getLaunchParams();
 
         List<Node> children = paramVBox.getChildren();
         for (Node child : children) {
@@ -126,7 +123,7 @@ public class SettingsController implements Initializable {
     }
 
     private void updateTextArea() {
-        HashMap<String, ArmAParameter> params = Settings.getInstance().getLaunchParams();
+        Map<String, ArmAParameter> params = Settings.getInstance().getLaunchParams();
 
         parameterTextArea.clear();
 

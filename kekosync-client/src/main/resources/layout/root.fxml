@@ -29,12 +29,12 @@
         <ComboBox fx:id="serverComboBox" maxWidth="Infinity" HBox.hgrow="ALWAYS">
             <items>
                 <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="none" />
+                    <String fx:value="" />
                     <String fx:value="server.kellerkompanie.com" />
                 </FXCollections>
             </items>
             <value>
-                <String fx:value="none" />
+                <String fx:value="" />
             </value>
         </ComboBox>
         <Button onAction="#handleStartGameAction" text="Start Game" />

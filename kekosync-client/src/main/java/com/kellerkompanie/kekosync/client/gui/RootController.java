@@ -1,6 +1,7 @@
 package com.kellerkompanie.kekosync.client.gui;
 
 import com.kellerkompanie.kekosync.client.arma.ArmALauncher;
+import com.kellerkompanie.kekosync.client.arma.ArmAParameter;
 import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.application.Application;
@@ -10,6 +11,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,11 +21,12 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class RootController extends Application {
+public class RootController extends Application implements Initializable {
     @FXML
     private Tab modsTab;
 
@@ -65,7 +68,6 @@ public class RootController extends Application {
         scene.heightProperty().addListener(this::onWindowSizeChanged);
 
         primaryStage.setScene(scene);
-
         primaryStage.show();
 
         stage.xProperty().addListener(this::onWindowPositionChanged);
@@ -104,5 +106,15 @@ public class RootController extends Application {
     private void handleStartGameAction(ActionEvent event) {
         String selectedServer = serverComboBox.getSelectionModel().getSelectedItem().toString();
         ArmALauncher.getInstance().startArmA();
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        serverComboBox.setOnAction((e) -> {
+            String selected = (String) serverComboBox.getSelectionModel().getSelectedItem();
+            Settings.getInstance().updateLaunchParam(ArmAParameter.SERVER, !selected.isEmpty());
+            Settings.getInstance().updateLaunchParam(ArmAParameter.PORT, !selected.isEmpty());
+            Settings.getInstance().updateLaunchParam(ArmAParameter.PASSWORD, !selected.isEmpty());
+        });
     }
 }
