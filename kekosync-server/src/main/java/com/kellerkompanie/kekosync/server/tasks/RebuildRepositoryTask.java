@@ -105,7 +105,7 @@ public class RebuildRepositoryTask {
         ModGroup allModsGroup = new ModGroup("all", UUIDGenerator.generateUUID(), modSet);
 
         Repository repository = new Repository("example-repository", UUIDGenerator.generateUUID(), Arrays.asList(allModsGroup), null);
-        String repositoryJson = new Gson().toJson(repository);
+        String repositoryJson = new GsonBuilder().setPrettyPrinting().create().toJson(repository);
         try {
             Files.write(Paths.get(repositoryPath).resolve(Filenames.FILENAME_MODGROUPS), repositoryJson.getBytes("UTF-8"));
         } catch (IOException e) {

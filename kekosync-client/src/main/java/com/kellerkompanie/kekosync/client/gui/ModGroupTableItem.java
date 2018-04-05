@@ -18,16 +18,6 @@ public class ModGroupTableItem extends CustomTableItem {
     }
 
     @Override
-    public FileindexWithSyncEntry.SyncStatus getStatus() {
-        return FileindexWithSyncEntry.SyncStatus.UNKNOWN;
-    }
-
-    @Override
-    public void setStatus(FileindexWithSyncEntry.SyncStatus status) {
-
-    }
-
-    @Override
     public String getName() {
         return modGroup.getName();
     }
