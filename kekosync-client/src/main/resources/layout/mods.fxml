@@ -24,9 +24,9 @@
             <TreeTableView fx:id="treeTableView" maxWidth="Infinity" minWidth="-Infinity" maxHeight="-Infinity"
                            minHeight="-Infinity" HBox.hgrow="ALWAYS">
                 <columns>
-                    <TreeTableColumn fx:id="nameColumn" prefWidth="200.0" resizable="false" text="name"/>
-                    <TreeTableColumn fx:id="locationColumn" prefWidth="200.0" resizable="false" text="location"/>
-                    <TreeTableColumn fx:id="statusColumn" resizable="false" text="status"/>
+                    <TreeTableColumn fx:id="nameColumn" prefWidth="200.0" text="name"/>
+                    <TreeTableColumn fx:id="locationColumn" prefWidth="200.0" text="location"/>
+                    <TreeTableColumn fx:id="statusColumn" text="status"/>
                     <TreeTableColumn fx:id="checkColumn" resizable="false"/>
                 </columns>
             </TreeTableView>
