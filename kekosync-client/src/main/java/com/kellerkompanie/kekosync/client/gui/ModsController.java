@@ -1,6 +1,6 @@
 package com.kellerkompanie.kekosync.client.gui;
 
-import com.kellerkompanie.kekosync.client.helper.ModStatusHelper;
+import com.kellerkompanie.kekosync.core.helper.ModStatusHelper;
 import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
 import com.kellerkompanie.kekosync.core.entities.Mod;

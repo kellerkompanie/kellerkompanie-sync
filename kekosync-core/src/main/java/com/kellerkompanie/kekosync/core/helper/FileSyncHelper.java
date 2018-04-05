@@ -50,7 +50,7 @@ public final class FileSyncHelper {
             FileindexEntry currentFileindexEntry = fileindexEntryIterator.next();
 
             if ( !currentFileindexEntry.isDirectory() ) {
-                continue; //we can keep it in if it's not a directory, most likely it's the .modgroups.json or the fileindex.
+                fileindexEntryIterator.remove();
             }
             if ( currentFileindexEntry.getUUID() == null ) { //we should have an id for every mod.
                 // this is odd and should not have happened .. let's log this! :-)
@@ -157,14 +157,8 @@ public final class FileSyncHelper {
                 newChildren.add(checksyncFileindexTree(currentFileindexEntry, localpath.resolve(currentFileindexEntry.getName())));
             }
         }
-        FileindexWithSyncEntry.SyncStatus combinedSyncStatus = FileindexWithSyncEntry.SyncStatus.LOCAL_INSYNC;
-        for ( FileindexWithSyncEntry newChild : newChildren ) {
-            if ( combinedSyncStatus.equals(FileindexWithSyncEntry.SyncStatus.LOCAL_INSYNC) && newChild.getSyncStatus().equals(FileindexWithSyncEntry.SyncStatus.LOCAL_WITHCHANGES) )
-                combinedSyncStatus = FileindexWithSyncEntry.SyncStatus.LOCAL_WITHCHANGES;
-            if ( newChild.getSyncStatus().equals(FileindexWithSyncEntry.SyncStatus.LOCAL_MISSING) )
-                combinedSyncStatus = FileindexWithSyncEntry.SyncStatus.LOCAL_MISSING;
-        }
 
+        FileindexWithSyncEntry.SyncStatus combinedSyncStatus = ModStatusHelper.combineStatus(newChildren);
         return FileindexWithSyncEntry.fromFileindexEntry(fileindexEntry, combinedSyncStatus, newChildren);
     }
 }
