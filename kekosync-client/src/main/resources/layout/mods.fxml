@@ -57,7 +57,6 @@
         <HBox spacing="10">
             <ListView fx:id="optionalsListView" prefHeight="200" minWidth="-Infinity" maxWidth="Infinity"
                       HBox.hgrow="ALWAYS"/>
-            <Button text="Refresh" onAction="#handleRefreshCurrentlyRunningModpackAction" alignment="CENTER"/>
         </HBox>
 
     </VBox>

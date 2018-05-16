@@ -28,6 +28,7 @@ public class ModGroupTableItem extends CustomTableItem {
 
     @Override
     public String getLocation() {
+        // FIXME
         if (modGroupDefaultLocation == null) {
             String location = null;
             for(ModTableItem child : children) {

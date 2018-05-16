@@ -7,8 +7,10 @@ import com.kellerkompanie.kekosync.core.entities.ModGroup;
 import com.kellerkompanie.kekosync.core.entities.Repository;
 import com.kellerkompanie.kekosync.core.helper.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -16,6 +18,11 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -32,6 +39,7 @@ import static com.kellerkompanie.kekosync.core.helper.FileSyncHelper.limitFilein
 public class ModsController implements Initializable {
 
 
+    private static ModsController instance;
     @FXML
     private CheckBox expandAllCheckBox;
     @FXML
@@ -42,7 +50,6 @@ public class ModsController implements Initializable {
     private TreeView searchDirectoriesTreeView;
     @FXML
     private CustomTreeTableView<CustomTableItem> treeTableView;
-
     @FXML
     private TreeTableColumn<CustomTableItem, Boolean> checkColumn;
     @FXML
@@ -52,26 +59,14 @@ public class ModsController implements Initializable {
     @FXML
     private TreeTableColumn<CustomTableItem, FileindexWithSyncEntry.SyncStatus> statusColumn;
 
+    public static ModsController getInstance() {
+        return instance;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        instance = this;
         initalizeModsTreeTableView();
-        updateModsTreeTableView();
-        updateSearchDirectoriesTreeView();
-        updateCurrentlyRunningModpack();
-
-
-// all cell types must have a skin that copes with row graphics
-        /*salaryColumn.setCellFactory(e -> {
-            TreeTableCell cell = new ProgressBarTreeTableCell() {
-
-                @Override
-                protected Skin<?> createDefaultSkin() {
-                    return new DefaultTreeTableCell.DefaultTreeTableCellSkin<>(this);
-                }
-
-            };
-            return cell;
-        });*/
     }
 
     private void initalizeModsTreeTableView() {
@@ -193,8 +188,46 @@ public class ModsController implements Initializable {
         });
     }
 
+    void update() {
+        Dialog<Void> loadingDialog = new Dialog<>();
+        loadingDialog.initModality(Modality.WINDOW_MODAL);
+        Stage stage = (Stage) treeTableView.getScene().getWindow();
+        loadingDialog.initOwner(stage);
+        loadingDialog.initStyle(StageStyle.TRANSPARENT);
+        Label loader = new Label("Refreshing");
+        loader.setContentDisplay(ContentDisplay.LEFT);
+        loader.setGraphic(new ProgressIndicator());
+        loadingDialog.getDialogPane().setGraphic(loader);
+        DropShadow ds = new DropShadow();
+        ds.setOffsetX(1.3);
+        ds.setOffsetY(1.3);
+        ds.setColor(Color.DARKGRAY);
+        loadingDialog.getDialogPane().setEffect(ds);
+
+        Task<Boolean> task = new Task<Boolean>() {
+            @Override
+            public Boolean call() {
+                updateModsTreeTableView();
+                updateSearchDirectoriesTreeView();
+                updateCurrentlyRunningModpack();
+                return true;
+            }
+        };
+
+        task.setOnRunning((e) -> loadingDialog.show());
+        task.setOnSucceeded((e) -> {
+            // work around for modal dialog still being shown after calling close()
+            // see https://stackoverflow.com/a/37138609
+            loadingDialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            loadingDialog.close();
+        });
+        task.setOnFailed((e) -> {
+
+        });
+        new Thread(task).start();
+    }
+
     private void updateSearchDirectoriesTreeView() {
-        // TODO update folders after changes in search directories
         Set<Path> searchDirectories = Settings.getInstance().getSearchDirectories();
 
         TreeItem<String> root = new TreeItem<>();
@@ -207,13 +240,16 @@ public class ModsController implements Initializable {
             populatePath(item, path);
         }
 
-        searchDirectoriesTreeView.setRoot(root);
-        searchDirectoriesTreeView.setShowRoot(false);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                searchDirectoriesTreeView.setRoot(root);
+                searchDirectoriesTreeView.setShowRoot(false);
+            }
+        });
     }
 
     private void updateCurrentlyRunningModpack() {
-        optionalsListView.getItems().clear();
-
         String currentModpack = null;
         try {
             currentModpack = HttpHelper.readUrl("http://server.kellerkompanie.com/info.php");
@@ -223,11 +259,17 @@ public class ModsController implements Initializable {
         String mods[] = currentModpack.split("\n");
         Arrays.sort(mods);
 
-        for (String mod : mods) {
-            mod = mod.trim();
-            if (!mod.isEmpty() && !mod.startsWith("<"))
-                optionalsListView.getItems().add(mod);
-        }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                optionalsListView.getItems().clear();
+                for (String mod : mods) {
+                    mod = mod.trim();
+                    if (!mod.isEmpty() && !mod.startsWith("<"))
+                        optionalsListView.getItems().add(mod);
+                }
+            }
+        });
     }
 
     private void populatePath(TreeItem<String> item, Path path) {
@@ -308,21 +350,26 @@ public class ModsController implements Initializable {
             rootNode.getChildren().add(modGroupTreeItem);
         }
 
-        rootNode.setExpanded(true);
-        treeTableView.setRoot(rootNode);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                rootNode.setExpanded(true);
+                treeTableView.setRoot(rootNode);
 
-        /* sort by name */
-        treeTableView.getSortOrder().add(nameColumn);
-        TreeTableColumn.SortType sortType = nameColumn.getSortType();
-        nameColumn.setSortType(sortType);
-        nameColumn.setSortable(true);
+                /* sort by name */
+                treeTableView.getSortOrder().add(nameColumn);
+                TreeTableColumn.SortType sortType = nameColumn.getSortType();
+                nameColumn.setSortType(sortType);
+                nameColumn.setSortable(true);
 
-        if(expandAllModsCheckBox.isSelected()) {
-            for (Object child : treeTableView.getRoot().getChildren()) {
-                CheckBoxTreeItem<CustomTableItem> treeItem = (CheckBoxTreeItem<CustomTableItem>) child;
-                treeItem.setExpanded(true);
+                if (expandAllModsCheckBox.isSelected()) {
+                    for (Object child : treeTableView.getRoot().getChildren()) {
+                        CheckBoxTreeItem<CustomTableItem> treeItem = (CheckBoxTreeItem<CustomTableItem>) child;
+                        treeItem.setExpanded(true);
+                    }
+                }
             }
-        }
+        });
     }
 
     private void createContextMenu() {
@@ -353,7 +400,6 @@ public class ModsController implements Initializable {
     }
 
 
-
     public void handleChangeLocationAction(ActionEvent actionEvent) {
         TreeItem<CustomTableItem> selectedItem = treeTableView.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
@@ -369,17 +415,25 @@ public class ModsController implements Initializable {
     }
 
     public void handleRefreshAction(ActionEvent actionEvent) {
-        updateModsTreeTableView();
-        updateSearchDirectoriesTreeView();
-    }
-
-    public void handleRefreshCurrentlyRunningModpackAction(ActionEvent actionEvent) {
-        updateCurrentlyRunningModpack();
+        update();
     }
 
     public void handleDownloadAction(ActionEvent actionEvent) {
 
-        if(!checkMissingLocations()) {
+        List<CustomTableItem> selectedItems = treeTableView.getSelectedTableItems();
+        if (selectedItems.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Locations Missing");
+            alert.setHeaderText("Locations Missing");
+            alert.setContentText("In order to proceed with the download, select all Mods and Modgroups you want to download");
+
+            alert.showAndWait();
+
+            log.info("no mods or modgroups selected, aborting download");
+            return;
+        }
+
+        if (!checkMissingLocations()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Locations Missing");
             alert.setHeaderText("Locations Missing");
@@ -387,7 +441,7 @@ public class ModsController implements Initializable {
 
             alert.showAndWait();
 
-            log.info("some locations are missing, not continuing download");
+            log.info("some locations are missing, aborting download");
             return;
         }
 
@@ -443,8 +497,8 @@ public class ModsController implements Initializable {
      */
     private boolean checkMissingLocations() {
         List<CustomTableItem> selectedTableItems = treeTableView.getSelectedTableItems();
-        for(CustomTableItem selectedTableItem : selectedTableItems) {
-            if(selectedTableItem.getLocation() == null) {
+        for (CustomTableItem selectedTableItem : selectedTableItems) {
+            if (selectedTableItem.getLocation() == null) {
                 switch (selectedTableItem.getType()) {
                     case MOD_GROUP:
                         boolean modGroupLocationSet = openChooseModGroupLocationDialog(selectedTableItem);
@@ -516,7 +570,7 @@ public class ModsController implements Initializable {
         TreeItem<CustomTableItem> selectedItem = treeTableView.getSelectionModel().getSelectedItem();
         CustomTableItem selectedTableItem = selectedItem.getValue();
 
-        if(selectedTableItem != null) {
+        if (selectedTableItem != null) {
             switch (selectedTableItem.getType()) {
                 case MOD_GROUP:
                     return openChooseModGroupLocationDialog(selectedTableItem);
@@ -525,5 +579,9 @@ public class ModsController implements Initializable {
             }
         }
         return false;
+    }
+
+    public TreeTableView getModsTreeTableView() {
+        return treeTableView;
     }
 }

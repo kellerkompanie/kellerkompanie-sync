@@ -2,6 +2,7 @@ package com.kellerkompanie.kekosync.client.gui;
 
 import com.kellerkompanie.kekosync.client.arma.ArmAParameter;
 import com.kellerkompanie.kekosync.client.settings.Settings;
+import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -34,10 +35,18 @@ public class SettingsController implements Initializable {
     @FXML
     private TextField executableLocationTextField;
 
+    private static SettingsController instance;
+
+    static SettingsController getInstance() {
+        return instance;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        updateExecutableTextField();
-        updateListView();
+        instance = this;
+
+        //updateExecutableTextField();
+        //updateListView();
 
         Map<String, ArmAParameter> params = Settings.getInstance().getLaunchParams();
 
@@ -55,7 +64,7 @@ public class SettingsController implements Initializable {
             }
         }
 
-        updateTextArea();
+        //updateTextArea();
     }
 
 
@@ -82,10 +91,13 @@ public class SettingsController implements Initializable {
         directoryChooser.setTitle("Add Search Directory");
         Stage stage = (Stage) listView.getScene().getWindow();
         File file = directoryChooser.showDialog(stage);
-        Path path = Paths.get(file.getPath());
-        Settings.getInstance().addSearchDirectory(path);
 
-        updateListView();
+        if(file != null) {
+            Path path = Paths.get(file.getPath());
+            Settings.getInstance().addSearchDirectory(path);
+            updateListView();
+            ModsController.getInstance().update();
+        }
     }
 
     private void updateListView() {
@@ -99,9 +111,11 @@ public class SettingsController implements Initializable {
 
     @FXML
     private void handleRemoveAction(ActionEvent event) {
-        String path = (String) listView.getSelectionModel().getSelectedItem();
-        Settings.getInstance().removeSearchDirectory(Paths.get(path));
+        String pathStr = (String) listView.getSelectionModel().getSelectedItem();
+        Path path = Paths.get(pathStr);
+        Settings.getInstance().removeSearchDirectory(path);
         updateListView();
+        ModsController.getInstance().update();
     }
 
     @FXML
@@ -135,6 +149,18 @@ public class SettingsController implements Initializable {
             }
         }
 
+        LinkedList<String> modsToStart = LauncherUtils.getModsToStart();
+        for(String modPath : modsToStart) {
+            sb.append("-mod=" + modPath);
+            sb.append("\n");
+        }
+
         parameterTextArea.setText(sb.toString());
+    }
+
+    void update() {
+        updateExecutableTextField();
+        updateListView();
+        updateTextArea();
     }
 }

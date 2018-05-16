@@ -3,9 +3,8 @@ package com.kellerkompanie.kekosync.client.gui;
 import com.kellerkompanie.kekosync.client.arma.ArmALauncher;
 import com.kellerkompanie.kekosync.client.arma.ArmAParameter;
 import com.kellerkompanie.kekosync.client.settings.Settings;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
 import javafx.application.Application;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -21,9 +20,8 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 public class RootController extends Application implements Initializable {
     @FXML
@@ -75,6 +73,9 @@ public class RootController extends Application implements Initializable {
         stage.xProperty().addListener(this::onWindowPositionChanged);
         stage.yProperty().addListener(this::onWindowPositionChanged);
         stage.maximizedProperty().addListener(this::onWindowMaximizedChanged);
+
+        ModsController.getInstance().update();
+        SettingsController.getInstance().update();
     }
 
     private void onWindowPositionChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -106,32 +107,17 @@ public class RootController extends Application implements Initializable {
 
     @FXML
     private void handleStartGameAction(ActionEvent event) {
-        TreeTableView treeTableView = (TreeTableView) tabPane.lookup("#treeTableView");
-        System.out.println(treeTableView);
-
-        LinkedList<String> modsToStart = new LinkedList<String>();
-        for(Object modGroupObj : treeTableView.getRoot().getChildren()) {
-            CheckBoxTreeItem<CustomTableItem> modGroupTreeItem = (CheckBoxTreeItem<CustomTableItem>) modGroupObj;
-            for(Object modObj : modGroupTreeItem.getChildren()) {
-                CheckBoxTreeItem<CustomTableItem> modTreeItem = (CheckBoxTreeItem<CustomTableItem>) modObj;
-
-                CustomTableItem customTableItem = modTreeItem.getValue();
-                if (customTableItem.getChecked()) {
-                    String folderPath = customTableItem.getLocation();
-                    String name = customTableItem.getName();
-                    modsToStart.add(folderPath + File.separator + name);
-                }
-            }
-        }
-
-        ArmALauncher.getInstance().startArmA(modsToStart);
+        ArmALauncher.getInstance().startArmA();
     }
+
+    private static final int MODS_TAB = 0;
+    private static final int SETTINGS_TAB = 1;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ArmAParameter param = Settings.getInstance().getLaunchParams().get(ArmAParameter.SERVER);
-        if(param != null) {
-            if(param.isEnabled())
+        if (param != null) {
+            if (param.isEnabled())
                 serverComboBox.getSelectionModel().select("server.kellerkompanie.com");
         }
 
@@ -140,6 +126,22 @@ public class RootController extends Application implements Initializable {
             Settings.getInstance().updateLaunchParam(ArmAParameter.SERVER, !selected.isEmpty());
             Settings.getInstance().updateLaunchParam(ArmAParameter.PORT, !selected.isEmpty());
             Settings.getInstance().updateLaunchParam(ArmAParameter.PASSWORD, !selected.isEmpty());
+        });
+
+        tabPane.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+                int tabIndex = newValue.intValue();
+                switch(tabIndex) {
+                    case MODS_TAB:
+                        // do not update since ModController is only updated if something changed
+                        // ModsController.getInstance().update();
+                        break;
+                    case SETTINGS_TAB:
+                        SettingsController.getInstance().update();
+                        break;
+                }
+            }
         });
     }
 }

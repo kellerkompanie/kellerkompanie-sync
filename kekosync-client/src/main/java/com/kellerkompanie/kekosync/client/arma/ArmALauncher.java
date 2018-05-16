@@ -1,6 +1,8 @@
 package com.kellerkompanie.kekosync.client.arma;
 
+import com.kellerkompanie.kekosync.client.gui.ModsController;
 import com.kellerkompanie.kekosync.client.settings.Settings;
+import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +27,7 @@ public class ArmALauncher {
         return instance;
     }
 
-    public void startArmA(List<String> modsToStart) {
+    public void startArmA() {
         List<String> commandLineArguments = new LinkedList<>();
         String executableLocation = Settings.getInstance().getExecutableLocation();
         commandLineArguments.add(executableLocation);
@@ -37,6 +39,8 @@ public class ArmALauncher {
                 commandLineArguments.add(param.getArgument());
         }
 
+        // FIXME add selected mods as start parameters
+        LinkedList<String> modsToStart = LauncherUtils.getModsToStart();
         for(String modPath : modsToStart) {
             commandLineArguments.add("-mod=" + modPath);
         }
