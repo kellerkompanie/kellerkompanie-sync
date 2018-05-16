@@ -20,12 +20,8 @@ public class ToggleSwitch extends HBox {
         label.setText("OFF");
 
         getChildren().addAll(label, button);
-        button.setOnAction((e) -> {
-            switchedOn.set(!switchedOn.get());
-        });
-        label.setOnMouseClicked((e) -> {
-            switchedOn.set(!switchedOn.get());
-        });
+        button.setOnAction((e) -> switchedOn.set(!switchedOn.get()));
+        label.setOnMouseClicked((e) -> switchedOn.set(!switchedOn.get()));
         setStyle();
         bindProperties();
     }

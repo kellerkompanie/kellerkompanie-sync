@@ -169,21 +169,17 @@ public class ModsController implements Initializable {
 
         treeTableView.setEditable(true);
 
-        expandAllCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
-                for (Object child : searchDirectoriesTreeView.getRoot().getChildren()) {
-                    TreeItem<String> treeItem = (TreeItem<String>) child;
-                    treeItem.setExpanded(new_val);
-                }
+        expandAllCheckBox.selectedProperty().addListener((ov, old_val, new_val) -> {
+            for (Object child : searchDirectoriesTreeView.getRoot().getChildren()) {
+                TreeItem<String> treeItem = (TreeItem<String>) child;
+                treeItem.setExpanded(new_val);
             }
         });
 
-        expandAllModsCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
-                for (Object child : treeTableView.getRoot().getChildren()) {
-                    CheckBoxTreeItem<CustomTableItem> treeItem = (CheckBoxTreeItem<CustomTableItem>) child;
-                    treeItem.setExpanded(new_val);
-                }
+        expandAllModsCheckBox.selectedProperty().addListener((ov, old_val, new_val) -> {
+            for (Object child : treeTableView.getRoot().getChildren()) {
+                CheckBoxTreeItem<CustomTableItem> treeItem = (CheckBoxTreeItem<CustomTableItem>) child;
+                treeItem.setExpanded(new_val);
             }
         });
     }
@@ -240,12 +236,9 @@ public class ModsController implements Initializable {
             populatePath(item, path);
         }
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                searchDirectoriesTreeView.setRoot(root);
-                searchDirectoriesTreeView.setShowRoot(false);
-            }
+        Platform.runLater(() -> {
+            searchDirectoriesTreeView.setRoot(root);
+            searchDirectoriesTreeView.setShowRoot(false);
         });
     }
 
@@ -259,15 +252,12 @@ public class ModsController implements Initializable {
         String mods[] = currentModpack.split("\n");
         Arrays.sort(mods);
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                optionalsListView.getItems().clear();
-                for (String mod : mods) {
-                    mod = mod.trim();
-                    if (!mod.isEmpty() && !mod.startsWith("<"))
-                        optionalsListView.getItems().add(mod);
-                }
+        Platform.runLater(() -> {
+            optionalsListView.getItems().clear();
+            for (String mod : mods) {
+                mod = mod.trim();
+                if (!mod.isEmpty() && !mod.startsWith("<"))
+                    optionalsListView.getItems().add(mod);
             }
         });
     }
@@ -350,23 +340,20 @@ public class ModsController implements Initializable {
             rootNode.getChildren().add(modGroupTreeItem);
         }
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                rootNode.setExpanded(true);
-                treeTableView.setRoot(rootNode);
+        Platform.runLater(() -> {
+            rootNode.setExpanded(true);
+            treeTableView.setRoot(rootNode);
 
-                /* sort by name */
-                treeTableView.getSortOrder().add(nameColumn);
-                TreeTableColumn.SortType sortType = nameColumn.getSortType();
-                nameColumn.setSortType(sortType);
-                nameColumn.setSortable(true);
+            /* sort by name */
+            treeTableView.getSortOrder().add(nameColumn);
+            TreeTableColumn.SortType sortType = nameColumn.getSortType();
+            nameColumn.setSortType(sortType);
+            nameColumn.setSortable(true);
 
-                if (expandAllModsCheckBox.isSelected()) {
-                    for (Object child : treeTableView.getRoot().getChildren()) {
-                        CheckBoxTreeItem<CustomTableItem> treeItem = (CheckBoxTreeItem<CustomTableItem>) child;
-                        treeItem.setExpanded(true);
-                    }
+            if (expandAllModsCheckBox.isSelected()) {
+                for (Object child : treeTableView.getRoot().getChildren()) {
+                    CheckBoxTreeItem<CustomTableItem> treeItem = (CheckBoxTreeItem<CustomTableItem>) child;
+                    treeItem.setExpanded(true);
                 }
             }
         });

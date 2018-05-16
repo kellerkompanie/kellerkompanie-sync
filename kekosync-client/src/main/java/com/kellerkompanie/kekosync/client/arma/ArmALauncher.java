@@ -1,6 +1,5 @@
 package com.kellerkompanie.kekosync.client.arma;
 
-import com.kellerkompanie.kekosync.client.gui.ModsController;
 import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
 import lombok.AccessLevel;
@@ -8,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;

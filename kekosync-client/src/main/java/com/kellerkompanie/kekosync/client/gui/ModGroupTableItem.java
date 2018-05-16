@@ -15,7 +15,7 @@ public class ModGroupTableItem extends CustomTableItem {
     private List<ModTableItem> children = new ArrayList<>();
     private Path modGroupDefaultLocation;
 
-    public ModGroupTableItem(ModGroup modGroup) {
+    ModGroupTableItem(ModGroup modGroup) {
         super();
         this.modGroup = modGroup;
         setType(Type.MOD_GROUP);
@@ -71,7 +71,7 @@ public class ModGroupTableItem extends CustomTableItem {
         }
     }
 
-    public void addChild(ModTableItem modTableItem) {
+    void addChild(ModTableItem modTableItem) {
         children.add(modTableItem);
     }
 }
