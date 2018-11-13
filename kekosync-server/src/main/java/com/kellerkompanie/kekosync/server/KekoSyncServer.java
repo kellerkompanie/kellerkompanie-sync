@@ -60,9 +60,9 @@ public class KekoSyncServer {
         boolean success = rrTask.execute();
 
         if(success)
-            log.info("successfully built repository " + serverRepository.getName());
+            log.info("successfully built repository {}", serverRepository.getIdentifier());
         else
-            log.info("error building repository " + serverRepository.getName());
+            log.info("error building repository {}", serverRepository.getIdentifier());
     }
 
     public void buildAllRepositories() {
