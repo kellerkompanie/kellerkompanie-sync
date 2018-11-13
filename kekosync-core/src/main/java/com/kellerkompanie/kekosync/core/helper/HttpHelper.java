@@ -1,9 +1,5 @@
 package com.kellerkompanie.kekosync.core.helper;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -15,39 +11,32 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Slf4j
 public class HttpHelper {
     public static String readUrl(String urlString) throws Exception {
-        BufferedReader reader = null;
-        try {
-            URL url = new URL(urlString);
-            reader = new BufferedReader(new InputStreamReader(url.openStream()));
-            StringBuffer buffer = new StringBuffer();
+        URL url = new URL(urlString);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
+            StringBuilder buffer = new StringBuilder();
             int read;
             char[] chars = new char[1024];
             while ((read = reader.read(chars)) != -1)
                 buffer.append(chars, 0, read);
 
             return buffer.toString();
-        } finally {
-            if (reader != null)
-                reader.close();
         }
     }
 
-    public static void downloadFile(String urlString, Path path, long size) {
+    static void downloadFile(String urlString, Path path, long size) {
         URL website = null;
         try {
             website = new URL(urlString);
         } catch (MalformedURLException e) {
             log.error("{} is not a well formed URL", urlString, e);
         }
-        ReadableByteChannel rbc = null;
+        ReadableByteChannel rbc;
         try {
+            assert website != null;
             rbc = Channels.newChannel(website.openStream());
             FileOutputStream fos = new FileOutputStream(path.toFile());
             fos.getChannel().transferFrom(rbc, 0, size);
