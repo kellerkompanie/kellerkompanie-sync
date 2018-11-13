@@ -51,17 +51,19 @@ public class RebuildRepositoryTask {
     private ServerRepository serverRepository;
 
     public boolean execute() {
-        log.debug("step1: checking for .id files");
+        log.info("building repository " + serverRepository.getIdentifier() + " ...");
+
+        log.info("\t(1) checking for .id files ...");
         if (!checkModIdFileExistence()) return false;
-        log.debug("step2: generating sample modgroup file if necessary");
+        log.info("\t(2) generating sample modgroup file if necessary ...");
         if (!checkModgroupFile()) return false;
-        log.debug("step3: cleaning zsync");
+        log.info("\t(3) cleaning zsync ...");
         if (!cleanupZsync()) return false;
-        log.debug("step4: regenerating zsync");
+        log.info("\t(4) regenerating zsync ...");
         if (!generateZsync()) return false;
-        log.debug("step5: generate file-index");
+        log.info("\t(5) generating file-index ...");
         if (!generateFileindex()) return false;
-        log.debug("done.");
+        log.info("done.\n");
         return true;
     }
 
