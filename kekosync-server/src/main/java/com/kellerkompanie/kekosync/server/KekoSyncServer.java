@@ -1,6 +1,9 @@
 package com.kellerkompanie.kekosync.server;
 
+import com.google.gson.GsonBuilder;
+import com.kellerkompanie.kekosync.core.constants.Filenames;
 import com.kellerkompanie.kekosync.server.cli.CommandLineProcessor;
+import com.kellerkompanie.kekosync.server.entities.ServerInfo;
 import com.kellerkompanie.kekosync.server.entities.ServerRepository;
 import com.kellerkompanie.kekosync.server.tasks.RebuildRepositoryTask;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +13,8 @@ import org.ini4j.IniPreferences;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.prefs.BackingStoreException;
 
@@ -20,6 +25,8 @@ import java.util.prefs.BackingStoreException;
 public class KekoSyncServer {
 
     private HashMap<String, ServerRepository> serverRepositories;
+    private String baseURL;
+    private String infoURL;
 
     public KekoSyncServer(String iniFile) {
         serverRepositories = new HashMap<>();
@@ -38,7 +45,7 @@ public class KekoSyncServer {
         if (args.length > 1) {
             commandLineProcessor.process(args);
         } else {
-            args = new String[] {"help"};
+            args = new String[]{"help"};
             commandLineProcessor.process(args);
             /*
             String directory = "E:\\kekosync-demo-repository";
@@ -59,7 +66,7 @@ public class KekoSyncServer {
         RebuildRepositoryTask rrTask = new RebuildRepositoryTask(serverRepository);
         boolean success = rrTask.execute();
 
-        if(success)
+        if (success)
             log.info("successfully built repository {}", serverRepository.getIdentifier());
         else
             log.info("error building repository {}", serverRepository.getIdentifier());
@@ -75,7 +82,8 @@ public class KekoSyncServer {
         Ini ini = new Ini(new File(iniFilePath));
         java.util.prefs.Preferences prefs = new IniPreferences(ini);
 
-        String baseURL = prefs.node("general").get("baseURL", null);
+        baseURL = prefs.node("general").get("baseURL", null);
+        infoURL = prefs.node("general").get("infoURL", null);
 
         // read repositories
         String[] headerNames = prefs.childrenNames();
@@ -95,6 +103,16 @@ public class KekoSyncServer {
     public void printServerRepositories() {
         for (ServerRepository serverRepository : serverRepositories.values()) {
             System.out.println(serverRepository);
+        }
+    }
+
+    public void updateServerInfo() {
+        ServerInfo serverInfo = new ServerInfo(baseURL, infoURL, serverRepositories.values());
+        String serverInfoJson = new GsonBuilder().setPrettyPrinting().create().toJson(serverInfo);
+        try {
+            Files.write(Paths.get("").resolve(Filenames.FILENAME_SERVERINFO), serverInfoJson.getBytes("UTF-8"));
+        } catch (IOException e) {
+            log.error("could not write serverinfo file.", e);
         }
     }
 }

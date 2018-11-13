@@ -39,8 +39,10 @@ public class CommandLineProcessor {
         if (cmd.hasOption(BUILD)) {
             String repositoryName = cmd.getOptionValue(BUILD);
             kekoSyncServer.buildRepository(repositoryName);
+            kekoSyncServer.updateServerInfo();
         } else if (cmd.hasOption(BUILD_ALL)) {
             kekoSyncServer.buildAllRepositories();
+            kekoSyncServer.updateServerInfo();
         } else if (cmd.hasOption(LIST)) {
             kekoSyncServer.printServerRepositories();
         } else if (cmd.hasOption(HELP)) {

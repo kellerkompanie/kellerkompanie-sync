@@ -124,7 +124,9 @@ public class RebuildRepositoryTask {
             Repository oldRepository = gson.fromJson(br, Repository.class);
 
             // create new repository with existing UUID
-            Repository newRepository = new Repository(serverRepository.getName(), oldRepository.getUuid(), Collections.singletonList(allModsGroup), null);
+            UUID uuid = oldRepository.getUuid();
+            serverRepository.setUuid(uuid);
+            Repository newRepository = new Repository(serverRepository.getName(), uuid, Collections.singletonList(allModsGroup), null);
 
             // check if there were changes that need to be applied
             if(newRepository.equals(oldRepository)) {
@@ -136,7 +138,9 @@ public class RebuildRepositoryTask {
             }
         } else {
             // there is no modgroups file, create new one
-            Repository repository = new Repository(serverRepository.getName(), UUIDGenerator.generateUUID(), Collections.singletonList(allModsGroup), null);
+            UUID uuid = UUIDGenerator.generateUUID();
+            Repository repository = new Repository(serverRepository.getName(), uuid, Collections.singletonList(allModsGroup), null);
+            serverRepository.setUuid(uuid);
             return writeModgroupFile(repository);
         }
     }
