@@ -56,7 +56,7 @@ public class KekoSyncServer {
     }
 
     private void buildRepository(ServerRepository serverRepository) {
-        RebuildRepositoryTask rrTask = new RebuildRepositoryTask(serverRepository.getFolder());
+        RebuildRepositoryTask rrTask = new RebuildRepositoryTask(serverRepository);
         rrTask.execute();
     }
 
