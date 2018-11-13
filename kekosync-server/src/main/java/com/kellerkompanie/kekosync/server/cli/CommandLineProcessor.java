@@ -18,7 +18,7 @@ public class CommandLineProcessor {
         Options options = new Options();
         options.addOption(INI, true, "specify settings .ini filepath to be loaded");
         options.addOption(BUILD, true, "build repository");
-        options.addOption(BUILD_ALL, true, "build all repositories");
+        options.addOption(BUILD_ALL, false, "build all repositories");
         options.addOption(LIST, false, "list repositories");
         options.addOption(HELP, false, "list available commands");
 
