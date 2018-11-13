@@ -1,3 +1,0 @@
-<encoder>
-    <pattern>%date |%-5level| [%thread] [%file:%line] - %msg%n%ex{full}</pattern>
-</encoder>
