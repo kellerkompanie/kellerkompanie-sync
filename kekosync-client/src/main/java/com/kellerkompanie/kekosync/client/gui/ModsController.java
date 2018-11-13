@@ -9,8 +9,6 @@ import com.kellerkompanie.kekosync.core.entities.Repository;
 import com.kellerkompanie.kekosync.core.helper.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -238,7 +236,7 @@ public class ModsController implements Initializable {
     private boolean isServerReachable() {
         try {
             // TODO optimize: just check, do not download entire file
-            HttpHelper.readUrl(Settings.REPO_URL + Filenames.FILENAME_MODGROUPS);
+            HttpHelper.readUrl(LauncherUtils.getRepoURL() + Filenames.FILENAME_MODGROUPS);
             return true;
         } catch (ConnectException e) {
             log.error("Connection to server could not be established", e);
@@ -458,7 +456,6 @@ public class ModsController implements Initializable {
             return;
         }
 
-
         for (Object modGroupObj : treeTableView.getRoot().getChildren()) {
             CheckBoxTreeItem<CustomTableItem> modGroupTreeItem = (CheckBoxTreeItem<CustomTableItem>) modGroupObj;
             ModGroupTableItem modGroupTableItem = (ModGroupTableItem) modGroupTreeItem.getValue();
@@ -477,7 +474,7 @@ public class ModsController implements Initializable {
             if (modGroupChecked) {
                 FileindexEntry limitedFileindexEntry = limitFileindexToModgroups(rootIndexEntry, modGroup);
                 try {
-                    FileSyncHelper.syncFileindexTree(limitedFileindexEntry, Paths.get(modGroupTableItem.getLocation()), Settings.REPO_URL);
+                    FileSyncHelper.syncFileindexTree(limitedFileindexEntry, Paths.get(modGroupTableItem.getLocation()), LauncherUtils.getRepoURL());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -492,7 +489,7 @@ public class ModsController implements Initializable {
                         tempModGroup.addMod(modTableItem.getMod());
                         FileindexEntry limitedFileIndexEntry = limitFileindexToModgroups(rootIndexEntry, tempModGroup);
                         try {
-                            FileSyncHelper.syncFileindexTree(limitedFileIndexEntry, Paths.get(modTableItem.getLocation()), Settings.REPO_URL);
+                            FileSyncHelper.syncFileindexTree(limitedFileIndexEntry, Paths.get(modTableItem.getLocation()), LauncherUtils.getRepoURL());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
