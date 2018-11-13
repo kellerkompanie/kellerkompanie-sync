@@ -236,7 +236,7 @@ public class ModsController implements Initializable {
     private boolean isServerReachable() {
         try {
             // TODO optimize: just check, do not download entire file
-            HttpHelper.readUrl(LauncherUtils.getRepoURL() + Filenames.FILENAME_MODGROUPS);
+            HttpHelper.readUrl(LauncherUtils.getServerURL() + Filenames.FILENAME_SERVERINFO);
             return true;
         } catch (ConnectException e) {
             log.error("Connection to server could not be established", e);
@@ -269,6 +269,7 @@ public class ModsController implements Initializable {
     private void updateCurrentlyRunningModpack() {
         String currentModpack = null;
         try {
+            // TODO replace with URL from config retrieved from server
             currentModpack = HttpHelper.readUrl("http://server.kellerkompanie.com/info.php");
         } catch (Exception e) {
             e.printStackTrace();

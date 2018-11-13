@@ -16,13 +16,13 @@ import java.util.LinkedList;
 
 public class LauncherUtils {
 
-    public static Repository getRepository() throws Exception {
-        String repoJsonString = HttpHelper.readUrl(LauncherUtils.getRepoURL() + Filenames.FILENAME_MODGROUPS);
+    public static Repository getRepository(String repositoryIdentifier) throws Exception {
+        String repoJsonString = HttpHelper.readUrl(LauncherUtils.getServerURL() + repositoryIdentifier + "/" + Filenames.FILENAME_MODGROUPS);
         return new Gson().fromJson(repoJsonString, Repository.class);
     }
 
-    public static FileindexEntry getFileIndexEntry() throws Exception {
-        String indexJsonString = HttpHelper.readUrl(LauncherUtils.getRepoURL() + Filenames.FILENAME_INDEXFILE);
+    public static FileindexEntry getFileIndexEntry(String repositoryIdentifier) throws Exception {
+        String indexJsonString = HttpHelper.readUrl(LauncherUtils.getServerURL() + repositoryIdentifier + Filenames.FILENAME_INDEXFILE);
         return new Gson().fromJson(indexJsonString, FileindexEntry.class);
     }
 
@@ -51,8 +51,8 @@ public class LauncherUtils {
         return modsToStart;
     }
 
-    public static String getRepoURL() {
-        return Settings.REPO_URL.endsWith("/") ? Settings.REPO_URL : Settings.REPO_URL + "/";
+    public static String getServerURL() {
+        return Settings.SERVER_URL.endsWith("/") ? Settings.SERVER_URL : Settings.SERVER_URL + "/";
     }
 
 }
