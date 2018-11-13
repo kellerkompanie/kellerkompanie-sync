@@ -17,14 +17,13 @@ import java.util.prefs.BackingStoreException;
  */
 public class KekoSyncServer {
 
-    private static final String INI_FILE = "kekosync.ini";
     private HashMap<String, ServerRepository> serverRepositories;
 
-    private KekoSyncServer() {
+    public KekoSyncServer(String iniFile) {
         serverRepositories = new HashMap<>();
 
         try {
-            readSettingsFromINI();
+            readSettingsFromINI(iniFile);
         } catch (IOException | BackingStoreException e) {
             e.printStackTrace();
             System.exit(1);
@@ -32,14 +31,13 @@ public class KekoSyncServer {
     }
 
     public static void main(String[] args) throws ParseException {
-        KekoSyncServer kekoSyncServer = new KekoSyncServer();
-        kekoSyncServer.printServerRepositories();
-        kekoSyncServer.buildRepository("kellerkompanie-testing");
+        CommandLineProcessor commandLineProcessor = new CommandLineProcessor();
 
         if (args.length > 1) {
-            CommandLineProcessor commandLineProcessor = new CommandLineProcessor();
             commandLineProcessor.process(args);
         } else {
+            args = new String[] {"help"};
+            commandLineProcessor.process(args);
             /*
             String directory = "E:\\kekosync-demo-repository";
             ZsyncGenerator.cleanDirectory(directory);
@@ -50,7 +48,7 @@ public class KekoSyncServer {
         }
     }
 
-    private void buildRepository(String repositoryIdentifier) {
+    public void buildRepository(String repositoryIdentifier) {
         ServerRepository serverRepository = serverRepositories.get(repositoryIdentifier);
         buildRepository(serverRepository);
     }
@@ -60,14 +58,14 @@ public class KekoSyncServer {
         rrTask.execute();
     }
 
-    private void buildAllRepositories() {
+    public void buildAllRepositories() {
         for (ServerRepository serverRepository : serverRepositories.values()) {
             buildRepository(serverRepository);
         }
     }
 
-    private void readSettingsFromINI() throws IOException, BackingStoreException {
-        Ini ini = new Ini(new File(INI_FILE));
+    private void readSettingsFromINI(String iniFilePath) throws IOException, BackingStoreException {
+        Ini ini = new Ini(new File(iniFilePath));
         java.util.prefs.Preferences prefs = new IniPreferences(ini);
 
         String baseURL = prefs.node("general").get("baseURL", null);
@@ -87,7 +85,7 @@ public class KekoSyncServer {
         }
     }
 
-    private void printServerRepositories() {
+    public void printServerRepositories() {
         for (ServerRepository serverRepository : serverRepositories.values()) {
             System.out.println(serverRepository);
         }
