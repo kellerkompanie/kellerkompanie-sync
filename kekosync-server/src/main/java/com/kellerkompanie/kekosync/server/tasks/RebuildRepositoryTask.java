@@ -53,7 +53,7 @@ public class RebuildRepositoryTask {
         log.debug("step1: checking for .id files");
         if (!checkModIdFileExistence()) return false;
         log.debug("step2: generating sample modgroup file if necessary");
-        if (!checkModgroupFile()) return false;
+        if (!checkModgroupFile(true)) return false;
         log.debug("step3: cleaning zsync");
         if (!cleanupZsync()) return false;
         log.debug("step4: regenerating zsync");
@@ -88,8 +88,8 @@ public class RebuildRepositoryTask {
         return true;
     }
 
-    private boolean checkModgroupFile() {
-        if (Paths.get(serverRepository.getFolder(), Filenames.FILENAME_MODGROUPS).toFile().exists()) return true;
+    private boolean checkModgroupFile(boolean forceRebuild) {
+        if (!forceRebuild && Paths.get(serverRepository.getFolder(), Filenames.FILENAME_MODGROUPS).toFile().exists()) return true;
 
         List<Path> subdirectories;
         try {
