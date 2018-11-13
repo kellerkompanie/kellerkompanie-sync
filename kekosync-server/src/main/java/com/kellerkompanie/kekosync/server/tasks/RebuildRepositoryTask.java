@@ -24,10 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -125,7 +122,7 @@ public class RebuildRepositoryTask {
             Repository oldRepository = gson.fromJson(br, Repository.class);
 
             // create new repository with existing UUID
-            Repository newRepository = new Repository(serverRepository.getName(), oldRepository.getUuid(), Arrays.asList(allModsGroup), null);
+            Repository newRepository = new Repository(serverRepository.getName(), oldRepository.getUuid(), Collections.singletonList(allModsGroup), null);
 
             // check if there were changes that need to be applied
             if(newRepository.equals(oldRepository)) {
@@ -137,7 +134,7 @@ public class RebuildRepositoryTask {
             }
         } else {
             // there is no modgroups file, create new one
-            Repository repository = new Repository(serverRepository.getName(), UUIDGenerator.generateUUID(), Arrays.asList(allModsGroup), null);
+            Repository repository = new Repository(serverRepository.getName(), UUIDGenerator.generateUUID(), Collections.singletonList(allModsGroup), null);
             return writeModgroupFile(repository);
         }
     }

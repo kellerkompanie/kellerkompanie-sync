@@ -3,6 +3,7 @@ package com.kellerkompanie.kekosync.server;
 import com.kellerkompanie.kekosync.server.cli.CommandLineProcessor;
 import com.kellerkompanie.kekosync.server.entities.ServerRepository;
 import com.kellerkompanie.kekosync.server.tasks.RebuildRepositoryTask;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.ParseException;
 import org.ini4j.Ini;
 import org.ini4j.IniPreferences;
@@ -15,6 +16,7 @@ import java.util.prefs.BackingStoreException;
 /**
  * @author Schwaggot
  */
+@Slf4j
 public class KekoSyncServer {
 
     private HashMap<String, ServerRepository> serverRepositories;
@@ -55,7 +57,12 @@ public class KekoSyncServer {
 
     private void buildRepository(ServerRepository serverRepository) {
         RebuildRepositoryTask rrTask = new RebuildRepositoryTask(serverRepository);
-        rrTask.execute();
+        boolean success = rrTask.execute();
+
+        if(success)
+            log.info("successfully built repository " + serverRepository.getName());
+        else
+            log.info("error building repository " + serverRepository.getName());
     }
 
     public void buildAllRepositories() {
