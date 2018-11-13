@@ -65,7 +65,7 @@ public class RebuildRepositoryTask {
     }
 
     private boolean checkModIdFileExistence() {
-        List<Path> subdirectories = null;
+        List<Path> subdirectories;
         try {
             subdirectories = Files.walk(Paths.get(serverRepository.getFolder()), 1)
                     .filter(Files::isDirectory)
@@ -91,7 +91,7 @@ public class RebuildRepositoryTask {
     private boolean checkModgroupFile() {
         if (Paths.get(serverRepository.getFolder(), Filenames.FILENAME_MODGROUPS).toFile().exists()) return true;
 
-        List<Path> subdirectories = null;
+        List<Path> subdirectories;
         try {
             subdirectories = Files.walk(Paths.get(serverRepository.getFolder()), 1)
                     .filter(Files::isDirectory)
@@ -145,7 +145,7 @@ public class RebuildRepositoryTask {
             Paths.get(serverRepository.getFolder(), Filenames.FILENAME_INDEXFILE).toFile().delete();
         }
 
-        FileindexEntry fileindexEntry = null;
+        FileindexEntry fileindexEntry;
         try {
             fileindexEntry = FileindexGenerator.index(serverRepository.getFolder());
         } catch (IOException e) {
