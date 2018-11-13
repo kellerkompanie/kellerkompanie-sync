@@ -2,6 +2,7 @@ package com.kellerkompanie.kekosync.client.gui;
 
 import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
+import com.kellerkompanie.kekosync.core.constants.Filenames;
 import com.kellerkompanie.kekosync.core.entities.Mod;
 import com.kellerkompanie.kekosync.core.entities.ModGroup;
 import com.kellerkompanie.kekosync.core.entities.Repository;
@@ -26,6 +27,7 @@ import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -185,42 +187,66 @@ public class ModsController implements Initializable {
     }
 
     void update() {
-        Dialog<Void> loadingDialog = new Dialog<>();
-        loadingDialog.initModality(Modality.WINDOW_MODAL);
-        Stage stage = (Stage) treeTableView.getScene().getWindow();
-        loadingDialog.initOwner(stage);
-        loadingDialog.initStyle(StageStyle.TRANSPARENT);
-        Label loader = new Label("Refreshing");
-        loader.setContentDisplay(ContentDisplay.LEFT);
-        loader.setGraphic(new ProgressIndicator());
-        loadingDialog.getDialogPane().setGraphic(loader);
-        DropShadow ds = new DropShadow();
-        ds.setOffsetX(1.3);
-        ds.setOffsetY(1.3);
-        ds.setColor(Color.DARKGRAY);
-        loadingDialog.getDialogPane().setEffect(ds);
+        if (isServerReachable()) {
+            Dialog<Void> loadingDialog = new Dialog<>();
+            loadingDialog.initModality(Modality.WINDOW_MODAL);
+            Stage stage = (Stage) treeTableView.getScene().getWindow();
+            loadingDialog.initOwner(stage);
+            loadingDialog.initStyle(StageStyle.TRANSPARENT);
+            Label loader = new Label("Refreshing");
+            loader.setContentDisplay(ContentDisplay.LEFT);
+            loader.setGraphic(new ProgressIndicator());
+            loadingDialog.getDialogPane().setGraphic(loader);
+            DropShadow ds = new DropShadow();
+            ds.setOffsetX(1.3);
+            ds.setOffsetY(1.3);
+            ds.setColor(Color.DARKGRAY);
+            loadingDialog.getDialogPane().setEffect(ds);
 
-        Task<Boolean> task = new Task<Boolean>() {
-            @Override
-            public Boolean call() {
-                updateModsTreeTableView();
-                updateSearchDirectoriesTreeView();
-                updateCurrentlyRunningModpack();
-                return true;
-            }
-        };
+            Task<Boolean> task = new Task<Boolean>() {
+                @Override
+                public Boolean call() {
+                    updateModsTreeTableView();
+                    updateSearchDirectoriesTreeView();
+                    updateCurrentlyRunningModpack();
+                    return true;
+                }
+            };
 
-        task.setOnRunning((e) -> loadingDialog.show());
-        task.setOnSucceeded((e) -> {
-            // work around for modal dialog still being shown after calling close()
-            // see https://stackoverflow.com/a/37138609
-            loadingDialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-            loadingDialog.close();
-        });
-        task.setOnFailed((e) -> {
+            task.setOnRunning((e) -> loadingDialog.show());
+            task.setOnSucceeded((e) -> {
+                // work around for modal dialog still being shown after calling close()
+                // see https://stackoverflow.com/a/37138609
+                loadingDialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+                loadingDialog.close();
+            });
+            task.setOnFailed((e) -> {
 
-        });
-        new Thread(task).start();
+            });
+            new Thread(task).start();
+        } else {
+            log.warn("Server is not reachable");
+
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Server Connection");
+            alert.setHeaderText("Connection Error");
+            alert.setContentText("Cannot connect to server, are you online? Is the server running?");
+            alert.showAndWait();
+        }
+    }
+
+    private boolean isServerReachable() {
+        try {
+            // TODO optimize: just check, do not download entire file
+            HttpHelper.readUrl(Settings.REPO_URL + Filenames.FILENAME_MODGROUPS);
+            return true;
+        } catch (ConnectException e) {
+            log.error("Connection to server could not be established", e);
+            return false;
+        } catch (Exception e) {
+            log.error("Something went horribly wrong while trying to connect to the server", e);
+            return false;
+        }
     }
 
     private void updateSearchDirectoriesTreeView() {
