@@ -1,4 +1,4 @@
-package com.kellerkompanie.kekosync.server.entities;
+package com.kellerkompanie.kekosync.core.entities;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,13 +22,10 @@ public class ServerInfo {
     @Getter
     private List<String> repositoryIdentifiers;
 
-    public ServerInfo(String baseURL, String infoURL, Collection<ServerRepository> serverRepositories) {
+    public ServerInfo(String baseURL, String infoURL, Collection<String> repositoryIdentifiers) {
         this.baseURL = baseURL;
         this.infoURL = infoURL;
-        repositoryIdentifiers = new ArrayList<>(serverRepositories.size());
-        for (ServerRepository serverRepository : serverRepositories) {
-            repositoryIdentifiers.add(serverRepository.getIdentifier());
-        }
+        this.repositoryIdentifiers = new ArrayList<>(repositoryIdentifiers);
     }
 
 }

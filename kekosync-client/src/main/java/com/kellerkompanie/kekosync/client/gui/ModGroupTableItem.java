@@ -1,7 +1,9 @@
 package com.kellerkompanie.kekosync.client.gui;
 
 import com.kellerkompanie.kekosync.core.entities.ModGroup;
+import com.kellerkompanie.kekosync.core.entities.Repository;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,6 +16,8 @@ public class ModGroupTableItem extends CustomTableItem {
     private ModGroup modGroup;
     private List<ModTableItem> children = new ArrayList<>();
     private Path modGroupDefaultLocation;
+    @Getter @Setter
+    private Repository repository;
 
     ModGroupTableItem(ModGroup modGroup) {
         super();

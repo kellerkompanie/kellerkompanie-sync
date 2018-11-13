@@ -22,7 +22,7 @@ public class LauncherUtils {
     }
 
     public static FileindexEntry getFileIndexEntry(String repositoryIdentifier) throws Exception {
-        String indexJsonString = HttpHelper.readUrl(LauncherUtils.getServerURL() + repositoryIdentifier + Filenames.FILENAME_INDEXFILE);
+        String indexJsonString = HttpHelper.readUrl(LauncherUtils.getServerURL() + repositoryIdentifier + "/" + Filenames.FILENAME_INDEXFILE);
         return new Gson().fromJson(indexJsonString, FileindexEntry.class);
     }
 
@@ -53,6 +53,10 @@ public class LauncherUtils {
 
     public static String getServerURL() {
         return Settings.SERVER_URL.endsWith("/") ? Settings.SERVER_URL : Settings.SERVER_URL + "/";
+    }
+
+    public static String getRepoURL(String repositryIdentifier) {
+        return getServerURL() + repositryIdentifier;
     }
 
 }

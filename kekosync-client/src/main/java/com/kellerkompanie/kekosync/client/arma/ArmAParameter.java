@@ -101,10 +101,6 @@ public class ArmAParameter implements Serializable {
         return type;
     }
 
-    public String getValue() {
-        return value;
-    }
-
     @Override
     public String toString() {
         if (enabled)

@@ -303,18 +303,31 @@ public class ModsController implements Initializable {
     }
 
     private void updateModsTreeTableView() {
-        Repository repository = null;
-        FileindexEntry rootFileindexEntry = null;
+        List<Repository> repositories = new LinkedList<>();
+        HashMap<Repository, FileindexEntry> rootFileindexEntries =  new HashMap<>();
         try {
-            repository = LauncherUtils.getRepository();
-            rootFileindexEntry = LauncherUtils.getFileIndexEntry();
+            for(String repositoryIdentifier : Settings.getInstance().getServerInfo().getRepositoryIdentifiers()) {
+                Repository repository = LauncherUtils.getRepository(repositoryIdentifier);
+                FileindexEntry rootFileindexEntry = LauncherUtils.getFileIndexEntry(repositoryIdentifier);
+
+                repositories.add(repository);
+                rootFileindexEntries.put(repository, rootFileindexEntry);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
 
-        List<ModGroup> modGroups = repository.getModGroups();
-        FileindexEntry limitedFileindexEntry = FileSyncHelper.limitFileindexToModgroups(rootFileindexEntry, modGroups);
+        List<ModGroup> modGroups = new LinkedList<>();
+        HashMap<ModGroup, FileindexEntry> limitedFileIndexEntries = new HashMap<>();
+        for(Repository repository : repositories) {
+            modGroups.addAll(repository.getModGroups());
+            FileindexEntry rootFileindexEntry = rootFileindexEntries.get(repository);
+            FileindexEntry limitedFileindexEntry = FileSyncHelper.limitFileindexToModgroups(rootFileindexEntry, modGroups);
+            for(ModGroup modGroup : modGroups) {
+                limitedFileIndexEntries.put(modGroup, limitedFileindexEntry);
+            }
+        }
 
         TreeItem<CustomTableItem> rootNode = new TreeItem<>(new RootTableItem());
 
@@ -355,6 +368,7 @@ public class ModsController implements Initializable {
                 modTreeItem.selectedProperty().addListener((observable, oldValue, newValue) -> modTableItem.setChecked(newValue));
                 modTreeItem.indeterminateProperty().addListener((observable, oldValue, newValue) -> modTableItem.setIndeterminate(newValue));
 
+                FileindexEntry limitedFileindexEntry = limitedFileIndexEntries.get(modGroup);
                 FileindexWithSyncEntry.SyncStatus modStatus = ModStatusHelper.checkStatusForMod(limitedFileindexEntry, mod, Settings.getInstance().getSearchDirectories());
                 modTableItem.setStatus(modStatus);
                 statusList.add(modStatus);
@@ -457,26 +471,38 @@ public class ModsController implements Initializable {
             return;
         }
 
+        List<Repository> repositories = new LinkedList<>();
+        HashMap<Repository, FileindexEntry> rootFileindexEntries =  new HashMap<>();
+        HashMap<Repository, String> repositoryIdentifiers =  new HashMap<>();
+        try {
+            for(String repositoryIdentifier : Settings.getInstance().getServerInfo().getRepositoryIdentifiers()) {
+                Repository repository = LauncherUtils.getRepository(repositoryIdentifier);
+                FileindexEntry rootFileindexEntry = LauncherUtils.getFileIndexEntry(repositoryIdentifier);
+
+                repositories.add(repository);
+                rootFileindexEntries.put(repository, rootFileindexEntry);
+                repositoryIdentifiers.put(repository, repositoryIdentifier);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         for (Object modGroupObj : treeTableView.getRoot().getChildren()) {
             CheckBoxTreeItem<CustomTableItem> modGroupTreeItem = (CheckBoxTreeItem<CustomTableItem>) modGroupObj;
             ModGroupTableItem modGroupTableItem = (ModGroupTableItem) modGroupTreeItem.getValue();
             ModGroup modGroup = modGroupTableItem.getModGroup();
+            Repository repository = modGroupTableItem.getRepository();
+            FileindexEntry rootIndexEntry = rootFileindexEntries.get(repository);
 
             boolean modGroupChecked = modGroupTableItem.getChecked();
             boolean modGroupIndeterminate = modGroupTableItem.getIndeterminate();
 
-            FileindexEntry rootIndexEntry = null;
-            try {
-                rootIndexEntry = LauncherUtils.getFileIndexEntry();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
             if (modGroupChecked) {
                 FileindexEntry limitedFileindexEntry = limitFileindexToModgroups(rootIndexEntry, modGroup);
                 try {
-                    FileSyncHelper.syncFileindexTree(limitedFileindexEntry, Paths.get(modGroupTableItem.getLocation()), LauncherUtils.getRepoURL());
-                } catch (IOException e) {
+                    String repositoryIdentifier = repositoryIdentifiers.get(repository);
+                    FileSyncHelper.syncFileindexTree(limitedFileindexEntry, Paths.get(modGroupTableItem.getLocation()), LauncherUtils.getRepoURL(repositoryIdentifier));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -490,8 +516,9 @@ public class ModsController implements Initializable {
                         tempModGroup.addMod(modTableItem.getMod());
                         FileindexEntry limitedFileIndexEntry = limitFileindexToModgroups(rootIndexEntry, tempModGroup);
                         try {
-                            FileSyncHelper.syncFileindexTree(limitedFileIndexEntry, Paths.get(modTableItem.getLocation()), LauncherUtils.getRepoURL());
-                        } catch (IOException e) {
+                            String repositoryIdentifier = repositoryIdentifiers.get(repository);
+                            FileSyncHelper.syncFileindexTree(limitedFileIndexEntry, Paths.get(modTableItem.getLocation()), LauncherUtils.getRepoURL(repositoryIdentifier));
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }

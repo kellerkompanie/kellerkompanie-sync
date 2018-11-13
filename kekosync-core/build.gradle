@@ -15,6 +15,5 @@ dependencies {
     compile 'org.projectlombok:lombok:1.16.20'
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
     compile 'com.google.code.gson:gson:2.8.2'
-    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 }

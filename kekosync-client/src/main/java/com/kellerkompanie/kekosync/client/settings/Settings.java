@@ -4,11 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import com.kellerkompanie.kekosync.client.arma.ArmAParameter;
+import com.kellerkompanie.kekosync.core.entities.ServerInfo;
 import com.kellerkompanie.kekosync.core.gsonConverter.PathConverter;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -37,6 +35,9 @@ public class Settings {
     private double windowX = 0;
     @Getter
     private double windowY = 0;
+    @Getter
+    @Setter
+    private ServerInfo serverInfo;
 
     public static Settings getInstance() {
         if (instance == null) {
@@ -141,9 +142,9 @@ public class Settings {
     }
 
     public void updateLaunchParam(String key, boolean selected) {
-        if(!launchParams.containsKey(key)) {
+        if (!launchParams.containsKey(key)) {
             ArmAParameter defaultParam = ArmAParameter.getDefaultParameters().get(key);
-            if(defaultParam != null) {
+            if (defaultParam != null) {
                 launchParams.put(key, defaultParam);
             } else {
                 throw new IllegalArgumentException("this launch parameter key does not exist: " + key);
@@ -156,9 +157,9 @@ public class Settings {
     }
 
     public void updateLaunchParam(String key, String value) {
-        if(!launchParams.containsKey(key)) {
+        if (!launchParams.containsKey(key)) {
             ArmAParameter defaultParam = ArmAParameter.getDefaultParameters().get(key);
-            if(defaultParam != null) {
+            if (defaultParam != null) {
                 launchParams.put(key, defaultParam);
             } else {
                 throw new IllegalArgumentException("this launch parameter key does not exist: " + key);
@@ -168,5 +169,9 @@ public class Settings {
         ArmAParameter param = launchParams.get(key);
         param.setValue(value);
         saveSettings();
+    }
+
+    public void setServerInfo(ServerInfo serverInfo) {
+        this.serverInfo = serverInfo;
     }
 }

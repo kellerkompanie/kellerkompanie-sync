@@ -1,8 +1,14 @@
 package com.kellerkompanie.kekosync.client.gui;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.kellerkompanie.kekosync.client.arma.ArmALauncher;
 import com.kellerkompanie.kekosync.client.arma.ArmAParameter;
 import com.kellerkompanie.kekosync.client.settings.Settings;
+import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
+import com.kellerkompanie.kekosync.core.constants.Filenames;
+import com.kellerkompanie.kekosync.core.entities.ServerInfo;
+import com.kellerkompanie.kekosync.core.helper.HttpHelper;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,16 +18,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@Slf4j
 public class RootController extends Application implements Initializable {
     @FXML
     private Tab modsTab;
@@ -77,6 +86,13 @@ public class RootController extends Application implements Initializable {
         SettingsController.getInstance().update();
     }
 
+    private ServerInfo downloadServerInfo() throws Exception {
+        String serverInfoString = HttpHelper.readUrl(LauncherUtils.getServerURL() + Filenames.FILENAME_SERVERINFO);
+        Gson gson = new GsonBuilder().create();
+        ServerInfo serverInfo = gson.fromJson(serverInfoString, ServerInfo.class);
+        return serverInfo;
+    }
+
     private void onWindowPositionChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         double x = stage.getX();
         double y = stage.getY();
@@ -114,6 +130,19 @@ public class RootController extends Application implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        try {
+            ServerInfo serverInfo = downloadServerInfo();
+            Settings.getInstance().setServerInfo(serverInfo);
+        } catch (Exception e) {
+            log.warn("Server is not reachable");
+
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Server Connection");
+            alert.setHeaderText("Connection Error");
+            alert.setContentText("Cannot connect to server, are you online? Is the server running?");
+            alert.showAndWait();
+        }
+
         ArmAParameter param = Settings.getInstance().getLaunchParams().get(ArmAParameter.SERVER);
         if (param != null) {
             if (param.isEnabled())

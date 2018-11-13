@@ -3,7 +3,7 @@ package com.kellerkompanie.kekosync.server;
 import com.google.gson.GsonBuilder;
 import com.kellerkompanie.kekosync.core.constants.Filenames;
 import com.kellerkompanie.kekosync.server.cli.CommandLineProcessor;
-import com.kellerkompanie.kekosync.server.entities.ServerInfo;
+import com.kellerkompanie.kekosync.core.entities.ServerInfo;
 import com.kellerkompanie.kekosync.server.entities.ServerRepository;
 import com.kellerkompanie.kekosync.server.tasks.RebuildRepositoryTask;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.prefs.BackingStoreException;
 
@@ -107,7 +109,7 @@ public class KekoSyncServer {
     }
 
     public void updateServerInfo() {
-        ServerInfo serverInfo = new ServerInfo(baseURL, infoURL, serverRepositories.values());
+        ServerInfo serverInfo = new ServerInfo(baseURL, infoURL, serverRepositories.keySet());
         String serverInfoJson = new GsonBuilder().setPrettyPrinting().create().toJson(serverInfo);
         try {
             Files.write(Paths.get("").resolve(Filenames.FILENAME_SERVERINFO), serverInfoJson.getBytes("UTF-8"));
