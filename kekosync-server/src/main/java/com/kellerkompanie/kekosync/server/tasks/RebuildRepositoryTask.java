@@ -1,5 +1,6 @@
 package com.kellerkompanie.kekosync.server.tasks;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kellerkompanie.kekosync.core.constants.Filenames;
 import com.kellerkompanie.kekosync.core.entities.Mod;
@@ -16,6 +17,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -53,7 +57,7 @@ public class RebuildRepositoryTask {
         log.debug("step1: checking for .id files");
         if (!checkModIdFileExistence()) return false;
         log.debug("step2: generating sample modgroup file if necessary");
-        if (!checkModgroupFile(true)) return false;
+        if (!checkModgroupFile()) return false;
         log.debug("step3: cleaning zsync");
         if (!cleanupZsync()) return false;
         log.debug("step4: regenerating zsync");
@@ -88,9 +92,7 @@ public class RebuildRepositoryTask {
         return true;
     }
 
-    private boolean checkModgroupFile(boolean forceRebuild) {
-        if (!forceRebuild && Paths.get(serverRepository.getFolder(), Filenames.FILENAME_MODGROUPS).toFile().exists()) return true;
-
+    private boolean checkModgroupFile() {
         List<Path> subdirectories;
         try {
             subdirectories = Files.walk(Paths.get(serverRepository.getFolder()), 1)
@@ -109,7 +111,38 @@ public class RebuildRepositoryTask {
         }
         ModGroup allModsGroup = new ModGroup("all", UUIDGenerator.generateUUID(), modSet);
 
-        Repository repository = new Repository(serverRepository.getName(), UUIDGenerator.generateUUID(), Arrays.asList(allModsGroup), null);
+        // check if there already exists a modgroups file
+        if (Paths.get(serverRepository.getFolder(), Filenames.FILENAME_MODGROUPS).toFile().exists()) {
+            // modgroups file exists, check if it has to be updated
+            BufferedReader br;
+            try {
+                br = new BufferedReader(new FileReader(Paths.get(serverRepository.getFolder(), Filenames.FILENAME_MODGROUPS).toFile()));
+            } catch (FileNotFoundException e) {
+                log.error("couldn't load existing modgroup file", e);
+                return false;
+            }
+            Gson gson = new GsonBuilder().create();
+            Repository oldRepository = gson.fromJson(br, Repository.class);
+
+            // create new repository with existing UUID
+            Repository newRepository = new Repository(serverRepository.getName(), oldRepository.getUuid(), Arrays.asList(allModsGroup), null);
+
+            // check if there were changes that need to be applied
+            if(newRepository.equals(oldRepository)) {
+                log.info("modgroup file exists, no changes necessary");
+                return true;
+            } else {
+                log.info("modgroup file exists, changes will be applied");
+                return writeModgroupFile(newRepository);
+            }
+        } else {
+            // there is no modgroups file, create new one
+            Repository repository = new Repository(serverRepository.getName(), UUIDGenerator.generateUUID(), Arrays.asList(allModsGroup), null);
+            return writeModgroupFile(repository);
+        }
+    }
+
+    private boolean writeModgroupFile(Repository repository) {
         String repositoryJson = new GsonBuilder().setPrettyPrinting().create().toJson(repository);
         try {
             Files.write(Paths.get(serverRepository.getFolder()).resolve(Filenames.FILENAME_MODGROUPS), repositoryJson.getBytes("UTF-8"));
