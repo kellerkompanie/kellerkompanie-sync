@@ -8,4 +8,5 @@ public final class Filenames {
     public static final String FILENAME_MODID = ".id";
     public static final String FILENAME_MODGROUPS = ".modgroups.json";
     public static final String FILENAME_INDEXFILE = ".index.json";
+    public static final String FILENAME_SERVERINFO = ".serverinfo";
 }
