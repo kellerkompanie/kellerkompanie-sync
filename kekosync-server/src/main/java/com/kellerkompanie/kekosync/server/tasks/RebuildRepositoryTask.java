@@ -108,7 +108,7 @@ public class RebuildRepositoryTask {
         for (Path subdirectory : subdirectories) {
             modSet.add(new Mod(subdirectory.getFileName().toString(), FileLocationHelper.getModId(subdirectory)));
         }
-        ModGroup allModsGroup = new ModGroup("all", UUIDGenerator.generateUUID(), modSet);
+        ModGroup allModsGroup = new ModGroup(serverRepository.getName(), UUIDGenerator.generateUUID(), modSet);
 
         // check if there already exists a modgroups file
         if (Paths.get(serverRepository.getFolder(), Filenames.FILENAME_MODGROUPS).toFile().exists()) {
