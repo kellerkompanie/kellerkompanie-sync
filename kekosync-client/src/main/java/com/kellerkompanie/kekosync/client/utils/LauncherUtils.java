@@ -12,6 +12,7 @@ import javafx.scene.control.CheckBoxTreeItem;
 import javafx.scene.control.TreeTableView;
 
 import java.io.File;
+import java.util.Comparator;
 import java.util.LinkedList;
 
 public class LauncherUtils {
@@ -26,11 +27,11 @@ public class LauncherUtils {
         return new Gson().fromJson(indexJsonString, FileindexEntry.class);
     }
 
-    public static LinkedList<String> getModsToStart( ) {
+    public static LinkedList<String> getModsToStart() {
         TreeTableView treeTableView = ModsController.getInstance().getModsTreeTableView();
         LinkedList<String> modsToStart = new LinkedList<String>();
 
-        if(treeTableView.getRoot() == null)
+        if (treeTableView.getRoot() == null)
             return new LinkedList<>();
 
         for (Object modGroupObj : treeTableView.getRoot().getChildren()) {
@@ -42,7 +43,7 @@ public class LauncherUtils {
                 if (customTableItem.getChecked()) {
                     String folderPath = customTableItem.getLocation();
                     String name = customTableItem.getName();
-                    if(name.startsWith("@"))
+                    if (name.startsWith("@"))
                         modsToStart.add(folderPath + File.separator + name);
                 }
             }
@@ -58,5 +59,8 @@ public class LauncherUtils {
     public static String getRepoURL(String repositryIdentifier) {
         return getServerURL() + repositryIdentifier;
     }
+
+
+
 
 }

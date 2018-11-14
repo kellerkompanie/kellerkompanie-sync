@@ -1,7 +1,7 @@
 package com.kellerkompanie.kekosync.server.tasks;
 
 import com.google.gson.Gson;
-import com.kellerkompanie.kekosync.core.entities.GameServerCurrentlyRunningModset;
+import com.kellerkompanie.kekosync.core.entities.RunningModset;
 import com.kellerkompanie.kekosync.core.entities.Mod;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -22,8 +22,8 @@ public class CreateDemoCurrentlyRunningModsetTask {
         Mod modAceX = new Mod("@acex", UUID.fromString("ce021fb4-90ce-431a-a32a-ac801e1fa47b"));
         Mod modCba = new Mod("@CBA_A3", UUID.fromString("df741f57-3e1f-42e7-a962-8c8bd16732a5"));
         Mod modGradTrenches = new Mod("@GRAD_Trenches", UUID.fromString("3df459ad-104d-488d-a67b-e5a2a6333fe3"));
-        GameServerCurrentlyRunningModset gcrm = new GameServerCurrentlyRunningModset("dynamic", "server.kellerkompanie.com", "2302",
-                Arrays.asList(modAce,modCba), Arrays.asList(modAceX, modGradTrenches));
+        RunningModset gcrm = new RunningModset("dynamic", "server.kellerkompanie.com", "2302",
+                Arrays.asList(modAce,modCba,modAceX, modGradTrenches));
 
         String Json = new Gson().toJson(gcrm);
         try {

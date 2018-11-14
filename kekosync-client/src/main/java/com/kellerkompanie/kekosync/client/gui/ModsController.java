@@ -3,10 +3,12 @@ package com.kellerkompanie.kekosync.client.gui;
 import com.google.gson.Gson;
 import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
+import com.kellerkompanie.kekosync.client.utils.SortIgnoreCase;
 import com.kellerkompanie.kekosync.core.constants.Filenames;
 import com.kellerkompanie.kekosync.core.entities.Mod;
 import com.kellerkompanie.kekosync.core.entities.ModGroup;
 import com.kellerkompanie.kekosync.core.entities.Repository;
+import com.kellerkompanie.kekosync.core.entities.RunningModset;
 import com.kellerkompanie.kekosync.core.helper.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import javafx.application.Platform;
@@ -267,15 +269,6 @@ public class ModsController implements Initializable {
         });
     }
 
-    private class RunningModpackInfo {
-        List<ModsController.RunningMod> mods;
-    }
-
-    private class RunningMod {
-        String name;
-        UUID uuid;
-    }
-
     private void updateCurrentlyRunningModpack() {
         String currentModpackJson = null;
         try {
@@ -288,27 +281,19 @@ public class ModsController implements Initializable {
             return;
 
         Gson gson = new Gson();
-        RunningModpackInfo modpackInfo = gson.fromJson(currentModpackJson, RunningModpackInfo.class);
+        RunningModset runningModset = gson.fromJson(currentModpackJson, RunningModset.class);
 
         Platform.runLater(() -> {
             optionalsListView.getItems().clear();
-            ArrayList<String> runningMods = new ArrayList<>(modpackInfo.mods.size());
-            for (RunningMod mod : modpackInfo.mods) {
-                runningMods.add(String.format("%s (%s)", mod.name, mod.uuid));
+            ArrayList<String> runningMods = new ArrayList<>(runningModset.getMods().size());
+            for (Mod mod : runningModset.getMods()) {
+                runningMods.add(String.format("%s (%s)", mod.getName(), mod.getUuid()));
             }
             Collections.sort(runningMods, new SortIgnoreCase());
             for (String runningMod : runningMods) {
                 optionalsListView.getItems().add(runningMod);
             }
         });
-    }
-
-    public class SortIgnoreCase implements Comparator<Object> {
-        public int compare(Object o1, Object o2) {
-            String s1 = (String) o1;
-            String s2 = (String) o2;
-            return s1.toLowerCase().compareTo(s2.toLowerCase());
-        }
     }
 
     private void populatePath(TreeItem<String> item, Path path) {
