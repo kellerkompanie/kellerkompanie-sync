@@ -182,12 +182,7 @@ public class RebuildRepositoryTask {
         }
 
         FileindexEntry fileindexEntry;
-        try {
-            fileindexEntry = FileindexGenerator.index(serverRepository.getFolder());
-        } catch (IOException e) {
-            log.error("ran into trouble during zsync-generation", e);
-            return false;
-        }
+        fileindexEntry = FileindexGenerator.index(serverRepository.getFolder());
 
         String indexJson = new GsonBuilder().setPrettyPrinting().create().toJson(fileindexEntry);
         try {
