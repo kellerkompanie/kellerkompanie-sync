@@ -57,6 +57,8 @@ public class RootController extends Application implements Initializable {
 
         primaryStage.setTitle("KekoSync");
         primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/drawable/kk-signet-small-color.png")));
+        primaryStage.setMinWidth(800);
+        primaryStage.setMinHeight(600);
 
         double width = Settings.getInstance().getWindowWidth();
         double height = Settings.getInstance().getWindowHeight();
