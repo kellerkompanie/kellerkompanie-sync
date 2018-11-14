@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
  * clean out preexisting .zsync files
  * step 4) generate-zsync
  * generate new .zsync files
+ * step 5) create file index
  */
 @AllArgsConstructor
 @EqualsAndHashCode
@@ -188,7 +189,7 @@ public class RebuildRepositoryTask {
         try {
             Files.write(Paths.get(serverRepository.getFolder()).resolve(Filenames.FILENAME_INDEXFILE), indexJson.getBytes("UTF-8"));
         } catch (IOException e) {
-            log.error("Could not write modgroup-file.", e);
+            log.error("Could not write index-file.", e);
             return false;
         }
         return true;
