@@ -1,6 +1,5 @@
 package com.kellerkompanie.kekosync.server.helper;
 
-import com.kellerkompanie.kekosync.core.constants.Filenames;
 import com.kellerkompanie.kekosync.core.helper.FileindexEntry;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import static com.kellerkompanie.kekosync.core.helper.FileLocationHelper.getModId;
 import static com.kellerkompanie.kekosync.core.helper.HashHelper.convertToHex;
@@ -21,7 +19,7 @@ import static com.kellerkompanie.kekosync.core.helper.HashHelper.generateSHA512;
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FileindexGenerator {
-    public static FileindexEntry index(String directoryPath) throws IOException {
+    public static FileindexEntry index(String directoryPath) {
         FileindexEntry fileindexEntry = new FileindexEntry("", 0, true, null, null, new ArrayList<>());
         fillEntry(Paths.get(directoryPath), fileindexEntry, 1);
         return fileindexEntry;
