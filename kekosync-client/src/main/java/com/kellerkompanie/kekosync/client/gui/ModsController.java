@@ -1,5 +1,6 @@
 package com.kellerkompanie.kekosync.client.gui;
 
+import com.google.gson.Gson;
 import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
 import com.kellerkompanie.kekosync.core.constants.Filenames;
@@ -266,25 +267,48 @@ public class ModsController implements Initializable {
         });
     }
 
+    private class RunningModpackInfo {
+        List<ModsController.RunningMod> mods;
+    }
+
+    private class RunningMod {
+        String name;
+        UUID uuid;
+    }
+
     private void updateCurrentlyRunningModpack() {
-        String currentModpack = null;
+        String currentModpackJson = null;
         try {
-            // TODO replace with URL from config retrieved from server
-            currentModpack = HttpHelper.readUrl("http://server.kellerkompanie.com/info.php");
+            currentModpackJson = HttpHelper.readUrl(Settings.getInstance().getServerInfo().getInfoURL());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String mods[] = currentModpack.split("\n");
-        Arrays.sort(mods);
+
+        if (currentModpackJson == null)
+            return;
+
+        Gson gson = new Gson();
+        RunningModpackInfo modpackInfo = gson.fromJson(currentModpackJson, RunningModpackInfo.class);
 
         Platform.runLater(() -> {
             optionalsListView.getItems().clear();
-            for (String mod : mods) {
-                mod = mod.trim();
-                if (!mod.isEmpty() && !mod.startsWith("<"))
-                    optionalsListView.getItems().add(mod);
+            ArrayList<String> runningMods = new ArrayList<>(modpackInfo.mods.size());
+            for (RunningMod mod : modpackInfo.mods) {
+                runningMods.add(String.format("%s (%s)", mod.name, mod.uuid));
+            }
+            Collections.sort(runningMods, new SortIgnoreCase());
+            for (String runningMod : runningMods) {
+                optionalsListView.getItems().add(runningMod);
             }
         });
+    }
+
+    public class SortIgnoreCase implements Comparator<Object> {
+        public int compare(Object o1, Object o2) {
+            String s1 = (String) o1;
+            String s2 = (String) o2;
+            return s1.toLowerCase().compareTo(s2.toLowerCase());
+        }
     }
 
     private void populatePath(TreeItem<String> item, Path path) {
@@ -304,9 +328,9 @@ public class ModsController implements Initializable {
 
     private void updateModsTreeTableView() {
         List<Repository> repositories = new LinkedList<>();
-        HashMap<Repository, FileindexEntry> rootFileindexEntries =  new HashMap<>();
+        HashMap<Repository, FileindexEntry> rootFileindexEntries = new HashMap<>();
         try {
-            for(String repositoryIdentifier : Settings.getInstance().getServerInfo().getRepositoryIdentifiers()) {
+            for (String repositoryIdentifier : Settings.getInstance().getServerInfo().getRepositoryIdentifiers()) {
                 Repository repository = LauncherUtils.getRepository(repositoryIdentifier);
                 FileindexEntry rootFileindexEntry = LauncherUtils.getFileIndexEntry(repositoryIdentifier);
 
@@ -320,11 +344,11 @@ public class ModsController implements Initializable {
 
         List<ModGroup> modGroups = new LinkedList<>();
         HashMap<ModGroup, FileindexEntry> limitedFileIndexEntries = new HashMap<>();
-        for(Repository repository : repositories) {
+        for (Repository repository : repositories) {
             modGroups.addAll(repository.getModGroups());
             FileindexEntry rootFileindexEntry = rootFileindexEntries.get(repository);
             FileindexEntry limitedFileindexEntry = FileSyncHelper.limitFileindexToModgroups(rootFileindexEntry, modGroups);
-            for(ModGroup modGroup : modGroups) {
+            for (ModGroup modGroup : modGroups) {
                 limitedFileIndexEntries.put(modGroup, limitedFileindexEntry);
             }
         }
@@ -472,10 +496,10 @@ public class ModsController implements Initializable {
         }
 
         List<Repository> repositories = new LinkedList<>();
-        HashMap<Repository, FileindexEntry> rootFileindexEntries =  new HashMap<>();
-        HashMap<Repository, String> repositoryIdentifiers =  new HashMap<>();
+        HashMap<Repository, FileindexEntry> rootFileindexEntries = new HashMap<>();
+        HashMap<Repository, String> repositoryIdentifiers = new HashMap<>();
         try {
-            for(String repositoryIdentifier : Settings.getInstance().getServerInfo().getRepositoryIdentifiers()) {
+            for (String repositoryIdentifier : Settings.getInstance().getServerInfo().getRepositoryIdentifiers()) {
                 Repository repository = LauncherUtils.getRepository(repositoryIdentifier);
                 FileindexEntry rootFileindexEntry = LauncherUtils.getFileIndexEntry(repositoryIdentifier);
 
