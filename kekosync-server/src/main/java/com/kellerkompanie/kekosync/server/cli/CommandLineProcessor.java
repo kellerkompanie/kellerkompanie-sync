@@ -12,11 +12,11 @@ public class CommandLineProcessor {
     private static final String BUILD_ALL = "buildall";
     private static final String LIST = "list";
     private static final String HELP = "help";
-    private static final String INI = "ini";
+    private static final String CONFIG = "config";
 
     public void process(String[] args) throws ParseException {
         Options options = new Options();
-        options.addOption(INI, true, "specify settings .ini filepath to be loaded");
+        options.addOption(CONFIG, true, "specify settings .json filepath to be loaded");
         options.addOption(BUILD, true, "build repository");
         options.addOption(BUILD_ALL, false, "build all repositories");
         options.addOption(LIST, false, "list repositories");
@@ -27,14 +27,12 @@ public class CommandLineProcessor {
         CommandLine cmd = parser.parse(options, args);
         KekoSyncServer kekoSyncServer = null;
 
-        if(cmd.hasOption(INI)) {
-            String iniFile = cmd.getOptionValue(INI);
-            kekoSyncServer = new KekoSyncServer(iniFile);
-        } else {
-            System.out.println("error: you must specify a .ini to load");
-            formatter.printHelp("ini", options);
-            System.exit(1);
+        String jsonFile = "kekosync_config.json";
+        if(cmd.hasOption(CONFIG)) {
+            jsonFile = cmd.getOptionValue(CONFIG);
+
         }
+        kekoSyncServer = new KekoSyncServer(jsonFile);
 
         if (cmd.hasOption(BUILD)) {
             String repositoryName = cmd.getOptionValue(BUILD);

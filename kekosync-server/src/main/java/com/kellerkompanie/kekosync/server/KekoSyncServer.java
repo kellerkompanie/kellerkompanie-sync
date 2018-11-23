@@ -1,18 +1,17 @@
 package com.kellerkompanie.kekosync.server;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kellerkompanie.kekosync.core.constants.Filenames;
 import com.kellerkompanie.kekosync.core.entities.ServerInfo;
 import com.kellerkompanie.kekosync.server.cli.CommandLineProcessor;
+import com.kellerkompanie.kekosync.server.entities.ServerConfig;
 import com.kellerkompanie.kekosync.server.entities.ServerRepository;
 import com.kellerkompanie.kekosync.server.tasks.RebuildRepositoryTask;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.ParseException;
-import org.ini4j.Ini;
-import org.ini4j.IniPreferences;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -25,18 +24,17 @@ import java.util.prefs.BackingStoreException;
 public class KekoSyncServer {
 
     private HashMap<String, ServerRepository> serverRepositories;
-    private String baseURL;
-    private String infoURL;
+    private ServerConfig serverConfig;
 
     /**
-     * @param iniFile the path to the .ini file containing the configuration.
+     * @param jsonSettingsFile the path to the .json file containing the configuration.
      */
-    public KekoSyncServer(String iniFile) {
+    public KekoSyncServer(String jsonSettingsFile) {
         serverRepositories = new HashMap<>();
 
         try {
-            readSettingsFromINI(iniFile);
-        } catch (IOException | BackingStoreException e) {
+            readSettingsFromJson(jsonSettingsFile);
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.exit(1);
         }
@@ -102,29 +100,32 @@ public class KekoSyncServer {
     /**
      * Opens the provided .ini file and loads contained configuration settings.
      *
-     * @param iniFilePath the path to the .ini file.
-     * @throws IOException           thrown if there is a problem with the provided file.
-     * @throws BackingStoreException thrown if .ini file is malformed.
+     * @param jsonFilePath the path to the .ini file.
+     * @throws FileNotFoundException thrown if there is a problem with the provided file.
      */
-    private void readSettingsFromINI(String iniFilePath) throws IOException, BackingStoreException {
-        Ini ini = new Ini(new File(iniFilePath));
-        java.util.prefs.Preferences prefs = new IniPreferences(ini);
+    private void readSettingsFromJson(String jsonFilePath) throws FileNotFoundException {
+        File jsonFile = new File(jsonFilePath);
+        GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
+        Gson gson = builder.create();
+        if (jsonFile.exists()) {
+            // try to read the settings from provided file
+            FileReader fileReader = new FileReader(jsonFile);
+            serverConfig = gson.fromJson(fileReader, ServerConfig.class);
+            log.info("read config from file {}", jsonFile.getAbsoluteFile());
+        } else {
+            // file was not found, fall back to default config
+            log.warn("settings file {} not found, falling back to default config", jsonFile.getAbsoluteFile());
+            serverConfig = ServerConfig.getDefaultConfig();
+            String jsonStr = gson.toJson(serverConfig);
 
-        baseURL = prefs.node("general").get("baseURL", null);
-        infoURL = prefs.node("general").get("infoURL", null);
-
-        // read repositories
-        String[] headerNames = prefs.childrenNames();
-        for (String headerName : headerNames) {
-            if (headerName.startsWith("repo:")) {
-                String repoIdentifier = headerName.replaceFirst("repo:", "");
-                String repoName = prefs.node(headerName).get("name", null);
-                String repoFolder = prefs.node(headerName).get("folder", null);
-
-                String repoURL = baseURL.endsWith("/") ? baseURL + repoIdentifier : baseURL + "/" + repoIdentifier;
-                ServerRepository serverRepository = new ServerRepository(repoIdentifier, repoName, repoFolder, repoURL);
-                serverRepositories.put(repoIdentifier, serverRepository);
+            try (PrintWriter out = new PrintWriter(jsonFile)) {
+                out.print(jsonStr);
             }
+        }
+
+        // additionally create a map for easy access to repositories based on identifier
+        for (ServerRepository serverRepository : serverConfig.getRepositories()) {
+            this.serverRepositories.put(serverRepository.getIdentifier(), serverRepository);
         }
     }
 
@@ -141,7 +142,7 @@ public class KekoSyncServer {
      * Writes the current state into the .serverinfo file, including the baseURL, infoURL and all repositories.
      */
     private void updateServerInfo() {
-        ServerInfo serverInfo = new ServerInfo(baseURL, infoURL, serverRepositories.keySet());
+        ServerInfo serverInfo = new ServerInfo(serverConfig.getBaseURL(), serverConfig.getInfoURL(), serverRepositories.keySet());
         String serverInfoJson = new GsonBuilder().setPrettyPrinting().create().toJson(serverInfo);
         try {
             Files.write(Paths.get("").resolve(Filenames.FILENAME_SERVERINFO), serverInfoJson.getBytes("UTF-8"));
