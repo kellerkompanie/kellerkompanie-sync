@@ -8,6 +8,8 @@ import org.apache.commons.cli.*;
  */
 public class CommandLineProcessor {
 
+    private static final String DEFAULT_CONFIG_FILE = "kekosync_config.json";
+
     private static final String BUILD = "build";
     private static final String BUILD_ALL = "buildall";
     private static final String LIST = "list";
@@ -25,14 +27,12 @@ public class CommandLineProcessor {
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
         CommandLine cmd = parser.parse(options, args);
-        KekoSyncServer kekoSyncServer = null;
 
-        String jsonFile = "kekosync_config.json";
+        String jsonFile = DEFAULT_CONFIG_FILE;
         if(cmd.hasOption(CONFIG)) {
             jsonFile = cmd.getOptionValue(CONFIG);
-
         }
-        kekoSyncServer = new KekoSyncServer(jsonFile);
+        KekoSyncServer kekoSyncServer = new KekoSyncServer(jsonFile);
 
         if (cmd.hasOption(BUILD)) {
             String repositoryName = cmd.getOptionValue(BUILD);

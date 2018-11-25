@@ -15,6 +15,7 @@ public class FileindexEntry implements Serializable {
     @Getter @Setter private boolean directory;
     @Getter @Setter private String UUID; //this property is filled with the content of the .id-file in case this is a primary mod-folder
     @Getter @Setter private String hash;
+    @Getter @Setter private long lastModified;
     @Getter private List<FileindexEntry> children = new ArrayList<>();
 
     public void addChild(FileindexEntry child) { children.add(child); }

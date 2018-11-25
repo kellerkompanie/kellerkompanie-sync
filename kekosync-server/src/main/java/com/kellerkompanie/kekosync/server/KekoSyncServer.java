@@ -15,6 +15,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.prefs.BackingStoreException;
 
 /**
@@ -41,9 +42,12 @@ public class KekoSyncServer {
     }
 
     public static void main(String[] args) throws ParseException {
+        Locale.setDefault(Locale.ENGLISH);
+        log.info("args {} {}", args.length, args);
+
         CommandLineProcessor commandLineProcessor = new CommandLineProcessor();
 
-        if (args.length > 1) {
+        if (args.length > 0) {
             // arguments were provided on the command line, parse 'em
             commandLineProcessor.process(args);
         } else {

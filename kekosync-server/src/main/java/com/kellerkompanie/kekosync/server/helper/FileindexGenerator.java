@@ -20,7 +20,7 @@ import static com.kellerkompanie.kekosync.core.helper.HashHelper.generateSHA512;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FileindexGenerator {
     public static FileindexEntry index(String directoryPath) {
-        FileindexEntry fileindexEntry = new FileindexEntry("", 0, true, null, null, new ArrayList<>());
+        FileindexEntry fileindexEntry = new FileindexEntry("", 0, true, null, null, 0, new ArrayList<>());
         fillEntry(Paths.get(directoryPath), fileindexEntry, 1);
         return fileindexEntry;
     }
@@ -34,13 +34,15 @@ public final class FileindexGenerator {
                     if ( level == 1 ) { //we are on the first level and there might be .id files there! oh joy, let's read them to annotate this entry proper!
                         uuid = getModId(entry).toString();
                     }
-                    FileindexEntry newfileindexEntry = new FileindexEntry(entry.getFileName().toString(), 0, true, uuid, null, new ArrayList<>());
+                    long lastModified = Files.getLastModifiedTime(entry).toMillis();
+                    FileindexEntry newfileindexEntry = new FileindexEntry(entry.getFileName().toString(), 0, true, uuid, null, lastModified, new ArrayList<>());
                     fillEntry(entry, newfileindexEntry, level+1);
                     fileindexEntry.addChild(newfileindexEntry);
                     size += newfileindexEntry.getSize();
                 } else {
                     String fileHash = convertToHex(generateSHA512(entry));
-                    FileindexEntry newfileindexEntry = new FileindexEntry(entry.getFileName().toString(), Files.size(entry), false, null, fileHash, new ArrayList<>());
+                    long lastModified = Files.getLastModifiedTime(entry).toMillis();
+                    FileindexEntry newfileindexEntry = new FileindexEntry(entry.getFileName().toString(), Files.size(entry), false, null, fileHash, lastModified, new ArrayList<>());
                     fileindexEntry.addChild(newfileindexEntry);
                     size += newfileindexEntry.getSize();
                 }
