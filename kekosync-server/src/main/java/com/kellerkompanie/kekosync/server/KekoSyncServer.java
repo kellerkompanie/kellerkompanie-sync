@@ -43,7 +43,6 @@ public class KekoSyncServer {
 
     public static void main(String[] args) throws ParseException {
         Locale.setDefault(Locale.ENGLISH);
-        log.info("args {} {}", args.length, args);
 
         CommandLineProcessor commandLineProcessor = new CommandLineProcessor();
 
@@ -115,7 +114,7 @@ public class KekoSyncServer {
             // try to read the settings from provided file
             FileReader fileReader = new FileReader(jsonFile);
             serverConfig = gson.fromJson(fileReader, ServerConfig.class);
-            log.info("read config from file {}", jsonFile.getAbsoluteFile());
+            log.info("reading config from file {}", jsonFile.getAbsoluteFile());
         } else {
             // file was not found, fall back to default config
             log.warn("settings file {} not found, falling back to default config", jsonFile.getAbsoluteFile());
