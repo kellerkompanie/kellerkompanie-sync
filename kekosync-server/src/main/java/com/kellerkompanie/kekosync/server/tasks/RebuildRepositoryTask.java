@@ -80,7 +80,7 @@ public class RebuildRepositoryTask {
         for (Path subdirectory : subdirectories) {
             if (!subdirectory.resolve(Filenames.FILENAME_MODID).toFile().exists()) {
                 try {
-                    Files.write(subdirectory.resolve(Filenames.FILENAME_MODID), UUIDGenerator.generateUUID().toString().getBytes("UTF-8"));
+                    Files.write(subdirectory.resolve(Filenames.FILENAME_MODID), UUIDGenerator.generateUUID().toString().getBytes(StandardCharsets.UTF_8));
                 } catch (IOException e) {
                     log.error("Could not write .id-file.", e);
                     return false;
@@ -147,7 +147,7 @@ public class RebuildRepositoryTask {
     private boolean writeModgroupFile(Repository repository) {
         String repositoryJson = new GsonBuilder().setPrettyPrinting().create().toJson(repository);
         try {
-            Files.write(Paths.get(serverRepository.getFolder()).resolve(Filenames.FILENAME_MODGROUPS), repositoryJson.getBytes("UTF-8"));
+            Files.write(Paths.get(serverRepository.getFolder()).resolve(Filenames.FILENAME_MODGROUPS), repositoryJson.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             log.error("Could not write modgroup-file.", e);
             return false;
@@ -195,7 +195,7 @@ public class RebuildRepositoryTask {
 
         String indexJson = gson.toJson(fileindexEntry);
         try {
-            Files.write(fileindexFilePath, indexJson.getBytes("UTF-8"));
+            Files.write(fileindexFilePath, indexJson.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             log.error("Could not write index-file.", e);
             return false;

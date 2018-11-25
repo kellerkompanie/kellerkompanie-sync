@@ -12,11 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.ParseException;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.prefs.BackingStoreException;
 
 /**
  * @author Schwaggot
@@ -148,7 +148,7 @@ public class KekoSyncServer {
         ServerInfo serverInfo = new ServerInfo(serverConfig.getBaseURL(), serverConfig.getInfoURL(), serverRepositories.keySet());
         String serverInfoJson = new GsonBuilder().setPrettyPrinting().create().toJson(serverInfo);
         try {
-            Files.write(Paths.get("").resolve(Filenames.FILENAME_SERVERINFO), serverInfoJson.getBytes("UTF-8"));
+            Files.write(Paths.get("").resolve(Filenames.FILENAME_SERVERINFO), serverInfoJson.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             log.error("could not write serverinfo file.", e);
         }

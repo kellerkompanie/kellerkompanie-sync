@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -27,7 +28,7 @@ public class CreateDemoCurrentlyRunningModsetTask {
 
         String Json = new Gson().toJson(gcrm);
         try {
-            Files.write(outputFilename, Json.getBytes("UTF-8"));
+            Files.write(outputFilename, Json.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             log.error("Could not write modgroup-file.", e);
             return false;

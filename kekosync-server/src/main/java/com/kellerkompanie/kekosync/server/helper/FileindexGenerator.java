@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -22,12 +21,10 @@ import static com.kellerkompanie.kekosync.core.helper.HashHelper.generateSHA512;
 public final class FileindexGenerator {
 
     private HashMap<String, FileindexEntry> fileindexTreeMap;
-    private FileindexEntry existingFileindexEntry;
     private String directoryPath;
 
     public FileindexGenerator(FileindexEntry existingFileindexEntry, String directoryPath) {
         this.fileindexTreeMap = new HashMap<>();
-        this.existingFileindexEntry = existingFileindexEntry;
         this.directoryPath = directoryPath;
         addToMap(existingFileindexEntry);
     }
