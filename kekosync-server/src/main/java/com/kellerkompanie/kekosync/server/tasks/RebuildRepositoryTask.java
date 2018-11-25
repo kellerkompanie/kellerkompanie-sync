@@ -17,10 +17,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -178,16 +176,26 @@ public class RebuildRepositoryTask {
     }
 
     private boolean generateFileindex() {
-        if (Paths.get(serverRepository.getFolder(), Filenames.FILENAME_INDEXFILE).toFile().exists()) {
-            Paths.get(serverRepository.getFolder(), Filenames.FILENAME_INDEXFILE).toFile().delete();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        FileindexEntry existingFileindexEntry = null;
+        Path fileindexFilePath = Paths.get(serverRepository.getFolder(), Filenames.FILENAME_INDEXFILE);
+        if (Files.exists(fileindexFilePath)) {
+            //Paths.get(serverRepository.getFolder(), Filenames.FILENAME_INDEXFILE).toFile().delete();
+            try {
+                Reader reader = Files.newBufferedReader(fileindexFilePath, StandardCharsets.UTF_8);
+                existingFileindexEntry = gson.fromJson(reader, FileindexEntry.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
+        FileindexGenerator fileindexGenerator = new FileindexGenerator(existingFileindexEntry, serverRepository.getFolder());
         FileindexEntry fileindexEntry;
-        fileindexEntry = FileindexGenerator.index(serverRepository.getFolder());
+        fileindexEntry = fileindexGenerator.index();
 
-        String indexJson = new GsonBuilder().setPrettyPrinting().create().toJson(fileindexEntry);
+        String indexJson = gson.toJson(fileindexEntry);
         try {
-            Files.write(Paths.get(serverRepository.getFolder()).resolve(Filenames.FILENAME_INDEXFILE), indexJson.getBytes("UTF-8"));
+            Files.write(fileindexFilePath, indexJson.getBytes("UTF-8"));
         } catch (IOException e) {
             log.error("Could not write index-file.", e);
             return false;
