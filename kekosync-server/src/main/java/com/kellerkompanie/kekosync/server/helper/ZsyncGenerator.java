@@ -49,17 +49,17 @@ public class ZsyncGenerator {
     private static void deleteFile(Path filePath) {
         try {
             InputStream inputStream = Files.newInputStream(filePath);
-            ControlFile controlFile = ControlFile.read(inputStream);
+            ControlFile zsyncFile = ControlFile.read(inputStream);
             inputStream.close();
 
-            long zsyncMTime = controlFile.getHeader().getMtime().getTime();
-            long zsyncSize = controlFile.getHeader().getLength();
+            long zsyncMTime = zsyncFile.getHeader().getMtime().getTime();
+            long zsyncSize = zsyncFile.getHeader().getLength();
             Path originalFile = getPathOfOriginal(filePath);
             long originalMTime = (Files.getLastModifiedTime(originalFile).toMillis() / 1000) * 1000;  // zsync files are ignoring millisecond precision
             long originalSize = Files.size(originalFile);
 
             // only delete if zsync is outdated
-            if ((zsyncMTime < originalMTime) || zsyncSize != originalSize) {
+            if ((zsyncMTime < originalMTime) || (zsyncSize != originalSize)) {
                 Files.delete(filePath);
                 log.info("deleted {}", filePath);
             }
