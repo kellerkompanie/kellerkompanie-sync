@@ -51,6 +51,10 @@ public final class FileindexGenerator {
         long size = 0;
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path)) {
             for (Path entry : directoryStream) {
+                // ignore ArmASync files
+                if (entry.endsWith(".a3s"))
+                    continue;
+
                 if (Files.isDirectory(entry)) {
                     String uuid = null;
                     if (level == 1) { //we are on the first level and there might be .id files there! oh joy, let's read them to annotate this entry proper!
