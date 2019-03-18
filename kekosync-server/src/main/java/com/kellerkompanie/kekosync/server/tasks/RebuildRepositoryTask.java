@@ -179,6 +179,7 @@ public class RebuildRepositoryTask {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         FileindexEntry existingFileindexEntry = null;
         Path fileindexFilePath = Paths.get(serverRepository.getFolder(), Filenames.FILENAME_INDEXFILE);
+        FileindexGenerator fileindexGenerator;
         if (Files.exists(fileindexFilePath)) {
             //Paths.get(serverRepository.getFolder(), Filenames.FILENAME_INDEXFILE).toFile().delete();
             try {
@@ -187,14 +188,14 @@ public class RebuildRepositoryTask {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            // generate file-index generator from existing indices
+            fileindexGenerator = new FileindexGenerator(existingFileindexEntry, serverRepository.getFolder());
+        } else {
+            // there is no existing index file, so create a new generator
+            fileindexGenerator = new FileindexGenerator(serverRepository.getFolder());
         }
 
-        if (existingFileindexEntry == null) {
-            log.error("error while reading file-index file: {}", fileindexFilePath);
-            return false;
-        }
-
-        FileindexGenerator fileindexGenerator = new FileindexGenerator(existingFileindexEntry, serverRepository.getFolder());
         FileindexEntry fileindexEntry;
         fileindexEntry = fileindexGenerator.index();
 

@@ -23,14 +23,20 @@ public final class FileindexGenerator {
     private HashMap<String, FileindexEntry> fileindexTreeMap;
     private String directoryPath;
 
-    public FileindexGenerator(FileindexEntry existingFileindexEntry, String directoryPath) {
-        if (existingFileindexEntry == null)
-            throw new IllegalArgumentException("FileindexEntry cannot be null");
+    public FileindexGenerator(String directoryPath) {
         if (directoryPath == null)
             throw new IllegalArgumentException("Directory path cannot be null");
 
         this.fileindexTreeMap = new HashMap<>();
         this.directoryPath = directoryPath;
+    }
+
+    public FileindexGenerator(FileindexEntry existingFileindexEntry, String directoryPath) {
+        this(directoryPath);
+
+        if (existingFileindexEntry == null)
+            throw new IllegalArgumentException("FileindexEntry cannot be null");
+
         addToMap(existingFileindexEntry);
     }
 
