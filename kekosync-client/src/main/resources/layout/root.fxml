@@ -9,12 +9,12 @@
 <VBox xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.kellerkompanie.kekosync.client.gui.RootController" >
     <TabPane fx:id="tabPane" maxHeight="Infinity" maxWidth="Infinity" minHeight="-Infinity" minWidth="-Infinity"
-             tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+             tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" >
         <Tab fx:id="modsTab" text="Mods">
-            <fx:include source="mods.fxml"/>
+            <fx:include source="TabMods.fxml"/>
         </Tab>
         <Tab fx:id="settingsTab" text="Settings">
-            <fx:include source="settingsTab.fxml"/>
+            <fx:include source="tab_settings.fxml"/>
         </Tab>
     </TabPane>
 

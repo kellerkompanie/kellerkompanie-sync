@@ -21,4 +21,6 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok:1.18.6'
     annotationProcessor 'org.projectlombok:lombok:1.18.6'
+
+    compile 'com.jfoenix:jfoenix:8.0.8'
 }
