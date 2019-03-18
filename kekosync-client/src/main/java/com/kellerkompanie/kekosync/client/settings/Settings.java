@@ -170,8 +170,4 @@ public class Settings {
         param.setValue(value);
         saveSettings();
     }
-
-    public void setServerInfo(ServerInfo serverInfo) {
-        this.serverInfo = serverInfo;
-    }
 }
