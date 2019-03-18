@@ -24,12 +24,20 @@ public final class FileindexGenerator {
     private String directoryPath;
 
     public FileindexGenerator(FileindexEntry existingFileindexEntry, String directoryPath) {
+        if (existingFileindexEntry == null)
+            throw new IllegalArgumentException("FileindexEntry cannot be null");
+        if (directoryPath == null)
+            throw new IllegalArgumentException("Directory path cannot be null");
+
         this.fileindexTreeMap = new HashMap<>();
         this.directoryPath = directoryPath;
         addToMap(existingFileindexEntry);
     }
 
     private void addToMap(FileindexEntry fileindexEntry) {
+        if (fileindexEntry == null)
+            throw new IllegalArgumentException("FileindexEntry cannot be null");
+
         String fileindexEntryTreePath = fileindexEntry.getFileindexTreePath();
         fileindexTreeMap.put(fileindexEntryTreePath, fileindexEntry);
         for (FileindexEntry child : fileindexEntry.getChildren()) {
@@ -48,6 +56,11 @@ public final class FileindexGenerator {
     }
 
     private void fillEntry(Path path, FileindexEntry fileindexEntry, int level) {
+        if (path == null)
+            throw new IllegalArgumentException("path cannot be null");
+        if (fileindexEntry == null)
+            throw new IllegalArgumentException("FileindexEntry cannot be null");
+
         long size = 0;
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path)) {
             for (Path entry : directoryStream) {
