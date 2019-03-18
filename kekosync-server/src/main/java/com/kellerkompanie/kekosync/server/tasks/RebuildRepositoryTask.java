@@ -189,6 +189,11 @@ public class RebuildRepositoryTask {
             }
         }
 
+        if (existingFileindexEntry == null) {
+            log.error("error while reading file-index file: {}", fileindexFilePath);
+            return false;
+        }
+
         FileindexGenerator fileindexGenerator = new FileindexGenerator(existingFileindexEntry, serverRepository.getFolder());
         FileindexEntry fileindexEntry;
         fileindexEntry = fileindexGenerator.index();
