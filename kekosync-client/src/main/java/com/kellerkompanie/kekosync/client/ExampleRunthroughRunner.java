@@ -28,13 +28,13 @@ public class ExampleRunthroughRunner {
         String repoJsonString = HttpHelper.readUrl(repoBaseURL + Filenames.FILENAME_MODGROUPS);
         Repository repository = new Gson().fromJson(repoJsonString, Repository.class);
 
-        System.out.println(repository);
+        log.info("{}", repository);
 
         String indexJsonString = HttpHelper.readUrl(repoBaseURL + Filenames.FILENAME_INDEXFILE);
         FileindexEntry rootindexEntry = new Gson().fromJson(indexJsonString, FileindexEntry.class);
 
-        System.out.println("local results");
-        System.out.println(rootindexEntry);
+        log.info("{}", "local results");
+        log.info("{}", rootindexEntry);
 
         ModGroup allModGroup = repository.getModGroups().get(0);
 
@@ -53,7 +53,7 @@ public class ExampleRunthroughRunner {
         FileindexWithSyncEntry fileindexWithSyncEntry = checksyncFileindexTree(limitedFileindexEntry, Paths.get("E:\\kekosync-local"));
 
 
-        System.out.println("done");
+        log.info("{}", "done");
 
 
         //Zsync zsync = new Zsync();

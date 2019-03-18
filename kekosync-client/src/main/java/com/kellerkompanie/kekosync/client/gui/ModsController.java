@@ -323,7 +323,7 @@ public class ModsController implements Initializable {
                 rootFileindexEntries.put(repository, rootFileindexEntry);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("{}", e);
             System.exit(1);
         }
 
@@ -341,7 +341,7 @@ public class ModsController implements Initializable {
         TreeItem<CustomTableItem> rootNode = new TreeItem<>(new RootTableItem());
 
         for (ModGroup modGroup : modGroups) {
-            System.out.println("ModsController: checking modGroup '" + modGroup.getName() + "'");
+            log.info("{}", "ModsController: checking modGroup '" + modGroup.getName() + "'");
 
             ModGroupTableItem modGroupTableItem = new ModGroupTableItem(modGroup);
             CheckBoxTreeItem<CustomTableItem> modGroupTreeItem = new CheckBoxTreeItem<>(modGroupTableItem);
@@ -416,7 +416,7 @@ public class ModsController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 TreeItem<CustomTableItem> selectedItem = treeTableView.getSelectionModel().getSelectedItem();
-                System.out.println(selectedItem);
+                log.info("{}", selectedItem);
             }
         });
         MenuItem item2 = new MenuItem("Change Location");
@@ -425,7 +425,7 @@ public class ModsController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 TreeItem<CustomTableItem> selectedItem = treeTableView.getSelectionModel().getSelectedItem();
-                System.out.println(selectedItem);
+                log.info("{}", selectedItem);
             }
         });
 
