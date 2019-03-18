@@ -10,9 +10,4 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
-    annotationProcessor group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
-    compile 'org.projectlombok:lombok:1.16.20'
-    annotationProcessor 'org.projectlombok:lombok:1.16.20'
 }
