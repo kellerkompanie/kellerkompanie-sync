@@ -1,68 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.control.ProgressBar?>
-<HBox fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
-      xmlns="http://javafx.com/javafx/2.2">
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<HBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/2.2" style="-fx-background-color:#161618;"
+      fx:controller="com.kellerkompanie.kekosync.client.gui.LauncherController">
 
-    <AnchorPane fx:id="sideMenu" style=" -fx-border-color:black; -fx-border-width: 1; -fx-border-style: solid;">
+    <AnchorPane fx:id="sideMenu">
         <children>
-            <ImageView AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" id="logo" fitWidth="164" preserveRatio="true">
-                <image>
-                    <Image url="/drawable/kk-logo-full.png" />
-                </image>
-            </ImageView>
+            <VBox AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" alignment="TOP_CENTER" spacing="10">
+                <ImageView id="logo" fitWidth="128" preserveRatio="true">
+                    <image>
+                        <Image url="/drawable/kk-logo-full.png"/>
+                    </image>
+                </ImageView>
 
-            <VBox alignment="TOP_CENTER">
-                <JFXButton prefWidth="100" prefHeight="40" buttonType="FLAT" text="News"
-                           style="-fx-font-size:14px;"/>
-                <JFXButton prefWidth="100" prefHeight="40" buttonType="FLAT" text="Mods"
-                           style="-fx-text-fill:#5264AE;-fx-font-size:14px;"/>
-                <JFXButton prefWidth="100" prefHeight="40" buttonType="FLAT" text="Settings"
-                           style="-fx-font-size:14px;" disable="true"/>
+                <JFXButton fx:id="buttonNews" prefWidth="100" prefHeight="40" buttonType="FLAT" text="News"
+                           style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
+                <JFXButton fx:id="buttonMods" prefWidth="100" prefHeight="40" buttonType="FLAT" text="Mods"
+                           style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
+                <JFXButton fx:id="buttonSettings" prefWidth="100" prefHeight="40" buttonType="FLAT" text="Settings"
+                           style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
             </VBox>
 
-            <JFXButton AnchorPane.bottomAnchor="0.0" prefWidth="100" prefHeight="40" buttonType="FLAT" text="Play" style="-fx-font-size:14px;" disable="true"/>
+            <HBox alignment="BOTTOM_CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="0.0"
+                  AnchorPane.leftAnchor="0.0" spacing="10">
+                <JFXButton fx:id="buttonPlay" prefWidth="100" prefHeight="40" buttonType="FLAT"
+                           style="-fx-text-fill:#f2f5f4; -fx-background-color:#ee4d2e; -fx-font-size:14px;  -fx-background-radius: 0;"
+                           text="Play"/>
+            </HBox>
+
         </children>
     </AnchorPane>
 
-    <VBox>
-        <StackPane style=" -fx-border-color:red; -fx-border-width: 1; -fx-border-style: solid;">
-            <VBox maxWidth="400" maxHeight="400" spacing="10">
-                <Label styleClass="title-label">Flat Buttons</Label>
-                <HBox spacing="20" style="-fx-padding: 0 0 0 50;">
-                    <JFXButton prefWidth="100" prefHeight="40" buttonType="FLAT" text="BUTTON"
-                               style="-fx-font-size:14px;"/>
-                    <JFXButton prefWidth="100" prefHeight="40" buttonType="FLAT" text="COLORED"
-                               style="-fx-text-fill:#5264AE;-fx-font-size:14px;"/>
-                    <JFXButton prefWidth="100" prefHeight="40" buttonType="FLAT" text="DISABLED"
-                               style="-fx-font-size:14px;" disable="true"/>
-                </HBox>
-
-                <Label styleClass="title-label">Raised Buttons</Label>
-                <HBox spacing="40" style="-fx-padding: 0 0 0 50;">
-                    <JFXButton prefWidth="100" prefHeight="40" buttonType="RAISED" text="BUTTON"
-                               style="-fx-font-size:14px;-fx-background-color:WHITE;"/>
-                    <JFXButton prefWidth="100" prefHeight="40" buttonType="RAISED" text="COLORED"
-                               style="-fx-text-fill:WHITE;-fx-background-color:#5264AE;-fx-font-size:14px;"/>
-                    <JFXButton prefWidth="100" prefHeight="40" buttonType="RAISED" text="DISABLED"
-                               style="-fx-background-color:WHITE;-fx-font-size:14px;" disable="true"/>
-                </HBox>
-
-                <Label styleClass="title-label">Styling Options</Label>
-                <HBox spacing="20" style="-fx-padding: 0 0 0 50;">
-                    <JFXButton prefWidth="100" prefHeight="40" buttonType="RAISED" text="CUSTOM RIPPLER"
-                               styleClass="custom-jfx-button-raised"/>
-                </HBox>
-            </VBox>
+    <VBox HBox.hgrow="ALWAYS">
+        <StackPane fx:id="content" VBox.vgrow="ALWAYS">
+            <children>
+                <fx:include source="News.fxml"/>
+                <fx:include source="Mods.fxml"/>
+                <fx:include source="Settings.fxml"/>
+            </children>
         </StackPane>
-        <ProgressBar style=" -fx-border-color:green; -fx-border-width: 1; -fx-border-style: solid;">
-
-        </ProgressBar>
+        <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <ProgressBar progress="0.2" styleClass="custom-jfx-progress-bar" AnchorPane.leftAnchor="10.0"
+                         AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0" prefHeight="40"
+                         fx:id="progressBar"/>
+            <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="10.0"
+                  AnchorPane.topAnchor="0.0" alignment="CENTER">
+                <Text textAlignment="CENTER" text="90% Downloading keko_canteen.pbo ..."
+                      style="-fx-fill:#f2f5f4; -fx-font-size:14px; -fx-font-smoothing-type: lcd;"/>
+            </HBox>
+        </AnchorPane>
     </VBox>
 </HBox>
 

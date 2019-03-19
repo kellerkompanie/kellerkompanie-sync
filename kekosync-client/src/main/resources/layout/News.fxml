@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXMasonryPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+<VBox spacing="10" fx:id="newsRoot"
+      xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.kellerkompanie.kekosync.client.gui.NewsController">
+
+    <ScrollPane fitToWidth="true" fx:id="scrollPane" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+        <JFXMasonryPane fx:id="masonryPane" HSpacing="10" VSpacing="10" style="-fx-background-color: #161618">
+            <padding>
+                <Insets left="10" top="10" right="10" bottom="10" />
+            </padding>
+        </JFXMasonryPane>
+    </ScrollPane>
+</VBox>

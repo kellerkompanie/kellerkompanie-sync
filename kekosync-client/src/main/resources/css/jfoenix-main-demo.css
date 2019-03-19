@@ -377,16 +377,22 @@
     -fx-background-color: #0F9D58;
 }
 
-.custom-jfx-progress-bar > .bar {
-    -fx-background-color: #ff8000;
-}
-.custom-jfx-progress-bar > .secondary-bar{
-    -fx-background-color: rgba(255, 135, 21, 0.18);
+.custom-jfx-progress-bar {
+
 }
 
-.custom-jfx-progress-bar-stroke > .bar {
-    -fx-background-color: #5264AE;
-    -fx-padding: 6;
+.custom-jfx-progress-bar > .track {
+    -fx-background-color: #212121;
+    -fx-control-inner-background: #888888;
+}
+
+.custom-jfx-progress-bar > .bar {
+    -fx-background-color: #ee4d2e;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+.custom-jfx-progress-bar > .secondary-bar{
+    -fx-background-color: #5cb85c;
 }
 
 /*******************************************************************************
@@ -914,61 +920,7 @@
     -fx-padding: 5 0 5 0;
 }
 
-/*******************************************************************************
- *                                                                             *
- * Scroll Bar			                                                       *
- *                                                                             *
- ******************************************************************************/
 
-.scroll-bar:vertical > .track-background, .scroll-bar:horizontal > .track-background {
-    -fx-background-color: #F1F1F1;
-    -fx-background-insets: 0.0;
-}
-
-.scroll-bar:vertical > .thumb, .scroll-bar:horizontal > .thumb {
-    -fx-background-color: #BCBCBC;
-    -fx-background-insets: 0.0;
-    -fx-background-radius: 1.0;
-}
-
-.scroll-bar > .increment-button, .scroll-bar > .decrement-button {
-    -fx-padding: 5 2 5 2;
-}
-
-.scroll-bar > .increment-button, .scroll-bar > .decrement-button, .scroll-bar:hover > .increment-button, .scroll-bar:hover > .decrement-button {
-    -fx-background-color: transparent;
-}
-
-.scroll-bar > .increment-button > .increment-arrow, .scroll-bar > .decrement-button > .decrement-arrow {
-    -fx-background-color: rgb(150.0, 150.0, 150.0);
-}
-
-.scroll-bar > .increment-button > .increment-arrow {
-    -fx-shape: "M298 426h428l-214 214z";
-}
-
-.scroll-bar > .decrement-button > .decrement-arrow {
-    -fx-shape: "M298 598l214-214 214 214h-428z";
-}
-
-/*******************************************************************************
- *                                                                             *
- * Scroll Pane			                                                       *
- *                                                                             *
- ******************************************************************************/
-
-.scroll-pane {
-    -fx-background-insets: 0;
-    -fx-padding: 0;
-}
-
-.scroll-pane:focused {
-    -fx-background-insets: 0;
-}
-
-.scroll-pane .corner {
-    -fx-background-insets: 0;
-}
 
 /*******************************************************************************
 *                                                                              *
@@ -1000,14 +952,6 @@
 .jfx-text-field .error-icon, .jfx-password-field .error-icon, .jfx-text-area .error-icon {
     -fx-fill: #D34336;
     -fx-font-size: 1.0em;
-}
-
-.jfx-scroll-pane .main-header {
-    -fx-background-image: url("../bg1.jpg");
-}
-
-.jfx-scroll-pane .condensed-header {
-    -fx-background-image: url("../bg4.jpg");
 }
 
 /*******************************************************************************

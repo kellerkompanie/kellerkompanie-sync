@@ -27,12 +27,13 @@ public class LauncherMain extends Application {
         stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/drawable/kk-signet-small-color.png")));
         stage.setMinWidth(800);
         stage.setMinHeight(600);
+        stage.setResizable(false);
 
         Scene scene = new Scene(root, 800, 600);
         final ObservableList<String> stylesheets = scene.getStylesheets();
-        stylesheets.addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-                getClass().getResource("/css/jfoenix-design.css").toExternalForm(),
-                getClass().getResource("/css/jfoenix-main-demo.css").toExternalForm());
+        stylesheets.addAll(getClass().getResource("/css/jfoenix-design.css").toExternalForm(),
+                getClass().getResource("/css/jfoenix-main-demo.css").toExternalForm(),
+                getClass().getResource("/css/custom.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
