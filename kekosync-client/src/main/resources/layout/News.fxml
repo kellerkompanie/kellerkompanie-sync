@@ -5,10 +5,9 @@
 <?import javafx.scene.control.ScrollPane?>
 <ScrollPane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
             hbarPolicy="NEVER" fitToHeight="true" fitToWidth="true"
-            fx:controller="com.kellerkompanie.kekosync.client.gui.NewsController" fx:id="scrollPane"
-            style="-fx-border-color: cyan">
+            fx:controller="com.kellerkompanie.kekosync.client.gui.NewsController" fx:id="scrollPane">
     <JFXMasonryPane fx:id="masonryPane" HSpacing="10" VSpacing="10"
-                    style="-fx-background-color: #161618; -fx-border-color: red">
+                    style="-fx-background-color: #161618;">
         <padding>
             <Insets left="10" top="10" right="10" bottom="10"/>
         </padding>

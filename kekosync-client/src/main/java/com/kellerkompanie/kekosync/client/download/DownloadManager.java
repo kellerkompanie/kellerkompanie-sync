@@ -18,10 +18,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 
 @Slf4j
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class DownloadManager {
 
-    private static DownloadManager instance;
     private ExecutorService executorService = Executors.newFixedThreadPool(10);
     private BlockingQueue<DownloadTask> taskQueue = new LinkedBlockingDeque<>();
     private Runnable task = () -> {
@@ -35,12 +34,6 @@ public class DownloadManager {
             e.printStackTrace();
         }
     };
-
-    public static DownloadManager getInstance() {
-        if (instance == null)
-            instance = new DownloadManager();
-        return instance;
-    }
 
     public boolean queueDownloadTask(DownloadTask downloadTask) {
         synchronized (taskQueue) {

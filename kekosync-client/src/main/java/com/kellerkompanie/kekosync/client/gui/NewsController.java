@@ -61,8 +61,6 @@ public class NewsController implements Initializable {
     private ScrollPane scrollPane;
     @FXML
     private JFXMasonryPane masonryPane;
-    @FXML
-    private VBox scrollPaneContent;
 
 
     public static NewsController getInstance() {
@@ -101,7 +99,6 @@ public class NewsController implements Initializable {
     private void updateNews(List<News> newsList) throws IOException {
         ArrayList<Node> children = new ArrayList<>();
         int i = 0;
-        for(int j = 0; j < 5; j++)
         for (News news : newsList) {
             StackPane newsCard = createNewsCard(news, Duration.millis(100 * i++ + 1000));
             children.add(newsCard);
@@ -151,9 +148,6 @@ public class NewsController implements Initializable {
                     Type listType = new TypeToken<ArrayList<News>>() {
                     }.getType();
                     newsList = gson.fromJson(newsJsonStr, listType);
-
-                    for (News news : newsList)
-                        System.out.println(news);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -178,8 +172,9 @@ public class NewsController implements Initializable {
             }
         });
 
-        DownloadManager.getInstance().queueDownloadTask(downloadTask);
-        DownloadManager.getInstance().processQueue();
+        DownloadManager downloadManager = new DownloadManager();
+        downloadManager.queueDownloadTask(downloadTask);
+        downloadManager.processQueue();
 
         log.info("updateNews finished");
     }

@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@Slf4j
 public final class LauncherController implements Initializable {
 
     private static LauncherController instance;
@@ -60,7 +62,7 @@ public final class LauncherController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
-        System.out.println("LauncherController initialize()");
+        log.info("LauncherController initialize()");
 
         EventHandler<ActionEvent> eventHandler = new EventHandler<ActionEvent>() {
             @Override
