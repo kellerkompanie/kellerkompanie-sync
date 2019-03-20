@@ -31,12 +31,19 @@
     -fx-border-color: transparent;
 }
 
-
+/*******************************************************************************
+ *                                                                             *
+ * Scroll Pane			                                                       *
+ *                                                                             *
+ ******************************************************************************/
 
 .scroll-pane {
     -fx-background-insets: 0;
     -fx-padding: 0;
-    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: #161618;
 }
 
 .scroll-pane:focused {

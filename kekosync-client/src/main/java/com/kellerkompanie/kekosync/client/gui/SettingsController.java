@@ -28,10 +28,7 @@ public class SettingsController implements Initializable {
     private TextArea parameterTextArea;
 
     @FXML
-    private ListView listView;
-
-    @FXML
-    private VBox settingsRoot;
+    private ScrollPane scrollPane;
 
     @FXML
     private TextField executableLocationTextField;
@@ -102,7 +99,7 @@ public class SettingsController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(Settings.getInstance().getExecutableLocation()).getParentFile());
 
-        Stage stage = (Stage) settingsRoot.getScene().getWindow();
+        Stage stage = (Stage) scrollPane.getScene().getWindow();
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
             Settings.getInstance().setExecutableLocation(file.getPath());
@@ -112,15 +109,6 @@ public class SettingsController implements Initializable {
 
     private void updateExecutableTextField() {
         executableLocationTextField.setText(Settings.getInstance().getExecutableLocation());
-    }
-
-    private void updateListView() {
-        listView.getItems().clear();
-
-        Set<Path> searchDirectories = Settings.getInstance().getSearchDirectories();
-        for(Path searchDir : searchDirectories) {
-            listView.getItems().add(searchDir.toString());
-        }
     }
 
     @FXML
@@ -165,7 +153,6 @@ public class SettingsController implements Initializable {
 
     void update() {
         updateExecutableTextField();
-        updateListView();
         updateTextArea();
     }
 }

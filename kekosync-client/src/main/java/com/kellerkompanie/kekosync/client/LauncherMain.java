@@ -1,5 +1,8 @@
 package com.kellerkompanie.kekosync.client;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.kellerkompanie.kekosync.core.entities.News;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -8,7 +11,9 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * @author Schwaggot
@@ -27,7 +32,7 @@ public class LauncherMain extends Application {
         stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/drawable/kk-signet-small-color.png")));
         stage.setMinWidth(800);
         stage.setMinHeight(600);
-        stage.setResizable(false);
+        //stage.setResizable(false);
 
         Scene scene = new Scene(root, 800, 600);
         final ObservableList<String> stylesheets = scene.getStylesheets();
@@ -36,5 +41,25 @@ public class LauncherMain extends Application {
                 getClass().getResource("/css/custom.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void createDefaultNews() {
+        ArrayList<News> newsList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            News news = News.createDefaultNews();
+            newsList.add(news);
+        }
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String json = gson.toJson(newsList);
+
+        try {
+            //write converted json data to a file named "CountryGSON.json"
+            FileWriter writer = new FileWriter("news.json");
+            writer.write(json);
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
