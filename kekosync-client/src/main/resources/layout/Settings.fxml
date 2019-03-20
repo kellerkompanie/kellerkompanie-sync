@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
 <?import com.kellerkompanie.kekosync.client.arma.*?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.*?>
 <VBox spacing="10" VBox.vgrow="ALWAYS" fx:id="settingsRoot" xmlns="http://javafx.com/javafx/8.0.121"
@@ -14,75 +17,85 @@
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
     </padding>
     <HBox alignment="CENTER_LEFT" spacing="10">
-        <Label alignment="CENTER" text="ArmA3 executable location:"/>
-        <TextField fx:id="executableLocationTextField" HBox.hgrow="ALWAYS" maxWidth="Infinity" minWidth="-Infinity"/>
-        <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleExecutableLocationAction"
-                text="Select file..."/>
+        <Label text="ArmA3 executable location:" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;"/>
+        <JFXTextField fx:id="executableLocationTextField" style="-fx-text-fill:#f2f5f4; -fx-background-radius: 0;"/>
+        <JFXButton alignment="CENTER" mnemonicParsing="false" onAction="#handleExecutableLocationAction"
+                   text="Select file..." prefWidth="100" prefHeight="32"
+                   style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
     </HBox>
 
     <Separator/>
 
-    <Label text="Launcher Parameters"/>
+    <Label text="Launcher Parameters" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;"/>
     <HBox spacing="10" maxHeight="Infinity"
           maxWidth="Infinity" minHeight="-Infinity" minWidth="-Infinity">
 
 
         <VBox fx:id="paramVBox" spacing="10">
-            <CheckBox text="show script errors" onAction="#handleCheckBoxStateChanged">
+            <JFXCheckBox text="show script errors" onAction="#handleCheckBoxStateChanged"
+                         style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                 <id>
                     <ArmAParameter fx:constant="SHOW_SCRIPT_ERRORS"/>
                 </id>
-            </CheckBox>
+            </JFXCheckBox>
 
-            <CheckBox text="no pause" onAction="#handleCheckBoxStateChanged">
+            <JFXCheckBox text="no pause" onAction="#handleCheckBoxStateChanged"
+                         style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                 <id>
                     <ArmAParameter fx:constant="NO_PAUSE"/>
                 </id>
-            </CheckBox>
+            </JFXCheckBox>
 
-            <CheckBox text="window mode" onAction="#handleCheckBoxStateChanged">
+            <JFXCheckBox text="window mode" onAction="#handleCheckBoxStateChanged"
+                         style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                 <id>
                     <ArmAParameter fx:constant="WINDOW_MODE"/>
                 </id>
-            </CheckBox>
+            </JFXCheckBox>
 
-            <CheckBox text="file patching" onAction="#handleCheckBoxStateChanged">
+            <JFXCheckBox text="file patching" onAction="#handleCheckBoxStateChanged"
+                         style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                 <id>
                     <ArmAParameter fx:constant="FILE_PATCHING"/>
                 </id>
-            </CheckBox>
+            </JFXCheckBox>
 
-            <CheckBox text="check signatures" onAction="#handleCheckBoxStateChanged">
+            <JFXCheckBox text="check signatures" onAction="#handleCheckBoxStateChanged"
+                         style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                 <id>
                     <ArmAParameter fx:constant="CHECK_SIGNATURES"/>
                 </id>
-            </CheckBox>
+            </JFXCheckBox>
 
-            <CheckBox text="no splash screen" onAction="#handleCheckBoxStateChanged">
+            <JFXCheckBox text="no splash screen" onAction="#handleCheckBoxStateChanged"
+                         style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                 <id>
                     <ArmAParameter fx:constant="NO_SPLASH"/>
                 </id>
-            </CheckBox>
+            </JFXCheckBox>
 
-            <CheckBox text="default world empty" onAction="#handleCheckBoxStateChanged">
+            <JFXCheckBox text="default world empty" onAction="#handleCheckBoxStateChanged"
+                         style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                 <id>
                     <ArmAParameter fx:constant="DEFUALT_WORLD_EMPTY"/>
                 </id>
-            </CheckBox>
+            </JFXCheckBox>
 
-            <CheckBox text="no logs" onAction="#handleCheckBoxStateChanged">
+            <JFXCheckBox text="no logs" onAction="#handleCheckBoxStateChanged"
+                         style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                 <id>
                     <ArmAParameter fx:constant="NO_LOGS"/>
                 </id>
-            </CheckBox>
+            </JFXCheckBox>
 
             <HBox alignment="CENTER_LEFT" spacing="10">
-                <CheckBox text="CPU count" onAction="#handleCheckBoxStateChanged">
+                <JFXCheckBox text="CPU count" onAction="#handleCheckBoxStateChanged"
+                             style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="CPU_COUNT"/>
                     </id>
-                </CheckBox>
-                <ComboBox onAction="#handleComboBoxStateChanged">
+                </JFXCheckBox>
+                <JFXComboBox onAction="#handleComboBoxStateChanged">
                     <id>
                         <ArmAParameter fx:constant="CPU_COUNT"/>
                     </id>
@@ -101,16 +114,17 @@
                     <value>
                         <String fx:value="1"/>
                     </value>
-                </ComboBox>
+                </JFXComboBox>
             </HBox>
 
             <HBox alignment="CENTER_LEFT" spacing="10">
-                <CheckBox text="ExThreads" onAction="#handleCheckBoxStateChanged">
+                <JFXCheckBox text="ExThreads" onAction="#handleCheckBoxStateChanged"
+                             style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="EX_THREADS"/>
                     </id>
-                </CheckBox>
-                <ComboBox onAction="#handleComboBoxStateChanged">
+                </JFXCheckBox>
+                <JFXComboBox onAction="#handleComboBoxStateChanged">
                     <id>
                         <ArmAParameter fx:constant="EX_THREADS"/>
                     </id>
@@ -126,9 +140,24 @@
                     <value>
                         <String fx:value="0"/>
                     </value>
-                </ComboBox>
+                </JFXComboBox>
             </HBox>
         </VBox>
         <TextArea id="parameterTextArea" fx:id="parameterTextArea" editable="false" HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <JFXCheckBox text="Custom" onAction="#handleCheckBoxStateChanged"
+                     style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
+            <id>
+                <ArmAParameter fx:constant="CUSTOM"/>
+            </id>
+        </JFXCheckBox>
+        <JFXTextField fx:id="customTextField"
+                      style="-fx-text-fill:#f2f5f4; -fx-background-radius: 0;" HBox.hgrow="ALWAYS">
+            <id>
+                <ArmAParameter fx:constant="CUSTOM"/>
+            </id>
+        </JFXTextField>
     </HBox>
 </VBox>

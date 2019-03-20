@@ -96,14 +96,7 @@
     -fx-cursor: hand;
 }
 
-.jfx-check-box {
-    -fx-font-weight: BOLD;
-}
 
-.custom-jfx-check-box {
-    -jfx-checked-color: RED;
-    -jfx-unchecked-color: BLACK;
-}
 
 /* Button */
 .button {
@@ -247,31 +240,7 @@
     -fx-text-fill: BLACK;
 }
 
-.combo-box-popup .list-view .jfx-list-cell:odd:selected .jfx-list-cell-container,
-.combo-box-popup .list-view .jfx-list-cell:even:selected .jfx-list-cell-container {
-    -fx-background-color: rgba(0.0, 0.0, 255.0, 0.2);
-}
 
-.combo-box-popup .list-view .jfx-list-cell {
-    -fx-background-insets: 0.0;
-    -fx-text-fill: BLACK;
-}
-
-.combo-box-popup .list-view .jfx-list-cell:odd,
-.combo-box-popup .list-view .jfx-list-cell:even {
-    -fx-background-color: WHITE;
-}
-
-.combo-box-popup .list-view .jfx-list-cell:filled:hover {
-    -fx-text-fill: black;
-}
-
-/*.combo-box .combo-box-button-container{
- 	-fx-border-color:BLACK;-fx-border-width: 0 0 1 0;
-}
-.combo-box .combo-box-selected-value-container{
-	-fx-border-color:BLACK;
-} */
 
 /*
  * TREE TABLE CSS

@@ -31,11 +31,7 @@
     -fx-border-color: transparent;
 }
 
-/*******************************************************************************
- *                                                                             *
- * Scroll Pane			                                                       *
- *                                                                             *
- ******************************************************************************/
+
 
 .scroll-pane {
     -fx-background-insets: 0;
@@ -49,4 +45,92 @@
 
 .scroll-pane .corner {
     -fx-background-insets: 0;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Check Box			                                                       *
+ *                                                                             *
+ ******************************************************************************/
+
+.jfx-check-box {
+    -jfx-checked-color: #ee4d2e;
+    -jfx-unchecked-color: #f2f5f4;
+}
+
+.jfx-check-box .mark{
+     -fx-border-color: #f2f5f4;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Combo Box			                                                       *
+ *                                                                             *
+ ******************************************************************************/
+
+.combo-box .cell{
+    -fx-text-fill: #f2f5f4;
+}
+
+.jfx-combo-box {
+    -jfx-focus-color: #ee4d2e;
+}
+
+.combo-box-popup .list-view .jfx-list-cell:filled:hover .jfx-list-cell {
+    -fx-text-fill: #f2f5f4;
+    -fx-background-insets: 0.0;
+}
+
+.combo-box-popup .list-view .jfx-list-cell .custom-jfx-list-view-icon,
+.combo-box-popup .list-view .jfx-list-cell:filled:hover .custom-jfx-list-view-icon,
+.combo-box-popup .list-view .jfx-list-cell:selected .custom-jfx-list-view-icon {
+    -fx-fill: #212121;
+    -fx-border-color: #212121;
+}
+
+.combo-box-popup .list-view .jfx-list-cell:odd:selected > .jfx-rippler > StackPane,
+.combo-box-popup .list-view .jfx-list-cell:even:selected > .jfx-rippler > StackPane {
+    -fx-text-fill: #f2f5f4;
+    -fx-background-color: #212121;
+}
+
+.combo-box-popup .list-view .jfx-list-cell:odd,
+.combo-box-popup .list-view .jfx-list-cell:even {
+    -fx-text-fill: #f2f5f4;
+    -fx-background-color: #212121;
+}
+
+.combo-box-popup .list-view .jfx-list-cell .jfx-rippler {
+    -jfx-rippler-fill: #ee4d2e;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Text Field			                                                       *
+ *                                                                             *
+ ******************************************************************************/
+
+.jfx-text-field {
+    -jfx-focus-color: #ee4d2e;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Text Area			                                                       *
+ *                                                                             *
+ ******************************************************************************/
+
+.text-area {
+     -fx-text-fill: #f2f5f4;
+     -fx-font-size: 14px;
+ }
+
+.text-area .content {
+    -fx-background-color: #212121;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.text-area:focused {
+    -fx-background-color: #ee4d2e;
 }

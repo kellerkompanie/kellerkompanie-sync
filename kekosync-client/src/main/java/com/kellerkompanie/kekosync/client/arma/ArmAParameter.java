@@ -22,6 +22,7 @@ public class ArmAParameter implements Serializable {
     public static final String NO_LOGS = "NO_LOGS";
     public static final String CPU_COUNT = "CPU_COUNT";
     public static final String EX_THREADS = "EX_THREADS";
+    public static final String CUSTOM = "CUSTOM";
 
     public static final String PORT= "PORT";
     public static final String SERVER= "SERVER";
@@ -51,6 +52,11 @@ public class ArmAParameter implements Serializable {
         this.value = value;
     }
 
+    public ArmAParameter(boolean enabled, String value) {
+        this(ParameterType.TEXT, "", enabled);
+        this.value = value;
+    }
+
     public static HashMap<String, ArmAParameter> getDefaultParameters() {
         ArmAParameter showScriptErrorsParam = new ArmAParameter("-showScriptErrors", true);
         ArmAParameter noPauseParamm = new ArmAParameter("-noPause", false);
@@ -60,10 +66,9 @@ public class ArmAParameter implements Serializable {
         ArmAParameter noSplashParam = new ArmAParameter("-nosplash", true);
         ArmAParameter worldEmptyParam = new ArmAParameter("-world=empty", true);
         ArmAParameter noLogsParam = new ArmAParameter("-nologs", false);
-
         ArmAParameter cpuCountParam = new ArmAParameter("-cpuCount", false, "1");
         ArmAParameter threadsParam = new ArmAParameter("-exThreads", false, "0");
-
+        ArmAParameter customParam = new ArmAParameter(false, "");
         ArmAParameter portParam = new ArmAParameter("-port", false, "2302");
         ArmAParameter serverParam = new ArmAParameter("-connect", false, "server.kellerkompanie.com");
         ArmAParameter passwordParam = new ArmAParameter("-password", false, "keko");
@@ -79,6 +84,7 @@ public class ArmAParameter implements Serializable {
         defaultParams.put(NO_LOGS, noLogsParam);
         defaultParams.put(CPU_COUNT, cpuCountParam);
         defaultParams.put(EX_THREADS, threadsParam);
+        defaultParams.put(CUSTOM, customParam);
         defaultParams.put(PORT, portParam);
         defaultParams.put(SERVER, serverParam);
         defaultParams.put(PASSWORD, passwordParam);
@@ -92,6 +98,8 @@ public class ArmAParameter implements Serializable {
                 return argument;
             case COMBO:
                 return argument + "=" + value;
+            case TEXT:
+                return value;
             default:
                 throw new IllegalStateException("type of parameter is not supported: " + type);
         }
@@ -124,6 +132,6 @@ public class ArmAParameter implements Serializable {
     }
 
     public enum ParameterType {
-        BOOLEAN, COMBO
+        BOOLEAN, COMBO, TEXT
     }
 }

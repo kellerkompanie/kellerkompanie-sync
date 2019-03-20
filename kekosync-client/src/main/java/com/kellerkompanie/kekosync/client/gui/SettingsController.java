@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
@@ -30,10 +31,12 @@ public class SettingsController implements Initializable {
     private ListView listView;
 
     @FXML
-    private VBox settingsTabRoot;
+    private VBox settingsRoot;
 
     @FXML
     private TextField executableLocationTextField;
+    @FXML
+    private TextField customTextField;
 
     private static SettingsController instance;
 
@@ -47,10 +50,34 @@ public class SettingsController implements Initializable {
 
         //updateExecutableTextField();
         //updateListView();
+        loadSettings();
 
+        customTextField.textProperty().addListener((obs, oldText, newText) -> {
+            String key = customTextField.getId();
+            String value = customTextField.getText();
+            Settings.getInstance().updateLaunchParam(key, value);
+            updateTextArea();
+        });
+    }
+
+    private static ArrayList<Node> getAllNodes(Parent root) {
+        ArrayList<Node> nodes = new ArrayList<Node>();
+        addAllDescendents(root, nodes);
+        return nodes;
+    }
+
+    private static void addAllDescendents(Parent parent, ArrayList<Node> nodes) {
+        for (Node node : parent.getChildrenUnmodifiable()) {
+            nodes.add(node);
+            if (node instanceof Parent)
+                addAllDescendents((Parent)node, nodes);
+        }
+    }
+
+    private void loadSettings() {
         Map<String, ArmAParameter> params = Settings.getInstance().getLaunchParams();
 
-        List<Node> children = paramVBox.getChildren();
+        List<Node> children = getAllNodes(paramVBox);
         for (Node child : children) {
             ArmAParameter param = params.get(child.getId());
             if (param != null) {
@@ -64,40 +91,27 @@ public class SettingsController implements Initializable {
             }
         }
 
-        //updateTextArea();
+        String customValue = params.get("CUSTOM").getValue();
+        customTextField.setText(customValue);
+
+        updateTextArea();
     }
-
-
 
     @FXML
     private void handleExecutableLocationAction(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(Settings.getInstance().getExecutableLocation()).getParentFile());
 
-        Stage stage = (Stage) settingsTabRoot.getScene().getWindow();
+        Stage stage = (Stage) settingsRoot.getScene().getWindow();
         File file = fileChooser.showOpenDialog(stage);
-        Settings.getInstance().setExecutableLocation(file.getPath());
-
-        updateExecutableTextField();
+        if (file != null) {
+            Settings.getInstance().setExecutableLocation(file.getPath());
+            updateExecutableTextField();
+        }
     }
 
     private void updateExecutableTextField() {
         executableLocationTextField.setText(Settings.getInstance().getExecutableLocation());
-    }
-
-    @FXML
-    private void handleAddAction(ActionEvent event) {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Add Search Directory");
-        Stage stage = (Stage) listView.getScene().getWindow();
-        File file = directoryChooser.showDialog(stage);
-
-        if(file != null) {
-            Path path = Paths.get(file.getPath());
-            Settings.getInstance().addSearchDirectory(path);
-            updateListView();
-            ModsController.getInstance().update();
-        }
     }
 
     private void updateListView() {
@@ -107,15 +121,6 @@ public class SettingsController implements Initializable {
         for(Path searchDir : searchDirectories) {
             listView.getItems().add(searchDir.toString());
         }
-    }
-
-    @FXML
-    private void handleRemoveAction(ActionEvent event) {
-        String pathStr = (String) listView.getSelectionModel().getSelectedItem();
-        Path path = Paths.get(pathStr);
-        Settings.getInstance().removeSearchDirectory(path);
-        updateListView();
-        ModsController.getInstance().update();
     }
 
     @FXML
