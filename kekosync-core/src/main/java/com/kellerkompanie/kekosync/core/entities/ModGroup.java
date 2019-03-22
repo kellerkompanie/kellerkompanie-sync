@@ -4,7 +4,6 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -18,7 +17,10 @@ import java.util.UUID;
 @ToString
 public class ModGroup implements Serializable {
 
-    @Getter @Setter private String name;
+    @Getter
+    @Setter
+    private String name;
+    @Getter
     private UUID uuid;
     private Set<Mod> mods;
 
