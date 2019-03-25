@@ -1,17 +1,11 @@
 package com.kellerkompanie.kekosync.client.gui;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXButton.ButtonType;
 import com.jfoenix.controls.JFXMasonryPane;
 import com.jfoenix.controls.JFXScrollPane;
 import com.jfoenix.effects.JFXDepthManager;
 import com.jfoenix.svg.SVGGlyph;
-import com.kellerkompanie.kekosync.client.download.DownloadCallback;
-import com.kellerkompanie.kekosync.client.download.DownloadManager;
-import com.kellerkompanie.kekosync.client.download.DownloadTask;
 import com.kellerkompanie.kekosync.client.gui.task.UpdateNewsTask;
 import com.kellerkompanie.kekosync.core.entities.News;
 import javafx.animation.KeyFrame;
@@ -37,11 +31,7 @@ import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -55,8 +45,6 @@ import static javafx.animation.Interpolator.EASE_BOTH;
 public class NewsController implements Initializable {
 
 
-
-
     private static NewsController instance;
     @FXML
     private ScrollPane scrollPane;
@@ -68,22 +56,9 @@ public class NewsController implements Initializable {
         return instance;
     }
 
-    private static String readAll(Reader rd) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int cp;
-        while ((cp = rd.read()) != -1) {
-            sb.append((char) cp);
-        }
-        return sb.toString();
-    }
-
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
-
-        log.info("initialize finished");
     }
 
     public void updateNews(List<News> newsList) throws IOException {
