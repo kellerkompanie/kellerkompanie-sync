@@ -9,7 +9,10 @@ import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
 import com.kellerkompanie.kekosync.core.constants.Filenames;
 import com.kellerkompanie.kekosync.core.entities.*;
-import com.kellerkompanie.kekosync.core.helper.*;
+import com.kellerkompanie.kekosync.core.helper.FileSyncHelper;
+import com.kellerkompanie.kekosync.core.helper.FileindexEntry;
+import com.kellerkompanie.kekosync.core.helper.FileindexWithSyncEntry;
+import com.kellerkompanie.kekosync.core.helper.ModStatusHelper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.ConnectException;
+import java.net.InetAddress;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.*;
@@ -141,16 +144,12 @@ public class ModsController implements Initializable {
 
     private boolean isServerReachable() {
         try {
-            // TODO optimize: just check, do not download entire file
-            HttpHelper.readUrl(LauncherUtils.getServerURL() + Filenames.FILENAME_SERVERINFO);
-            return true;
-        } catch (ConnectException e) {
-            log.error("Connection to server could not be established", e);
-            return false;
-        } catch (Exception e) {
-            log.error("Something went horribly wrong while trying to connect to the server", e);
-            return false;
+            return InetAddress.getByName(LauncherUtils.getServerURL()).isReachable(1000 * 10);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        return false;
     }
 
     private void updateCurrentlyRunningModset() {
