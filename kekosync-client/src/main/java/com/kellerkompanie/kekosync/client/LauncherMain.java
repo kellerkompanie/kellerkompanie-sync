@@ -1,9 +1,9 @@
 package com.kellerkompanie.kekosync.client;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.kellerkompanie.kekosync.core.entities.News;
+import com.kellerkompanie.kekosync.client.gui.LauncherController;
+import com.kellerkompanie.kekosync.client.settings.Settings;
 import javafx.application.Application;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,14 +11,15 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * @author Schwaggot
  */
 public class LauncherMain extends Application {
+
+    private Stage stage;
+    private Scene scene;
 
     public static void main(String[] args) {
         launch(args);
@@ -26,6 +27,19 @@ public class LauncherMain extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        this.stage = stage;
+
+        double width = Settings.getInstance().getWindowWidth();
+        double height = Settings.getInstance().getWindowHeight();
+        double x = Settings.getInstance().getWindowX();
+        double y = Settings.getInstance().getWindowY();
+        boolean maximized = Settings.getInstance().isWindowMaximized();
+
+        stage.setMaximized(maximized);
+
+        stage.setX(x);
+        stage.setY(y);
+
         Parent root = FXMLLoader.load(getClass().getResource("/layout/Launcher.fxml"));
 
         stage.setTitle("KekoSync");
@@ -34,32 +48,43 @@ public class LauncherMain extends Application {
         stage.setMinHeight(600);
         //stage.setResizable(false);
 
-        Scene scene = new Scene(root, 800, 600);
+        scene = new Scene(root, width, height);
         final ObservableList<String> stylesheets = scene.getStylesheets();
-        stylesheets.addAll(getClass().getResource("/css/jfoenix-design.css").toExternalForm(),
-                getClass().getResource("/css/jfoenix-main-demo.css").toExternalForm(),
+        stylesheets.addAll(
+                //getClass().getResource("/css/jfoenix-design.css").toExternalForm(),
+                //getClass().getResource("/css/jfoenix-main-demo.css").toExternalForm(),
                 getClass().getResource("/css/custom.css").toExternalForm());
+
+        scene.widthProperty().addListener(this::onWindowSizeChanged);
+        scene.heightProperty().addListener(this::onWindowSizeChanged);
+
         stage.setScene(scene);
         stage.show();
+
+        stage.xProperty().addListener(this::onWindowPositionChanged);
+        stage.yProperty().addListener(this::onWindowPositionChanged);
+        stage.maximizedProperty().addListener(this::onWindowMaximizedChanged);
     }
 
-    private void createDefaultNews() {
-        ArrayList<News> newsList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            News news = News.createDefaultNews();
-            newsList.add(news);
-        }
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(newsList);
+    private void onWindowPositionChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        double x = stage.getX();
+        double y = stage.getY();
+        Settings.getInstance().updateWindowPosition(x, y);
+    }
 
-        try {
-            //write converted json data to a file named "CountryGSON.json"
-            FileWriter writer = new FileWriter("news.json");
-            writer.write(json);
-            writer.close();
+    private void onWindowSizeChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        double width = scene.getWidth();
+        double height = scene.getHeight();
+        Settings.getInstance().updateWindowSize(width, height);
+    }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void onWindowMaximizedChanged(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        Settings.getInstance().updateWindowMaximized(newValue);
+    }
+
+    @Override
+    public void stop() {
+        Settings.getInstance().saveSettings();
+        LauncherController.getInstance().shutdown();
     }
 }

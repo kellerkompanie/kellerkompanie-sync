@@ -1,9 +1,11 @@
 package com.kellerkompanie.kekosync.client.download;
 
+import com.kellerkompanie.kekosync.client.settings.Settings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -11,17 +13,15 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.*;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class DownloadManager {
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private ExecutorService executorService = Executors.newFixedThreadPool(Settings.getInstance().getMaxSimlutaneousDownloads());
     private BlockingQueue<DownloadTask> taskQueue = new LinkedBlockingDeque<>();
     private Runnable task = () -> {
         try {
@@ -44,8 +44,8 @@ public class DownloadManager {
         }
     }
 
-    public void processQueue() {
-        executorService.submit(task);
+    public Future processQueue() {
+        return executorService.submit(task);
     }
 
     public void cancelQueue() {
@@ -58,10 +58,17 @@ public class DownloadManager {
         downloadTask.setState(DownloadState.DOWNLOADING);
         downloadTask.getCallback().onDownloadStart(downloadTask);
 
-        log.info("callback finished");
-
         String source = downloadTask.getSource();
         Path destination = downloadTask.getDestination();
+
+        File directory = destination.toFile().getParentFile();
+        if(!Files.exists(directory.toPath())) {
+            boolean success = directory.mkdirs();
+            if(!success) {
+                log.error("unable to create directory {}", directory);
+                throw new IllegalStateException("unable to create directory" + directory);
+            }
+        }
 
         FileOutputStream fos;
         ReadableByteChannel rbc;
@@ -70,18 +77,15 @@ public class DownloadManager {
         try {
             url = new URL(source);
             rbc = new RBCWrapper(Channels.newChannel(url.openStream()), contentLength(url), (rbc1, progress) -> {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 downloadTask.getCallback().onDownloadProgress(downloadTask, progress);
 
-                if(progress >= 1.0)
-                    downloadTask.getCallback().onDownloadFinished(downloadTask);
+                log.info("{}", progress);
             });
             fos = new FileOutputStream(destination.toFile());
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+            fos.close();
+
+            downloadTask.getCallback().onDownloadFinished(downloadTask);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

@@ -1,8 +1,8 @@
 package com.kellerkompanie.kekosync.client.gui;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXButton.ButtonType;
 import com.jfoenix.controls.JFXMasonryPane;
@@ -12,6 +12,7 @@ import com.jfoenix.svg.SVGGlyph;
 import com.kellerkompanie.kekosync.client.download.DownloadCallback;
 import com.kellerkompanie.kekosync.client.download.DownloadManager;
 import com.kellerkompanie.kekosync.client.download.DownloadTask;
+import com.kellerkompanie.kekosync.client.gui.task.UpdateNewsTask;
 import com.kellerkompanie.kekosync.core.entities.News;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -36,14 +37,15 @@ import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -52,9 +54,8 @@ import static javafx.animation.Interpolator.EASE_BOTH;
 @Slf4j
 public class NewsController implements Initializable {
 
-    private static final String NEWS_URL = "http://server.kellerkompanie.com/news.json";
-    private static final File newsPath = new File(System.getenv("APPDATA") + File.separator + "KekoSync");
-    private static final File newsFile = new File(newsPath, File.separator + "news.json");
+
+
 
     private static NewsController instance;
     @FXML
@@ -76,27 +77,16 @@ public class NewsController implements Initializable {
         return sb.toString();
     }
 
-    public static String readJsonFromUrl(String url) throws IOException {
-        InputStream is = new URL(url).openStream();
-        try {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            String jsonText = readAll(rd);
-            return jsonText;
-        } finally {
-            is.close();
-        }
-    }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
 
-        downloadNews();
-
         log.info("initialize finished");
     }
 
-    private void updateNews(List<News> newsList) throws IOException {
+    public void updateNews(List<News> newsList) throws IOException {
         ArrayList<Node> children = new ArrayList<>();
         int i = 0;
         for (News news : newsList) {
@@ -111,72 +101,10 @@ public class NewsController implements Initializable {
         log.info("updateNews finished");
     }
 
-    private void downloadNews() {
+    public void updateNews() {
         log.info("downloading news");
-
-        DownloadTask downloadTask = new DownloadTask(NEWS_URL, newsFile, new DownloadCallback() {
-            @Override
-            public void onDownloadStart(DownloadTask downloadTask) {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        log.info("download of news started");
-                        LauncherController.getInstance().setProgressText("Downloading News ...");
-                    }
-                });
-            }
-
-            @Override
-            public void onDownloadProgress(DownloadTask downloadTask, double progress) {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        log.info("download of news progress {}", progress);
-                        LauncherController.getInstance().setProgress(progress);
-                    }
-                });
-            }
-
-            @Override
-            public void onDownloadFinished(DownloadTask downloadTask) {
-                log.info("onDownloadFinished");
-                List<News> newsList = new LinkedList<>();
-
-                try {
-                    String newsJsonStr = readJsonFromUrl(NEWS_URL);
-                    Gson gson = new GsonBuilder().create();
-                    Type listType = new TypeToken<ArrayList<News>>() {
-                    }.getType();
-                    newsList = gson.fromJson(newsJsonStr, listType);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                List<News> finalNewsList = newsList;
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            updateNews(finalNewsList);
-                            LauncherController.getInstance().setProgressText("News up-to-date");
-                            LauncherController.getInstance().setProgress(0);
-
-                            log.info("onDownloadFinished GUI update finished");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                log.info("onDownloadFinished finished");
-            }
-        });
-
-        DownloadManager downloadManager = new DownloadManager();
-        downloadManager.queueDownloadTask(downloadTask);
-        downloadManager.processQueue();
-
-        log.info("updateNews finished");
+        UpdateNewsTask updateNewsTask = new UpdateNewsTask();
+        LauncherController.getInstance().queueProgressTask(updateNewsTask);
     }
 
     private StackPane createNewsCard(News news, Duration duration) throws IOException {

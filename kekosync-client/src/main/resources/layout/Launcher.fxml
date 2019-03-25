@@ -11,7 +11,7 @@
       xmlns="http://javafx.com/javafx/2.2" style="-fx-background-color:#161618;"
       fx:controller="com.kellerkompanie.kekosync.client.gui.LauncherController">
 
-    <AnchorPane fx:id="sideMenu">
+    <AnchorPane>
         <children>
             <VBox AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" alignment="TOP_CENTER" spacing="10">
                 <ImageView id="logo" fitWidth="128" preserveRatio="true">
@@ -21,18 +21,18 @@
                 </ImageView>
 
                 <JFXButton fx:id="buttonNews" prefWidth="100" prefHeight="40" buttonType="FLAT" text="News"
-                           style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
+                           style="-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0;"/>
                 <JFXButton fx:id="buttonMods" prefWidth="100" prefHeight="40" buttonType="FLAT" text="Mods"
-                           style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
+                           style="-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;"/>
                 <JFXButton fx:id="buttonSettings" prefWidth="100" prefHeight="40" buttonType="FLAT" text="Settings"
-                           style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
+                           style="-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;"/>
             </VBox>
 
             <HBox alignment="BOTTOM_CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="0.0"
                   AnchorPane.leftAnchor="0.0" spacing="10">
                 <JFXButton fx:id="buttonPlay" prefWidth="100" prefHeight="40" buttonType="FLAT"
-                           style="-fx-text-fill:#f2f5f4; -fx-background-color:#ee4d2e; -fx-font-size:14px;  -fx-background-radius: 0;"
-                           text="Play"/>
+                           style="-fx-text-fill:#f2f5f4; -fx-background-color:#ee4d2e; -fx-font-size:14px; -fx-font-weight: bold; -fx-background-radius: 0;"
+                           text="PLAY"/>
             </HBox>
 
         </children>
@@ -44,20 +44,20 @@
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
             </padding>
 
-            <JFXButton fx:id="buttonTeamspeak" text="Teamspeak" buttonType="FLAT" style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
-            <JFXButton fx:id="buttonForum" text="Forum" buttonType="FLAT" style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
-            <JFXButton fx:id="buttonServer" text="Server" buttonType="FLAT" style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
-            <JFXButton fx:id="buttonWiki" text="Wiki" buttonType="FLAT" style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
+            <JFXButton fx:id="buttonTeamspeak" text="Teamspeak" buttonType="FLAT"/>
+            <JFXButton fx:id="buttonForum" text="Forum" buttonType="FLAT"/>
+            <JFXButton fx:id="buttonServer" text="Server" buttonType="FLAT"/>
+            <JFXButton fx:id="buttonWiki" text="Wiki" buttonType="FLAT"/>
         </HBox>
 
-        <StackPane fx:id="content" VBox.vgrow="ALWAYS">
+        <StackPane VBox.vgrow="ALWAYS">
             <fx:include source="News.fxml" fx:id="newsRoot"/>
             <fx:include source="Mods.fxml" fx:id="modsRoot"/>
             <fx:include source="Settings.fxml" fx:id="settingsRoot"/>
         </StackPane>
 
         <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-            <ProgressBar progress="0.2" styleClass="custom-jfx-progress-bar" AnchorPane.leftAnchor="10.0"
+            <ProgressBar progress="0.2" AnchorPane.leftAnchor="10.0"
                          AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0" prefHeight="40"
                          fx:id="progressBar"/>
             <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="10.0"

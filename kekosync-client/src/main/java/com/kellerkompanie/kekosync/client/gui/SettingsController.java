@@ -72,6 +72,9 @@ public class SettingsController implements Initializable {
     }
 
     private void loadSettings() {
+        String executableLocation = Settings.getInstance().getExecutableLocation();
+        executableLocationTextField.setText(executableLocation);
+
         Map<String, ArmAParameter> params = Settings.getInstance().getLaunchParams();
 
         List<Node> children = getAllNodes(paramVBox);

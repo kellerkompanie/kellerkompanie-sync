@@ -22,13 +22,11 @@
 }
 
 .scroll-bar > .increment-button, .scroll-bar > .decrement-button, .scroll-bar:hover > .increment-button, .scroll-bar:hover > .decrement-button {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
+    visibility: hidden;
 }
 
 .scroll-bar > .increment-button > .increment-arrow, .scroll-bar > .decrement-button > .decrement-arrow {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
+    visibility: hidden;
 }
 
 /*******************************************************************************
@@ -38,6 +36,7 @@
  ******************************************************************************/
 
 .scroll-pane {
+    -fx-background-color: transparent;
     -fx-background-insets: 0;
     -fx-padding: 0;
 }
@@ -52,6 +51,7 @@
 
 .scroll-pane .corner {
     -fx-background-insets: 0;
+    -fx-background-color: transparent;
 }
 
 /*******************************************************************************
@@ -113,16 +113,6 @@
 
 /*******************************************************************************
  *                                                                             *
- * Text Field			                                                       *
- *                                                                             *
- ******************************************************************************/
-
-.jfx-text-field {
-    -jfx-focus-color: #ee4d2e;
-}
-
-/*******************************************************************************
- *                                                                             *
  * Text Area			                                                       *
  *                                                                             *
  ******************************************************************************/
@@ -140,4 +130,60 @@
 
 .text-area:focused {
     -fx-background-color: #ee4d2e;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Progress Bar			                                                       *
+ *                                                                             *
+ ******************************************************************************/
+
+.progress-bar {
+    -fx-stroke-width: 3;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.progress-bar > .track {
+    -fx-background-color: #212121;
+    -fx-control-inner-background: #888888;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.progress-bar > .bar {
+    -fx-background-color: #ee4d2e;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+.progress-bar > .secondary-bar{
+    -fx-background-color: #5cb85c;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Text Field   		                                                       *
+ *                                                                             *
+ ******************************************************************************/
+
+.jfx-text-field{
+    -fx-background-color: transparent;
+    -fx-prompt-text-fill: #808080;
+    -fx-alignment: top-left;
+    -jfx-focus-color: #ee4d2e;
+    -jfx-unfocus-color: #ee4d2e;
+    -fx-text-fill:#f2f5f4;
+    -fx-background-radius: 0;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * JFX Button   		                                                       *
+ *                                                                             *
+ ******************************************************************************/
+
+.jfx-button {
+    -fx-text-fill:#f2f5f4;
+    -fx-font-size:14px;
+    -fx-background-radius: 0;
 }

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import com.kellerkompanie.kekosync.client.arma.ArmAParameter;
+import com.kellerkompanie.kekosync.client.gui.LocalModGroup;
 import com.kellerkompanie.kekosync.core.entities.ServerInfo;
 import com.kellerkompanie.kekosync.core.gsonConverter.PathConverter;
 import lombok.*;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Slf4j
@@ -24,9 +26,12 @@ public class Settings {
     private static final File settingsFile = new File(settingsPath, File.separator + "settings.json");
     private static Settings instance;
     @Getter
+    boolean windowMaximized = false;
+    @Getter
     private String executableLocation;
-    private HashSet<Path> searchDirectories;
     private HashMap<String, ArmAParameter> launchParams;
+    private HashMap<String, String> modsetLocations;
+
     @Getter
     private double windowWidth = 800;
     @Getter
@@ -36,8 +41,10 @@ public class Settings {
     @Getter
     private double windowY = 0;
     @Getter
-    @Setter
     private ServerInfo serverInfo;
+
+    @Getter
+    private int maxSimlutaneousDownloads = 10;
 
     public static Settings getInstance() {
         if (instance == null) {
@@ -76,31 +83,17 @@ public class Settings {
         saveSettings();
     }
 
-    public Set<Path> getSearchDirectories() {
-        return Collections.unmodifiableSet(searchDirectories);
-    }
-
-    public void addSearchDirectory(Path searchDir) {
-        searchDirectories.add(searchDir);
-        saveSettings();
-    }
-
-    public void removeSearchDirectory(Path path) {
-        searchDirectories.remove(path);
-        saveSettings();
-    }
-
     public Map<String, ArmAParameter> getLaunchParams() {
         return Collections.unmodifiableMap(launchParams);
     }
 
     private void createDefaultSettings() {
-        searchDirectories = new HashSet<>();
+        modsetLocations = new HashMap<>();
         executableLocation = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Arma 3\\arma3_x64.exe";
         launchParams = ArmAParameter.getDefaultParameters();
     }
 
-    private void saveSettings() {
+    public void saveSettings() {
         log.debug("saving settings");
 
         if (!settingsFile.exists()) {
@@ -124,21 +117,15 @@ public class Settings {
     public void updateWindowSize(double width, double height) {
         this.windowWidth = width;
         this.windowHeight = height;
-        saveSettings();
     }
 
     public void updateWindowPosition(double x, double y) {
         this.windowX = x;
         this.windowY = y;
-        saveSettings();
     }
-
-    @Getter
-    boolean windowMaximized = false;
 
     public void updateWindowMaximized(boolean maximized) {
         this.windowMaximized = maximized;
-        saveSettings();
     }
 
     public void updateLaunchParam(String key, boolean selected) {
@@ -168,6 +155,38 @@ public class Settings {
 
         ArmAParameter param = launchParams.get(key);
         param.setValue(value);
+        saveSettings();
+    }
+
+    public void updateModsetLocation(LocalModGroup localModGroup) {
+        modsetLocations.put(localModGroup.getUuid().toString(), localModGroup.getLocation().toAbsolutePath().toString());
+        saveSettings();
+    }
+
+    public Path getModsetLocation(LocalModGroup localModGroup) {
+        String modGroupUUID = localModGroup.getUuid().toString();
+        String pathStr = modsetLocations.get(modGroupUUID);
+        if (pathStr == null)
+            return null;
+
+        return Paths.get(pathStr);
+    }
+
+    public Collection<Path> getSearchDirectories() {
+        LinkedList<Path> locations = new LinkedList<>();
+        for(String pathStr : modsetLocations.values()) {
+            locations.add(Paths.get(pathStr));
+        }
+        return locations;
+    }
+
+    public void setMaxSimlutaneousDownloads(int maxSimlutaneousDownloads) {
+        this.maxSimlutaneousDownloads = maxSimlutaneousDownloads;
+        saveSettings();
+    }
+
+    public void setServerInfo(ServerInfo serverInfo) {
+        this.serverInfo = serverInfo;
         saveSettings();
     }
 }

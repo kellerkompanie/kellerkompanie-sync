@@ -1,239 +1,142 @@
 package com.kellerkompanie.kekosync.client.gui;
 
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+import com.kellerkompanie.kekosync.client.download.DownloadCallback;
+import com.kellerkompanie.kekosync.client.download.DownloadManager;
+import com.kellerkompanie.kekosync.client.download.DownloadTask;
 import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
-import com.kellerkompanie.kekosync.client.utils.SortIgnoreCase;
 import com.kellerkompanie.kekosync.core.constants.Filenames;
-import com.kellerkompanie.kekosync.core.entities.Mod;
-import com.kellerkompanie.kekosync.core.entities.ModGroup;
-import com.kellerkompanie.kekosync.core.entities.Repository;
-import com.kellerkompanie.kekosync.core.entities.RunningModset;
+import com.kellerkompanie.kekosync.core.entities.*;
 import com.kellerkompanie.kekosync.core.helper.*;
-import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.TreeItemPropertyValueFactory;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.paint.Color;
-import javafx.stage.Modality;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.kellerkompanie.kekosync.core.helper.FileSyncHelper.limitFileindexToModgroups;
 
 @Slf4j
 public class ModsController implements Initializable {
 
+    // FileLocationHelper.getModLocalRootpath(mod, Settings.getInstance().getSearchDirectories());
 
-    private static ModsController instance;
+    private static final UUID RUNNING_MODSET_UUID = new UUID(0, 0);
+    private static final File appdataPath = new File(System.getenv("APPDATA") + File.separator + "KekoSync" + File.separator + "cache");
+    private static final File serverInfoFile = new File(appdataPath, "serverinfo.json");
+    private static final File currentModsetFile = new File(appdataPath, "current_modset.json");
     @FXML
-    private CheckBox expandAllCheckBox;
+    private ScrollPane scrollPane;
     @FXML
-    private CheckBox expandAllModsCheckBox;
-    @FXML
-    private ListView optionalsListView;
-    @FXML
-    private TreeView searchDirectoriesTreeView;
-    @FXML
-    private CustomTreeTableView<CustomTableItem> treeTableView;
-    @FXML
-    private TreeTableColumn<CustomTableItem, Boolean> checkColumn;
-    @FXML
-    private TreeTableColumn<CustomTableItem, String> nameColumn;
-    @FXML
-    private TreeTableColumn<CustomTableItem, String> locationColumn;
-    @FXML
-    private TreeTableColumn<CustomTableItem, FileindexWithSyncEntry.SyncStatus> statusColumn;
+    private VBox content;
+    private HashMap<UUID, LocalModGroup> localModGroups = new HashMap<>();
+    private HashMap<UUID, ModpackController> uuidToModpackControllerMap = new HashMap<>();
+    private Node currentModsetControl;
 
-    public static ModsController getInstance() {
-        return instance;
+    private static ModpackController getModpackController(Node node) {
+        Object controller;
+        do {
+            controller = node.getUserData();
+            node = node.getParent();
+        } while (controller == null && node != null);
+        return (ModpackController) controller;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        instance = this;
-        initalizeModsTreeTableView();
-    }
+        log.info("initalize()");
 
-    private void initalizeModsTreeTableView() {
-        treeTableView.setRowFactory(item -> new CheckBoxTreeTableRow<>());
-
-        nameColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("name"));
-        locationColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("location"));
-
-        statusColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("status"));
-
-        treeTableView.getSelectionModel().setCellSelectionEnabled(false);
-        treeTableView.setShowRoot(false);
-        treeTableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
-
-
-        checkColumn.setCellFactory(p -> new DefaultTreeTableCell<>());
-
-        /*checkColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<CustomTableItem, Boolean>, ObservableValue<Boolean>>() {
-            @Override
-            public ObservableValue<Boolean> call(TreeTableColumn.CellDataFeatures<CustomTableItem, Boolean> param) {
-                TreeItem<CustomTableItem> treeItem = param.getValue();
-                CustomTableItem emp = treeItem.getValue();
-                SimpleBooleanProperty sbp = new SimpleBooleanProperty();
-                return sbp;
-            }
-        });*/
-
-        /*checkColumn.setCellFactory(col -> {
-            CheckBoxTreeTableCell<CustomTableItem, Boolean> cell = new CheckBoxTreeTableCell<CustomTableItem, Boolean>() {
-                @Override
-                public void updateItem(Boolean item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setStyle("-fx-background-color: transparent");
-                    } else {
-                        switch (item) {
-                            case CHECKED:
-                                //setStyle("-fx-background-color: green");
-                                break;
-                            case UNCHECKED:
-                                //setStyle("-fx-background-color: red");
-                                break;
-                            case INDETERMINATE:
-                                //setStyle("-fx-background-color: orange");
-                                break;
-                        }
-                    }
-                }
-            };
-
-            cell.setAlignment(Pos.CENTER);
-
-            return cell;
-        });*/
-
-        statusColumn.setCellFactory(col -> {
-            TreeTableCell<CustomTableItem, FileindexWithSyncEntry.SyncStatus> cell = new TreeTableCell<CustomTableItem, FileindexWithSyncEntry.SyncStatus>() {
-                @Override
-                public void updateItem(FileindexWithSyncEntry.SyncStatus item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                    } else {
-                        setText(item.toString());
-                        switch (item) {
-                            case LOCAL_MISSING:
-                                setText("UPDATE");
-                                setStyle("-fx-font-weight: bold; -fx-text-fill: darkred");
-                                break;
-                            case LOCAL_WITHCHANGES:
-                                setText("UPDATE");
-                                setStyle("-fx-font-weight: bold; -fx-text-fill: orange");
-                                break;
-                            case LOCAL_INSYNC:
-                                setText("OK");
-                                setStyle("-fx-font-weight: bold; -fx-text-fill: green");
-                                break;
-                            case REMOTE_MISSING:
-                                setText("REMOTE MISSING");
-                                setStyle("-fx-font-weight: bold; -fx-text-fill: firebrick");
-                                break;
-                            case UNKNOWN:
-                                setText("MISSING");
-                                setStyle("-fx-font-weight: bold; -fx-text-fill: firebrick");
-                                break;
-                        }
-                    }
-                }
-            };
-
-            cell.setAlignment(Pos.CENTER);
-
-            return cell;
-        });
-
-        treeTableView.widthProperty().addListener((source, oldWidth, newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) treeTableView.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((observable, oldValue, newValue) -> header.setReordering(false));
-        });
-
-        treeTableView.setEditable(true);
-
-        expandAllCheckBox.selectedProperty().addListener((ov, old_val, new_val) -> {
-            for (Object child : searchDirectoriesTreeView.getRoot().getChildren()) {
-                TreeItem<String> treeItem = (TreeItem<String>) child;
-                treeItem.setExpanded(new_val);
-            }
-        });
-
-        expandAllModsCheckBox.selectedProperty().addListener((ov, old_val, new_val) -> {
-            for (Object child : treeTableView.getRoot().getChildren()) {
-                CheckBoxTreeItem<CustomTableItem> treeItem = (CheckBoxTreeItem<CustomTableItem>) child;
-                treeItem.setExpanded(new_val);
-            }
+        scrollPane.visibleProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (!oldValue && newValue)
+                update();
         });
     }
 
-    void update() {
-        if (isServerReachable()) {
-            Dialog<Void> loadingDialog = new Dialog<>();
-            loadingDialog.initModality(Modality.WINDOW_MODAL);
-            Stage stage = (Stage) treeTableView.getScene().getWindow();
-            loadingDialog.initOwner(stage);
-            loadingDialog.initStyle(StageStyle.TRANSPARENT);
-            Label loader = new Label("Refreshing");
-            loader.setContentDisplay(ContentDisplay.LEFT);
-            loader.setGraphic(new ProgressIndicator());
-            loadingDialog.getDialogPane().setGraphic(loader);
-            DropShadow ds = new DropShadow();
-            ds.setOffsetX(1.3);
-            ds.setOffsetY(1.3);
-            ds.setColor(Color.DARKGRAY);
-            loadingDialog.getDialogPane().setEffect(ds);
+    private ServerInfo readServerInfoFromFile() throws IOException {
+        Gson gson = new Gson();
+        JsonReader reader = new JsonReader(new FileReader(serverInfoFile));
+        return gson.fromJson(reader, ServerInfo.class);
+    }
 
-            Task<Boolean> task = new Task<Boolean>() {
-                @Override
-                public Boolean call() {
-                    updateModsTreeTableView();
-                    updateSearchDirectoriesTreeView();
-                    updateCurrentlyRunningModpack();
-                    return true;
-                }
-            };
+    private RunningModset readCurrentModsetFromFile() throws IOException {
+        Gson gson = new Gson();
+        log.info("{}", currentModsetFile);
+        JsonReader reader = new JsonReader(new FileReader(currentModsetFile));
+        return gson.fromJson(reader, RunningModset.class);
+    }
 
-            task.setOnRunning((e) -> loadingDialog.show());
-            task.setOnSucceeded((e) -> {
-                // work around for modal dialog still being shown after calling close()
-                // see https://stackoverflow.com/a/37138609
-                loadingDialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-                loadingDialog.close();
-            });
-            task.setOnFailed((e) -> {
-
-            });
-            new Thread(task).start();
-        } else {
+    private void update() {
+        if (!isServerReachable()) {
             log.warn("Server is not reachable");
 
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Server Connection");
             alert.setHeaderText("Connection Error");
             alert.setContentText("Cannot connect to server, are you online? Is the server running?");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/drawable/kk-signet-small-color.png")));
             alert.showAndWait();
+
+            return;
         }
+
+        log.info("downloading news");
+
+        DownloadTask downloadTask = new DownloadTask(LauncherUtils.getServerURL() + Filenames.FILENAME_SERVERINFO, serverInfoFile, new DownloadCallback() {
+            @Override
+            public void onDownloadStart(DownloadTask downloadTask) {
+                Platform.runLater(() -> {
+                    log.info("download of server info started");
+                    LauncherController.getInstance().setProgressText("Downloading Server Info ...");
+                });
+            }
+
+            @Override
+            public void onDownloadProgress(DownloadTask downloadTask, double progress) {
+                Platform.runLater(() -> {
+                    log.info("download of server info progress {}", progress);
+                    LauncherController.getInstance().setProgress(progress);
+                });
+            }
+
+            @Override
+            public void onDownloadFinished(DownloadTask downloadTask) {
+                log.info("onDownloadFinished");
+
+                try {
+                    ServerInfo serverInfo = readServerInfoFromFile();
+                    Settings.getInstance().setServerInfo(serverInfo);
+
+                    Platform.runLater(() -> {
+                        LauncherController.getInstance().setProgressText("Server Info up-to-date");
+                        LauncherController.getInstance().setProgress(0);
+                    });
+
+                    updateCurrentlyRunningModset();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        DownloadManager downloadManager = new DownloadManager();
+        downloadManager.queueDownloadTask(downloadTask);
+        downloadManager.processQueue();
     }
 
     private boolean isServerReachable() {
@@ -250,68 +153,78 @@ public class ModsController implements Initializable {
         }
     }
 
-    private void updateSearchDirectoriesTreeView() {
-        Set<Path> searchDirectories = Settings.getInstance().getSearchDirectories();
-
-        TreeItem<String> root = new TreeItem<>();
-        root.setExpanded(true);
-
-        for (Path path : searchDirectories) {
-            TreeItem<String> item = new TreeItem<>();
-            item.setValue(path.toString());
-            root.getChildren().add(item);
-            populatePath(item, path);
-        }
-
-        Platform.runLater(() -> {
-            searchDirectoriesTreeView.setRoot(root);
-            searchDirectoriesTreeView.setShowRoot(false);
-        });
-    }
-
-    private void updateCurrentlyRunningModpack() {
-        String currentModpackJson = null;
-        try {
-            currentModpackJson = HttpHelper.readUrl(Settings.getInstance().getServerInfo().getInfoURL());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (currentModpackJson == null)
-            return;
-
-        Gson gson = new Gson();
-        RunningModset runningModset = gson.fromJson(currentModpackJson, RunningModset.class);
-
-        Platform.runLater(() -> {
-            optionalsListView.getItems().clear();
-            ArrayList<String> runningMods = new ArrayList<>(runningModset.getMods().size());
-            for (Mod mod : runningModset.getMods()) {
-                runningMods.add(String.format("%s (%s)", mod.getName(), mod.getUuid()));
+    private void updateCurrentlyRunningModset() {
+        DownloadTask downloadTask = new DownloadTask(Settings.getInstance().getServerInfo().getInfoURL(), currentModsetFile, new DownloadCallback() {
+            @Override
+            public void onDownloadStart(DownloadTask downloadTask) {
+                Platform.runLater(() -> {
+                    log.info("download of current modset started");
+                    LauncherController.getInstance().setProgressText("Downloading Current Modset ...");
+                });
             }
-            Collections.sort(runningMods, new SortIgnoreCase());
-            for (String runningMod : runningMods) {
-                optionalsListView.getItems().add(runningMod);
-            }
-        });
-    }
 
-    private void populatePath(TreeItem<String> item, Path path) {
-        try {
-            Files.walk(path, 1)
-                    .filter(p -> Files.isDirectory(p) && !path.equals(p))
-                    .distinct()
-                    .forEach(p -> {
-                        TreeItem<String> child = new TreeItem<>();
-                        child.setValue(p.getFileName().toString());
-                        item.getChildren().add(child);
+            @Override
+            public void onDownloadProgress(DownloadTask downloadTask, double progress) {
+                Platform.runLater(() -> {
+                    log.info("download of current modset progress {}", progress);
+                    LauncherController.getInstance().setProgress(progress);
+                });
+            }
+
+            @Override
+            public void onDownloadFinished(DownloadTask downloadTask) {
+                log.info("onDownloadFinished");
+
+                try {
+                    RunningModset runningModset = readCurrentModsetFromFile();
+
+                    HashSet<Mod> currentMods = new HashSet<>(runningModset.getMods());
+                    ModGroup currentlyRunningModGroup = new ModGroup("Current Server Modset", RUNNING_MODSET_UUID, currentMods);
+                    LocalModGroup currentlyRunningLocalModGroup = new LocalModGroup(currentlyRunningModGroup);
+                    currentlyRunningLocalModGroup.setPriority(0);
+
+                    Platform.runLater(() -> {
+                        try {
+                            LauncherController.getInstance().setProgressText("Current Modset up-to-date");
+                            LauncherController.getInstance().setProgress(0);
+                            content.getChildren().remove(currentModsetControl);
+                            currentModsetControl = createCurrentRunningModsetControl(currentlyRunningLocalModGroup);
+                            ModpackController modpackController = getModpackController(currentModsetControl);
+                            uuidToModpackControllerMap.put(RUNNING_MODSET_UUID, modpackController);
+                            content.getChildren().add(currentModsetControl);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        sortModsetDisplay();
                     });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+                    updateModsets();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        DownloadManager downloadManager = new DownloadManager();
+        downloadManager.queueDownloadTask(downloadTask);
+        downloadManager.processQueue();
     }
 
-    private void updateModsTreeTableView() {
+    private Node createCurrentRunningModsetControl(LocalModGroup localModGroup) throws IOException {
+        Parent modpackRoot = FXMLLoader.load(getClass().getResource("/layout/Modpack.fxml"));
+        ModpackController modpackController = getModpackController(modpackRoot);
+        modpackController.setLocalModGroup(localModGroup);
+        modpackController.setLocationButtonVisible(false);
+        return modpackRoot;
+    }
+
+    private void updateModsets() {
+        Platform.runLater(() -> {
+            LauncherController.getInstance().setProgress(0);
+            LauncherController.getInstance().setProgressText("Updating Modsets");
+        });
+
         List<Repository> repositories = new LinkedList<>();
         HashMap<Repository, FileindexEntry> rootFileindexEntries = new HashMap<>();
         try {
@@ -338,297 +251,80 @@ public class ModsController implements Initializable {
             }
         }
 
-        TreeItem<CustomTableItem> rootNode = new TreeItem<>(new RootTableItem());
-
+        int n = modGroups.size();
+        int i = 0;
         for (ModGroup modGroup : modGroups) {
             log.info("{}", "ModsController: checking modGroup '" + modGroup.getName() + "'");
 
-            ModGroupTableItem modGroupTableItem = new ModGroupTableItem(modGroup);
-            CheckBoxTreeItem<CustomTableItem> modGroupTreeItem = new CheckBoxTreeItem<>(modGroupTableItem);
-
-            modGroupTreeItem.selectedProperty().addListener((observable, oldValue, newValue) -> modGroupTableItem.setChecked(newValue));
-            modGroupTreeItem.indeterminateProperty().addListener((observable, oldValue, newValue) -> modGroupTableItem.setIndeterminate(newValue));
-
-            /*for (Path searchDirectory : Settings.getInstance().getSearchDirectories()) {
-                System.out.println("ModsController: comparing modGroup '" + modGroup.getName() + "' against directory: " + searchDirectory);
-
-                FileindexWithSyncEntry fileindexWithSyncEntry = null;
-                try {
-                    fileindexWithSyncEntry = FileSyncHelper.checksyncFileindexTree(limitedFileindexEntry, searchDirectory);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                FileindexWithSyncEntry.SyncStatus syncStatus = fileindexWithSyncEntry.getSyncStatus();
-                System.out.println("ModsController: modsGroup '" + modGroup.getName() + "' syncStatus: " + syncStatus);
-                modGroupTableItem.setStatus(syncStatus);
-
-                for(FileindexWithSyncEntry child : fileindexWithSyncEntry.getChildren()) {
-                    System.out.println("ModsController: '" + child.getName() + "' syncStatus: " + syncStatus);
-                }
-            }*/
+            LocalModGroup localModGroup = new LocalModGroup(modGroup);
+            Path location = Settings.getInstance().getModsetLocation(localModGroup);
+            localModGroup.setLocation(location);
 
             ArrayList<FileindexWithSyncEntry.SyncStatus> statusList = new ArrayList<>(modGroup.getMods().size());
             for (Mod mod : modGroup.getMods()) {
-                ModTableItem modTableItem = new ModTableItem(mod);
-                CheckBoxTreeItem<CustomTableItem> modTreeItem = new CheckBoxTreeItem<>(modTableItem);
-                modGroupTreeItem.getChildren().add(modTreeItem);
-                modGroupTableItem.addChild(modTableItem);
-
-                modTreeItem.selectedProperty().addListener((observable, oldValue, newValue) -> modTableItem.setChecked(newValue));
-                modTreeItem.indeterminateProperty().addListener((observable, oldValue, newValue) -> modTableItem.setIndeterminate(newValue));
-
                 FileindexEntry limitedFileindexEntry = limitedFileIndexEntries.get(modGroup);
                 FileindexWithSyncEntry.SyncStatus modStatus = ModStatusHelper.checkStatusForMod(limitedFileindexEntry, mod, Settings.getInstance().getSearchDirectories());
-                modTableItem.setStatus(modStatus);
                 statusList.add(modStatus);
             }
             FileindexWithSyncEntry.SyncStatus modsGroupStatus = ModStatusHelper.combineStatus(statusList);
-            modGroupTableItem.setStatus(modsGroupStatus);
+            localModGroup.setSyncStatus(modsGroupStatus);
+            localModGroups.put(localModGroup.getUuid(), localModGroup);
 
-            rootNode.getChildren().add(modGroupTreeItem);
+            int progress = i++ / n;
+            Platform.runLater(() -> {
+                LauncherController.getInstance().setProgress(progress);
+                LauncherController.getInstance().setProgressText("Updating " + modGroup.getName());
+            });
         }
 
         Platform.runLater(() -> {
-            rootNode.setExpanded(true);
-            treeTableView.setRoot(rootNode);
-
-            /* sort by name */
-            treeTableView.getSortOrder().add(nameColumn);
-            TreeTableColumn.SortType sortType = nameColumn.getSortType();
-            nameColumn.setSortType(sortType);
-            nameColumn.setSortable(true);
-
-            if (expandAllModsCheckBox.isSelected()) {
-                for (Object child : treeTableView.getRoot().getChildren()) {
-                    CheckBoxTreeItem<CustomTableItem> treeItem = (CheckBoxTreeItem<CustomTableItem>) child;
-                    treeItem.setExpanded(true);
-                }
-            }
+            updateModgroupDisplays();
+            LauncherController.getInstance().setProgress(0);
+            LauncherController.getInstance().setProgressText("Everything up-to-date");
         });
     }
 
-    private void createContextMenu() {
-        ContextMenu contextMenu = new ContextMenu();
-
-        MenuItem item1 = new MenuItem("Synchronize");
-        item1.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                TreeItem<CustomTableItem> selectedItem = treeTableView.getSelectionModel().getSelectedItem();
-                log.info("{}", selectedItem);
-            }
-        });
-        MenuItem item2 = new MenuItem("Change Location");
-        item2.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                TreeItem<CustomTableItem> selectedItem = treeTableView.getSelectionModel().getSelectedItem();
-                log.info("{}", selectedItem);
-            }
-        });
-
-        // Add MenuItem to ContextMenu
-        contextMenu.getItems().addAll(item1, item2);
-        treeTableView.setContextMenu(contextMenu);
-    }
-
-
-    public void handleChangeLocationAction(ActionEvent actionEvent) {
-        TreeItem<CustomTableItem> selectedItem = treeTableView.getSelectionModel().getSelectedItem();
-        if (selectedItem != null) {
-            openChooseLocationDialog();
-        } else {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Change Location");
-            alert.setHeaderText("Change Location");
-            alert.setContentText("You have to choose a Modgroup or Mod on the left!");
-
-            alert.showAndWait();
-        }
-    }
-
-    public void handleRefreshAction(ActionEvent actionEvent) {
-        update();
-    }
-
-    public void handleDownloadAction(ActionEvent actionEvent) {
-
-        List<CustomTableItem> selectedItems = treeTableView.getSelectedTableItems();
-        if (selectedItems.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Locations Missing");
-            alert.setHeaderText("Locations Missing");
-            alert.setContentText("In order to proceed with the download, select all Mods and Modgroups you want to download");
-
-            alert.showAndWait();
-
-            log.info("no mods or modgroups selected, aborting download");
-            return;
-        }
-
-        if (!checkMissingLocations()) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Locations Missing");
-            alert.setHeaderText("Locations Missing");
-            alert.setContentText("In order to proceed with the download, locations must be set for all Mods and Modgroups");
-
-            alert.showAndWait();
-
-            log.info("some locations are missing, aborting download");
-            return;
-        }
-
-        List<Repository> repositories = new LinkedList<>();
-        HashMap<Repository, FileindexEntry> rootFileindexEntries = new HashMap<>();
-        HashMap<Repository, String> repositoryIdentifiers = new HashMap<>();
-        try {
-            for (String repositoryIdentifier : Settings.getInstance().getServerInfo().getRepositoryIdentifiers()) {
-                Repository repository = LauncherUtils.getRepository(repositoryIdentifier);
-                FileindexEntry rootFileindexEntry = LauncherUtils.getFileIndexEntry(repositoryIdentifier);
-
-                repositories.add(repository);
-                rootFileindexEntries.put(repository, rootFileindexEntry);
-                repositoryIdentifiers.put(repository, repositoryIdentifier);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        for (Object modGroupObj : treeTableView.getRoot().getChildren()) {
-            CheckBoxTreeItem<CustomTableItem> modGroupTreeItem = (CheckBoxTreeItem<CustomTableItem>) modGroupObj;
-            ModGroupTableItem modGroupTableItem = (ModGroupTableItem) modGroupTreeItem.getValue();
-            ModGroup modGroup = modGroupTableItem.getModGroup();
-            Repository repository = modGroupTableItem.getRepository();
-            FileindexEntry rootIndexEntry = rootFileindexEntries.get(repository);
-
-            boolean modGroupChecked = modGroupTableItem.getChecked();
-            boolean modGroupIndeterminate = modGroupTableItem.getIndeterminate();
-
-            if (modGroupChecked) {
-                FileindexEntry limitedFileindexEntry = limitFileindexToModgroups(rootIndexEntry, modGroup);
+    private void updateModgroupDisplays() {
+        for (LocalModGroup localModGroup : localModGroups.values()) {
+            if (uuidToModpackControllerMap.containsKey(localModGroup.getUuid())) {
+                // control already exists, just update
+                ModpackController modpackController = uuidToModpackControllerMap.get(localModGroup.getUuid());
+                modpackController.setDescription(localModGroup.getSyncStatus().toString());
+            } else {
                 try {
-                    String repositoryIdentifier = repositoryIdentifiers.get(repository);
-                    FileSyncHelper.syncFileindexTree(limitedFileindexEntry, Paths.get(modGroupTableItem.getLocation()), LauncherUtils.getRepoURL(repositoryIdentifier));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                    // create new control
+                    Node modpackControl = createModgroupControl(localModGroup);
+                    content.getChildren().add(modpackControl);
+                    ModpackController modpackController = getModpackController(modpackControl);
+                    uuidToModpackControllerMap.put(localModGroup.getUuid(), modpackController);
 
-            } else if (modGroupIndeterminate) {
-                for (Object modObj : modGroupTreeItem.getChildren()) {
-                    CheckBoxTreeItem<CustomTableItem> modTreeItem = (CheckBoxTreeItem<CustomTableItem>) modObj;
 
-                    ModTableItem modTableItem = (ModTableItem) modTreeItem.getValue();
-                    if (modTableItem.getChecked()) {
-                        ModGroup tempModGroup = new ModGroup("tempModGroup", UUID.randomUUID(), new HashSet<>());
-                        tempModGroup.addMod(modTableItem.getMod());
-                        FileindexEntry limitedFileIndexEntry = limitFileindexToModgroups(rootIndexEntry, tempModGroup);
-                        try {
-                            String repositoryIdentifier = repositoryIdentifiers.get(repository);
-                            FileSyncHelper.syncFileindexTree(limitedFileIndexEntry, Paths.get(modTableItem.getLocation()), LauncherUtils.getRepoURL(repositoryIdentifier));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Checks if there are locations set for all selected items,
-     * if there are locations missing, open selection dialog to choose the locations
-     *
-     * @return true if all locations are satisfied afterwards, false if locations are still missing
-     */
-    private boolean checkMissingLocations() {
-        List<CustomTableItem> selectedTableItems = treeTableView.getSelectedTableItems();
-        for (CustomTableItem selectedTableItem : selectedTableItems) {
-            if (selectedTableItem.getLocation() == null) {
-                switch (selectedTableItem.getType()) {
-                    case MOD_GROUP:
-                        boolean modGroupLocationSet = openChooseModGroupLocationDialog(selectedTableItem);
-                        if (!modGroupLocationSet)
-                            return false;
-                        break;
-                    case MOD:
-                        boolean modLocationSet = openChooseModLocationDialog(selectedTableItem);
-                        if (!modLocationSet)
-                            return false;
-                        break;
-                    case ROOT:
-                    default:
-                        break;
+                } catch (IOException e) {
+                    log.error("{}", e);
                 }
             }
         }
 
-        return true;
+        sortModsetDisplay();
     }
 
-    private boolean openChooseModGroupLocationDialog(CustomTableItem customTableItem) {
-        List<String> choices = Settings.getInstance().getSearchDirectories()
-                .stream()
-                .map(Path::toString)
-                .collect(Collectors.toList());
-
-        ChoiceDialog<String> dialog = new ChoiceDialog<>(null, choices);
-
-        dialog.setTitle("Change Location");
-        dialog.setHeaderText("Select a folder to where to download Modgroup: " + customTableItem.getName());
-        dialog.setContentText("Search directory:");
-
-        Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()) {
-            Path path = Paths.get(result.get());
-            customTableItem.setLocation(path);
-            treeTableView.refresh();
-            return true;
-        }
-
-        return false;
+    private void sortModsetDisplay() {
+        LinkedList<Node> sortedNodeList = new LinkedList<>(content.getChildren());
+        sortedNodeList.sort((o1, o2) -> {
+            ModpackController modpackController1 = getModpackController(o1);
+            ModpackController modpackController2 = getModpackController(o2);
+            LocalModGroup localModGroup1 = modpackController1.getLocalModGroup();
+            LocalModGroup localModGroup2 = modpackController2.getLocalModGroup();
+            return Integer.compare(localModGroup1.getPriority(), localModGroup2.getPriority());
+        });
+        content.getChildren().clear();
+        content.getChildren().addAll(sortedNodeList);
     }
 
-    private boolean openChooseModLocationDialog(CustomTableItem customTableItem) {
-        List<String> choices = Settings.getInstance().getSearchDirectories()
-                .stream()
-                .map(Path::toString)
-                .collect(Collectors.toList());
-
-        ChoiceDialog<String> dialog = new ChoiceDialog<>(null, choices);
-
-        dialog.setTitle("Change Mod Location");
-        dialog.setHeaderText("Select a folder to where to download mod: " + customTableItem.getName());
-        dialog.setContentText("Search directory:");
-
-        Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()) {
-            Path path = Paths.get(result.get());
-            customTableItem.setLocation(path);
-            treeTableView.refresh();
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean openChooseLocationDialog() {
-        TreeItem<CustomTableItem> selectedItem = treeTableView.getSelectionModel().getSelectedItem();
-        CustomTableItem selectedTableItem = selectedItem.getValue();
-
-        if (selectedTableItem != null) {
-            switch (selectedTableItem.getType()) {
-                case MOD_GROUP:
-                    return openChooseModGroupLocationDialog(selectedTableItem);
-                case MOD:
-                    return openChooseModLocationDialog(selectedTableItem);
-            }
-        }
-        return false;
-    }
-
-    public TreeTableView getModsTreeTableView() {
-        return treeTableView;
+    private Node createModgroupControl(LocalModGroup localModGroup) throws IOException {
+        Parent modpackRoot = FXMLLoader.load(getClass().getResource("/layout/Modpack.fxml"));
+        ModpackController modpackController = getModpackController(modpackRoot);
+        modpackController.setLocalModGroup(localModGroup);
+        return modpackRoot;
     }
 }

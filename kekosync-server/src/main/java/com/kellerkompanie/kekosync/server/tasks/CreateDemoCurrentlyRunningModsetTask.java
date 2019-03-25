@@ -1,8 +1,8 @@
 package com.kellerkompanie.kekosync.server.tasks;
 
 import com.google.gson.Gson;
-import com.kellerkompanie.kekosync.core.entities.RunningModset;
 import com.kellerkompanie.kekosync.core.entities.Mod;
+import com.kellerkompanie.kekosync.core.entities.RunningModset;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;

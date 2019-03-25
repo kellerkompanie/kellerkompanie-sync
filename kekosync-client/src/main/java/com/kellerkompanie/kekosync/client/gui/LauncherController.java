@@ -1,32 +1,36 @@
 package com.kellerkompanie.kekosync.client.gui;
 
+import com.kellerkompanie.kekosync.client.arma.ArmALauncher;
+import com.kellerkompanie.kekosync.client.gui.task.ProgressTask;
+import com.kellerkompanie.kekosync.client.gui.task.ProgressTaskState;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.*;
 
 @Slf4j
 public final class LauncherController implements Initializable {
 
     private static LauncherController instance;
-    @FXML
-    private StackPane content;
     @FXML
     private ScrollPane newsRoot;
     @FXML
@@ -55,8 +59,38 @@ public final class LauncherController implements Initializable {
     @FXML
     private Button buttonServer;
 
+    private PlayButtonMode playButtonMode = PlayButtonMode.PLAY;
+    private ExecutorService progressTaskExecutorService = Executors.newFixedThreadPool(1);
+    private BlockingQueue<ProgressTask> progressTaskQueue = new LinkedBlockingDeque<>();
+    private Runnable progressTask = () -> {
+        try {
+            // take one task from the queue
+            ProgressTask progressTask = progressTaskQueue.take();
+
+            // execute pre execute code
+            progressTask.onPreExecute();
+
+            // execute that task
+            Object result = progressTask.doInBackground();
+
+            // execute post execute code
+            progressTask.onPostExecute(result);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    };
+
     public static LauncherController getInstance() {
         return instance;
+    }
+
+    public boolean queueProgressTask(ProgressTask progressTask) {
+        synchronized (progressTaskQueue) {
+            boolean wasAdded = progressTaskQueue.add(progressTask);
+            if (wasAdded)
+                progressTask.setState(ProgressTaskState.QUEUED);
+            return wasAdded;
+        }
     }
 
     @Override
@@ -64,22 +98,42 @@ public final class LauncherController implements Initializable {
         instance = this;
         log.info("LauncherController initialize()");
 
-        EventHandler<ActionEvent> eventHandler = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (event.getSource() == buttonNews)
-                    switchContent(ContentMode.NEWS);
-                else if (event.getSource() == buttonMods)
-                    switchContent(ContentMode.MODS);
-                else if (event.getSource() == buttonSettings)
-                    switchContent(ContentMode.SETTINGS);
-            }
+        EventHandler<ActionEvent> eventHandler = event -> {
+            if (event.getSource() == buttonNews)
+                switchContent(ContentMode.NEWS);
+            else if (event.getSource() == buttonMods)
+                switchContent(ContentMode.MODS);
+            else if (event.getSource() == buttonSettings)
+                switchContent(ContentMode.SETTINGS);
         };
 
         buttonNews.setOnAction(eventHandler);
         buttonMods.setOnAction(eventHandler);
         buttonSettings.setOnAction(eventHandler);
-
+        buttonPlay.setOnAction(event -> {
+            switch (playButtonMode) {
+                case PLAY:
+                    if (isSteamRunning()) {
+                        ArmALauncher.getInstance().startArmA();
+                        playButtonMode = PlayButtonMode.STARTED;
+                        buttonPlay.setDisable(true);
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("KekoSync Error");
+                        alert.setHeaderText("ERROR: Steam not running");
+                        alert.setContentText("Du Jockel hast vergessen Steam zu starten ¯\\_(ツ)_/¯");
+                        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+                        stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/drawable/kk-signet-small-color.png")));
+                        alert.showAndWait();
+                    }
+                    break;
+                case UPDATE:
+                    break;
+                case STARTED:
+                    // game is already running, do nothing
+                    break;
+            }
+        });
 
         buttonTeamspeak.setGraphic(getImageView("/drawable/headset.png"));
         buttonWiki.setGraphic(getImageView("/drawable/wiki.png"));
@@ -90,6 +144,10 @@ public final class LauncherController implements Initializable {
         addForwardAction(buttonForum, "https://kellerkompanie.com/forum");
         addForwardAction(buttonWiki, "https://wiki.kellerkompanie.com");
         addForwardAction(buttonServer, "http://server.kellerkompanie.com");
+
+        progressTaskExecutorService.submit(progressTask);
+
+        NewsController.getInstance().updateNews();
     }
 
     private ImageView getImageView(String path) {
@@ -101,14 +159,11 @@ public final class LauncherController implements Initializable {
     }
 
     private void addForwardAction(Button button, String url) {
-        button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                try {
-                    Desktop.getDesktop().browse(new URI(url));
-                } catch (IOException | URISyntaxException e1) {
-                    e1.printStackTrace();
-                }
+        button.setOnAction(event -> {
+            try {
+                Desktop.getDesktop().browse(new URI(url));
+            } catch (IOException | URISyntaxException e1) {
+                e1.printStackTrace();
             }
         });
     }
@@ -116,16 +171,28 @@ public final class LauncherController implements Initializable {
     private void switchContent(ContentMode contentMode) {
         switch (contentMode) {
             case NEWS:
+                buttonNews.setStyle("-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0;");
+                buttonMods.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
+                buttonSettings.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
+
                 newsRoot.setVisible(true);
                 modsRoot.setVisible(false);
                 settingsRoot.setVisible(false);
                 break;
             case MODS:
+                buttonNews.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
+                buttonMods.setStyle("-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0;");
+                buttonSettings.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
+
                 newsRoot.setVisible(false);
                 modsRoot.setVisible(true);
                 settingsRoot.setVisible(false);
                 break;
             case SETTINGS:
+                buttonNews.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
+                buttonMods.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
+                buttonSettings.setStyle("-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0;");
+
                 newsRoot.setVisible(false);
                 modsRoot.setVisible(false);
                 settingsRoot.setVisible(true);
@@ -141,9 +208,37 @@ public final class LauncherController implements Initializable {
         progressBar.setProgress(progress);
     }
 
+    private boolean isSteamRunning() {
+        try {
+            String line;
+            StringBuilder sb = new StringBuilder();
+            Process p = Runtime.getRuntime().exec(System.getenv("windir") + "\\system32\\" + "tasklist.exe");
+            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            while ((line = input.readLine()) != null) {
+                sb.append(line);
+            }
+            input.close();
+            String pidInfo = sb.toString();
+            return pidInfo.contains("Steam.exe");
+        } catch (Exception e) {
+            log.error("{}", e);
+        }
+        return false;
+    }
+
     private enum ContentMode {
         NEWS,
         MODS,
         SETTINGS
+    }
+
+    private enum PlayButtonMode {
+        PLAY,
+        STARTED,
+        UPDATE
+    }
+
+    public void shutdown() {
+        progressTaskExecutorService.shutdown();
     }
 }

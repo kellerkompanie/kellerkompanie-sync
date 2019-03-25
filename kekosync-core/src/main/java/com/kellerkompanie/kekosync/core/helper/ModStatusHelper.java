@@ -1,9 +1,8 @@
 package com.kellerkompanie.kekosync.core.helper;
 
 import com.kellerkompanie.kekosync.core.entities.Mod;
-import com.kellerkompanie.kekosync.core.helper.FileSyncHelper;
-import com.kellerkompanie.kekosync.core.helper.FileindexEntry;
-import com.kellerkompanie.kekosync.core.helper.FileindexWithSyncEntry;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -12,6 +11,7 @@ import java.util.stream.Collectors;
 
 import static com.kellerkompanie.kekosync.core.helper.FileLocationHelper.getModLocalRootpath;
 
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ModStatusHelper {
     public static FileindexWithSyncEntry.SyncStatus checkStatusForMod(FileindexEntry rootFileindexEntry, Mod mod, Iterable<Path> localDirectories) {
         Path modPath = getModLocalRootpath(mod, localDirectories);

@@ -1,80 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.kellerkompanie.kekosync.client.gui.CustomTreeTableView?>
-<?import com.kellerkompanie.kekosync.client.gui.ToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<ScrollPane fx:id="scrollPane" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.kellerkompanie.kekosync.client.gui.ModsController" visible="false" fitToWidth="true"
-            hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+<ScrollPane VBox.vgrow="ALWAYS" fx:id="scrollPane" xmlns="http://javafx.com/javafx/8.0.121"
+            xmlns:fx="http://javafx.com/fxml/1" hbarPolicy="NEVER" fitToWidth="true" fitToHeight="true"
+            fx:controller="com.kellerkompanie.kekosync.client.gui.ModsController" visible="false">
 
-    <VBox GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" spacing="10">
-        <HBox alignment="CENTER_LEFT" spacing="5" disable="true">
-            <ToggleSwitch minWidth="-Infinity" maxWidth="-Infinity"/>
-            <Label text="Force Compatibility"/>
-        </HBox>
+    <VBox spacing="10" fx:id="content">
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        </padding>
 
-        <Label text="Modgroups">
+        <!--<Label text="Modgroups" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
             <padding>
                 <Insets top="5.0"/>
             </padding>
-        </Label>
-
-        <HBox maxHeight="-Infinity" minHeight="-Infinity" spacing="10">
-            <CustomTreeTableView id="treeTableView" fx:id="treeTableView" maxWidth="Infinity" minWidth="-Infinity"
-                                 maxHeight="-Infinity"
-                                 minHeight="-Infinity" HBox.hgrow="ALWAYS">
-                <columns>
-                    <TreeTableColumn fx:id="checkColumn" resizable="false"/>
-                    <TreeTableColumn fx:id="nameColumn" prefWidth="200.0" text="name"/>
-                    <TreeTableColumn fx:id="locationColumn" prefWidth="200.0" text="location"/>
-                    <TreeTableColumn fx:id="statusColumn" text="status"/>
-
-                </columns>
-            </CustomTreeTableView>
-            <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10">
-                <Button maxWidth="Infinity" text="Add" alignment="CENTER"/>
-                <Button maxWidth="Infinity" text="Remove" alignment="CENTER"/>
-                <Button maxWidth="Infinity" text="Refresh" alignment="CENTER" onAction="#handleRefreshAction"/>
-                <Button maxWidth="Infinity" text="Download" alignment="CENTER" onAction="#handleDownloadAction"/>
-                <Button maxWidth="Infinity" text="Change Location" alignment="CENTER"
-                        onAction="#handleChangeLocationAction"/>
-                <CheckBox fx:id="expandAllModsCheckBox" text="Expand All"/>
-            </VBox>
-
-        </HBox>
-
-        <Label text="Server currently running on:">
-            <padding>
-                <Insets bottom="5.0" top="15.0"/>
-            </padding>
-        </Label>
-        <HBox spacing="10">
-            <ListView fx:id="optionalsListView" prefHeight="200" minWidth="-Infinity" maxWidth="Infinity"
-                      HBox.hgrow="ALWAYS"/>
-        </HBox>
+        </Label>-->
 
     </VBox>
-
-    <Separator maxHeight="Infinity" orientation="VERTICAL" GridPane.columnIndex="1" GridPane.hgrow="NEVER"
-               GridPane.rowIndex="0">
-        <padding>
-            <Insets left="10.0" right="10.0"/>
-        </padding>
-    </Separator>
-
-    <VBox maxWidth="Infinity" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0">
-        <CheckBox fx:id="expandAllCheckBox" text="Expand All"/>
-
-        <Label text="Folders">
-            <padding>
-                <Insets bottom="5.0" top="15.0"/>
-            </padding>
-        </Label>
-
-        <TreeView fx:id="searchDirectoriesTreeView" maxHeight="Infinity"/>
-    </VBox>
-
 </ScrollPane>
 

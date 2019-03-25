@@ -1,7 +1,6 @@
 package com.kellerkompanie.kekosync.client;
 
 import com.google.gson.Gson;
-import com.kellerkompanie.kekosync.core.helper.FileLocationHelper;
 import com.kellerkompanie.kekosync.core.helper.FileindexWithSyncEntry;
 import com.kellerkompanie.kekosync.core.helper.HttpHelper;
 import com.kellerkompanie.kekosync.core.constants.Filenames;
@@ -11,7 +10,6 @@ import com.kellerkompanie.kekosync.core.entities.ModGroup;
 import com.kellerkompanie.kekosync.core.entities.Repository;
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 

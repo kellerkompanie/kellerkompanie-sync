@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<HBox xmlns="http://javafx.com/javafx" alignment="CENTER_LEFT"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.kellerkompanie.kekosync.client.gui.ModpackController"
+      prefHeight="10.0" prefWidth="600.0"
+      style="-fx-border-color: #f2f5f4; -fx-font-size: 14px; -fx-background-color: #212121">
+
+    <padding>
+        <Insets bottom="6.0" left="10.0" top="6.0"/>
+    </padding>
+
+    <userData>
+        <fx:reference source="controller" />
+    </userData>
+
+    <JFXCheckBox fx:id="checkBox" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;" onAction="#handleCheckBoxStateChanged"/>
+
+    <VBox HBox.hgrow="ALWAYS">
+        <padding>
+            <Insets left="6.0"/>
+        </padding>
+
+        <HBox alignment="CENTER_LEFT">
+            <Label fx:id="title" text="Example Modpack" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <JFXButton fx:id="buttonLocation" buttonType="FLAT" style="-fx-text-fill:#888888; -fx-background-radius: 0;"/>
+        </HBox>
+
+        <Label fx:id="description" text="Example desccription" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;"/>
+    </VBox>
+
+    <JFXButton fx:id="buttonSettings" buttonType="FLAT" style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
+
+    <JFXButton fx:id="buttonUpdate" text="Update" buttonType="FLAT" style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
+
+</HBox>

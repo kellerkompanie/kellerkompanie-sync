@@ -16,7 +16,9 @@
         </padding>
         <HBox alignment="CENTER_LEFT" spacing="10">
             <Label text="ArmA3 executable location:" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;"/>
-            <JFXTextField fx:id="executableLocationTextField" style="-fx-text-fill:#f2f5f4; -fx-background-radius: 0;" HBox.hgrow="ALWAYS"/>
+
+            <JFXTextField fx:id="executableLocationTextField" style="" HBox.hgrow="ALWAYS" />
+
             <JFXButton alignment="CENTER" mnemonicParsing="false" onAction="#handleExecutableLocationAction"
                        text="Select file..." prefWidth="100" prefHeight="32"
                        style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
@@ -48,19 +50,19 @@
                     </id>
                 </JFXCheckBox>
 
-                <JFXCheckBox text="file patching" onAction="#handleCheckBoxStateChanged"
+                <!--<JFXCheckBox text="file patching" onAction="#handleCheckBoxStateChanged"
                              style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="FILE_PATCHING"/>
                     </id>
-                </JFXCheckBox>
+                </JFXCheckBox>-->
 
-                <JFXCheckBox text="check signatures" onAction="#handleCheckBoxStateChanged"
+                <!--<JFXCheckBox text="check signatures" onAction="#handleCheckBoxStateChanged"
                              style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="CHECK_SIGNATURES"/>
                     </id>
-                </JFXCheckBox>
+                </JFXCheckBox>-->
 
                 <JFXCheckBox text="no splash screen" onAction="#handleCheckBoxStateChanged"
                              style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
@@ -83,7 +85,7 @@
                     </id>
                 </JFXCheckBox>
 
-                <HBox alignment="CENTER_LEFT" spacing="10">
+                <!--<HBox alignment="CENTER_LEFT" spacing="10">
                     <JFXCheckBox text="CPU count" onAction="#handleCheckBoxStateChanged"
                                  style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                         <id>
@@ -110,9 +112,9 @@
                             <String fx:value="1"/>
                         </value>
                     </JFXComboBox>
-                </HBox>
+                </HBox>-->
 
-                <HBox alignment="CENTER_LEFT" spacing="10">
+                <!--<HBox alignment="CENTER_LEFT" spacing="10">
                     <JFXCheckBox text="ExThreads" onAction="#handleCheckBoxStateChanged"
                                  style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                         <id>
@@ -136,7 +138,7 @@
                             <String fx:value="0"/>
                         </value>
                     </JFXComboBox>
-                </HBox>
+                </HBox>-->
             </VBox>
 
             <TextArea id="parameterTextArea" fx:id="parameterTextArea" editable="false"/>
@@ -156,5 +158,11 @@
                 </id>
             </JFXTextField>
         </HBox>
+
+        <Separator/>
+
+        <Label text="Download Settings" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;"/>
+
+
     </VBox>
 </ScrollPane>

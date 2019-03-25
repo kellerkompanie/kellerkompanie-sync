@@ -84,7 +84,7 @@ public class RootController extends Application implements Initializable {
         stage.yProperty().addListener(this::onWindowPositionChanged);
         stage.maximizedProperty().addListener(this::onWindowMaximizedChanged);
 
-        ModsController.getInstance().update();
+        //ModsController.getInstance().update();
         SettingsController.getInstance().update();
     }
 
