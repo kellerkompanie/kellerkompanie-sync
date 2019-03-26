@@ -8,6 +8,7 @@ import com.kellerkompanie.kekosync.client.download.DownloadManager;
 import com.kellerkompanie.kekosync.client.download.DownloadTask;
 import com.kellerkompanie.kekosync.client.gui.LauncherController;
 import com.kellerkompanie.kekosync.client.gui.NewsController;
+import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.kellerkompanie.kekosync.core.entities.News;
 import javafx.application.Platform;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +55,8 @@ public class UpdateNewsTask extends ProgressTask<List<News>> {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+
+        downloadManager.shutdown();
 
         List<News> newsList = null;
         try {

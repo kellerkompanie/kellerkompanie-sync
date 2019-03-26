@@ -150,4 +150,7 @@ public class DownloadManager {
         }
     }
 
+    public void shutdown() {
+        executorService.shutdown();
+    }
 }

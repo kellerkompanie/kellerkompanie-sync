@@ -89,7 +89,7 @@ public class RootController extends Application implements Initializable {
     }
 
     private ServerInfo downloadServerInfo() throws Exception {
-        String serverInfoString = HttpHelper.readUrl(LauncherUtils.getServerURL() + Filenames.FILENAME_SERVERINFO);
+        String serverInfoString = HttpHelper.readUrl(LauncherUtils.getRepositoryURL() + Filenames.FILENAME_SERVERINFO);
         Gson gson = new GsonBuilder().create();
         ServerInfo serverInfo = gson.fromJson(serverInfoString, ServerInfo.class);
         return serverInfo;

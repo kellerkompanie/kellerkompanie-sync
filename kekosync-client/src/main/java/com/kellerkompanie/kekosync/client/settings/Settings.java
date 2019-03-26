@@ -20,7 +20,8 @@ import java.util.*;
 @AllArgsConstructor
 public class Settings {
 
-    public static final String SERVER_URL = "http://server.kellerkompanie.com/repository";
+    public static final String SERVER_URL = "server.kellerkompanie.com";
+    public static final String REPOSITORY_URL = "http://" + SERVER_URL + "/repository";
 
     private static final File settingsPath = new File(System.getenv("APPDATA") + File.separator + "KekoSync");
     private static final File settingsFile = new File(settingsPath, File.separator + "settings.json");

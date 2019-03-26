@@ -3,6 +3,8 @@ package com.kellerkompanie.kekosync.client.gui;
 import com.kellerkompanie.kekosync.client.arma.ArmALauncher;
 import com.kellerkompanie.kekosync.client.gui.task.ProgressTask;
 import com.kellerkompanie.kekosync.client.gui.task.ProgressTaskState;
+import com.kellerkompanie.kekosync.client.settings.Settings;
+import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -21,6 +23,7 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -93,6 +96,11 @@ public final class LauncherController implements Initializable {
         }
     }
 
+    public void processQueue() {
+        for(int i = 0; i < progressTaskQueue.size(); i++)
+            progressTaskExecutorService.submit(progressTask);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
@@ -147,7 +155,32 @@ public final class LauncherController implements Initializable {
 
         progressTaskExecutorService.submit(progressTask);
 
+        if (!isServerReachable()) {
+            log.warn("Server is not reachable");
+
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Server Connection");
+            alert.setHeaderText("Connection Error");
+            alert.setContentText("Cannot connect to server, are you online? Is the server running?");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/drawable/kk-signet-small-color.png")));
+            alert.showAndWait();
+
+            return;
+        }
+
         NewsController.getInstance().updateNews();
+        ModsController.getInstance().update();
+    }
+
+    private boolean isServerReachable() {
+        try {
+            return InetAddress.getByName(Settings.SERVER_URL).isReachable(1000 * 10);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     private ImageView getImageView(String path) {
