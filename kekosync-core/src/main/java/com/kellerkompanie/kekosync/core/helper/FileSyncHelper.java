@@ -106,6 +106,7 @@ public final class FileSyncHelper {
         Path localfile = localpath.resolve(fileindexEntry.getName());
         if (Files.exists(localfile)) {
             String filehash = convertToHex(generateSHA512(localfile));
+
             String localfilehash = fileindexEntry.getHash();
             if ((Files.size(localfile) == fileindexEntry.getSize()) && (filehash.equals(localfilehash))) {
                 log.debug("{} - file is locally the same.", localfile);
@@ -149,6 +150,7 @@ public final class FileSyncHelper {
 
     public static FileindexWithSyncEntry checksyncFileindexTree(FileindexEntry fileindexEntry, Path localpath) throws IOException {
         List<FileindexWithSyncEntry> newChildren = new ArrayList<>();
+
         for ( FileindexEntry currentFileindexEntry : fileindexEntry.getChildren() ) {
             if ( !currentFileindexEntry.isDirectory() ) {
                 if ( currentFileindexEntry.getName().endsWith(".zsync" ) ) continue; //we don't need to sync those.

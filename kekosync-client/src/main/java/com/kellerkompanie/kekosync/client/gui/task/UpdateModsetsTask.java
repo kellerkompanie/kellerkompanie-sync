@@ -61,7 +61,6 @@ public class UpdateModsetsTask extends ProgressTask<Object> {
 
         for (ModGroup modGroup : modGroups) {
             log.info("{}", "ModsController: checking modGroup '" + modGroup.getName() + "'");
-            log.info("{} check 0");
 
             progress = 0;
             Platform.runLater(() -> {
@@ -73,8 +72,6 @@ public class UpdateModsetsTask extends ProgressTask<Object> {
             Path location = Settings.getInstance().getModsetLocation(localModGroup);
             localModGroup.setLocation(location);
 
-            log.info("{} check 1");
-
             ArrayList<FileindexWithSyncEntry.SyncStatus> statusList = new ArrayList<>(modGroup.getMods().size());
             double percentage = 1.0 /  (double) modGroup.getMods().size();
             for (Mod mod : modGroup.getMods()) {
@@ -84,17 +81,12 @@ public class UpdateModsetsTask extends ProgressTask<Object> {
                 FileindexWithSyncEntry.SyncStatus modStatus = ModStatusHelper.checkStatusForMod(limitedFileindexEntry, mod, Settings.getInstance().getSearchDirectories());
                 statusList.add(modStatus);
                 progress += percentage;
-                log.info("progress {}", progress);
                 Platform.runLater(() -> LauncherController.getInstance().setProgress(progress));
             }
-
-            log.info("{} check 2");
 
             FileindexWithSyncEntry.SyncStatus modsGroupStatus = ModStatusHelper.combineStatus(statusList);
             localModGroup.setSyncStatus(modsGroupStatus);
             ModsController.getInstance().addLocalModGroup(localModGroup);
-
-            log.info("{} check 3");
         }
 
         return null;

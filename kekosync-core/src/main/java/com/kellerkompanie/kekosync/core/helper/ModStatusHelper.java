@@ -3,6 +3,7 @@ package com.kellerkompanie.kekosync.core.helper;
 import com.kellerkompanie.kekosync.core.entities.Mod;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -12,11 +13,13 @@ import java.util.stream.Collectors;
 import static com.kellerkompanie.kekosync.core.helper.FileLocationHelper.getModLocalRootpath;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
 public class ModStatusHelper {
     public static FileindexWithSyncEntry.SyncStatus checkStatusForMod(FileindexEntry rootFileindexEntry, Mod mod, Iterable<Path> localDirectories) {
         Path modPath = getModLocalRootpath(mod, localDirectories);
         if ( modPath == null ) return FileindexWithSyncEntry.SyncStatus.UNKNOWN;
         FileindexEntry limitedFileindexEntry = FileSyncHelper.limitFileindexToMods(rootFileindexEntry, mod);
+
         try {
             return FileSyncHelper.checksyncFileindexTree(limitedFileindexEntry, modPath).getSyncStatus();
         } catch (IOException e) {

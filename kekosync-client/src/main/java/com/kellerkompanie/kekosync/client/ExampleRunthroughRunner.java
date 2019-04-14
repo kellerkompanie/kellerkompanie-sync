@@ -14,7 +14,6 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static com.kellerkompanie.kekosync.core.helper.FileSyncHelper.*;
-import static com.kellerkompanie.kekosync.core.helper.HashHelper.generateSHA512;
 
 @Slf4j
 public class ExampleRunthroughRunner {
