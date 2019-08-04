@@ -60,12 +60,11 @@
  *                                                                             *
  ******************************************************************************/
 
-.jfx-check-box {
-    -jfx-checked-color: #ee4d2e;
-    -jfx-unchecked-color: #f2f5f4;
+.check-box {
+    -fx-background-color: transparent;
 }
 
-.jfx-check-box .mark{
+.check-box .mark{
      -fx-border-color: #f2f5f4;
 }
 
@@ -77,10 +76,6 @@
 
 .combo-box .cell{
     -fx-text-fill: #f2f5f4;
-}
-
-.jfx-combo-box {
-    -jfx-focus-color: #ee4d2e;
 }
 
 .combo-box-popup .list-view .jfx-list-cell:filled:hover .jfx-list-cell {
@@ -107,9 +102,6 @@
     -fx-background-color: #212121;
 }
 
-.combo-box-popup .list-view .jfx-list-cell .jfx-rippler {
-    -jfx-rippler-fill: #ee4d2e;
-}
 
 /*******************************************************************************
  *                                                                             *
@@ -166,24 +158,23 @@
  *                                                                             *
  ******************************************************************************/
 
-.jfx-text-field{
+.text-field{
     -fx-background-color: transparent;
     -fx-prompt-text-fill: #808080;
     -fx-alignment: top-left;
-    -jfx-focus-color: #ee4d2e;
-    -jfx-unfocus-color: #ee4d2e;
     -fx-text-fill:#f2f5f4;
     -fx-background-radius: 0;
 }
 
 /*******************************************************************************
  *                                                                             *
- * JFX Button   		                                                       *
+ * Button   		                                                       *
  *                                                                             *
  ******************************************************************************/
 
-.jfx-button {
+.button {
     -fx-text-fill:#f2f5f4;
     -fx-font-size:14px;
     -fx-background-radius: 0;
+    -fx-background-color: transparent;
 }
