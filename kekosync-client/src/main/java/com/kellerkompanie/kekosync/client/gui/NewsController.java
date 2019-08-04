@@ -1,11 +1,5 @@
 package com.kellerkompanie.kekosync.client.gui;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXButton.ButtonType;
-import com.jfoenix.controls.JFXMasonryPane;
-import com.jfoenix.controls.JFXScrollPane;
-import com.jfoenix.effects.JFXDepthManager;
-import com.jfoenix.svg.SVGGlyph;
 import com.kellerkompanie.kekosync.client.gui.task.UpdateNewsTask;
 import com.kellerkompanie.kekosync.core.entities.News;
 import javafx.animation.KeyFrame;
@@ -41,6 +35,8 @@ import java.util.ResourceBundle;
 
 import static javafx.animation.Interpolator.EASE_BOTH;
 
+// FIXME broken after migration to JavaFX 12
+
 @Slf4j
 public class NewsController implements Initializable {
 
@@ -48,8 +44,8 @@ public class NewsController implements Initializable {
     private static NewsController instance;
     @FXML
     private ScrollPane scrollPane;
-    @FXML
-    private JFXMasonryPane masonryPane;
+//    @FXML
+//    private JFXMasonryPane masonryPane;
 
 
     public static NewsController getInstance() {
@@ -68,10 +64,10 @@ public class NewsController implements Initializable {
             StackPane newsCard = createNewsCard(news, Duration.millis(100 * i++ + 1000));
             children.add(newsCard);
         }
-        masonryPane.getChildren().addAll(children);
-        Platform.runLater(() -> scrollPane.requestLayout());
-
-        JFXScrollPane.smoothScrolling(scrollPane);
+//        masonryPane.getChildren().addAll(children);
+//        Platform.runLater(() -> scrollPane.requestLayout());
+//
+//        JFXScrollPane.smoothScrolling(scrollPane);
 
         log.info("updateNews finished");
     }
@@ -88,7 +84,7 @@ public class NewsController implements Initializable {
         child.setPrefWidth(width);
         double height = 50;
         child.setPrefHeight(height);
-        JFXDepthManager.setDepth(child, 1);
+        //JFXDepthManager.setDepth(child, 1);
 
 
         // create content
@@ -120,53 +116,53 @@ public class NewsController implements Initializable {
 
 
         // create button
-        JFXButton button = new JFXButton("");
-        button.setButtonType(ButtonType.RAISED);
-        button.setStyle("-fx-background-radius: 40;-fx-background-color: #ee4d2e;");
-        button.setPrefSize(40, 40);
-        button.setRipplerFill(Color.valueOf("#ee4d2e"));
-        button.setScaleX(0);
-        button.setScaleY(0);
-        String svgPath = "";
-        switch (news.getNewsType()) {
-            case NEWS:
-                svgPath = SVGIcons.ANNOUNCEMENT;
-                break;
-            case MISSION:
-                svgPath = SVGIcons.WEB;
-                break;
-            case DONATION:
-                svgPath = SVGIcons.EURO;
-                break;
-        }
-        SVGGlyph glyph = new SVGGlyph(-1, "test", svgPath, Color.WHITE);
-        glyph.setSize(20, 20);
-        button.setGraphic(glyph);
-        button.translateYProperty().bind(Bindings.createDoubleBinding(() -> header.getBoundsInParent().getHeight() - button.getHeight() / 2, header.boundsInParentProperty(), button.heightProperty()));
-        StackPane.setMargin(button, new Insets(0, 12, 0, 0));
-        StackPane.setAlignment(button, Pos.TOP_RIGHT);
-
-        button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                try {
-                    Desktop.getDesktop().browse(new URI(news.getWeblink()));
-                } catch (IOException | URISyntaxException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
-
-        Timeline animation = new Timeline(new KeyFrame(Duration.millis(240),
-                new KeyValue(button.scaleXProperty(),
-                        1,
-                        EASE_BOTH),
-                new KeyValue(button.scaleYProperty(),
-                        1,
-                        EASE_BOTH)));
-        animation.setDelay(duration);
-        animation.play();
-        child.getChildren().addAll(content, button);
+//        JFXButton button = new JFXButton("");
+//        button.setButtonType(ButtonType.RAISED);
+//        button.setStyle("-fx-background-radius: 40;-fx-background-color: #ee4d2e;");
+//        button.setPrefSize(40, 40);
+//        button.setRipplerFill(Color.valueOf("#ee4d2e"));
+//        button.setScaleX(0);
+//        button.setScaleY(0);
+//        String svgPath = "";
+//        switch (news.getNewsType()) {
+//            case NEWS:
+//                svgPath = SVGIcons.ANNOUNCEMENT;
+//                break;
+//            case MISSION:
+//                svgPath = SVGIcons.WEB;
+//                break;
+//            case DONATION:
+//                svgPath = SVGIcons.EURO;
+//                break;
+//        }
+//        SVGGlyph glyph = new SVGGlyph(-1, "test", svgPath, Color.WHITE);
+//        glyph.setSize(20, 20);
+//        button.setGraphic(glyph);
+//        button.translateYProperty().bind(Bindings.createDoubleBinding(() -> header.getBoundsInParent().getHeight() - button.getHeight() / 2, header.boundsInParentProperty(), button.heightProperty()));
+//        StackPane.setMargin(button, new Insets(0, 12, 0, 0));
+//        StackPane.setAlignment(button, Pos.TOP_RIGHT);
+//
+//        button.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                try {
+//                    Desktop.getDesktop().browse(new URI(news.getWeblink()));
+//                } catch (IOException | URISyntaxException e1) {
+//                    e1.printStackTrace();
+//                }
+//            }
+//        });
+//
+//        Timeline animation = new Timeline(new KeyFrame(Duration.millis(240),
+//                new KeyValue(button.scaleXProperty(),
+//                        1,
+//                        EASE_BOTH),
+//                new KeyValue(button.scaleYProperty(),
+//                        1,
+//                        EASE_BOTH)));
+//        animation.setDelay(duration);
+//        animation.play();
+//        child.getChildren().addAll(content, button);
 
         return child;
     }

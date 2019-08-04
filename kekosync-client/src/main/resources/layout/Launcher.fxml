@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
@@ -20,19 +19,19 @@
                     </image>
                 </ImageView>
 
-                <JFXButton fx:id="buttonNews" prefWidth="100" prefHeight="40" buttonType="FLAT" text="News"
-                           style="-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0;"/>
-                <JFXButton fx:id="buttonMods" prefWidth="100" prefHeight="40" buttonType="FLAT" text="Mods"
-                           style="-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;"/>
-                <JFXButton fx:id="buttonSettings" prefWidth="100" prefHeight="40" buttonType="FLAT" text="Settings"
-                           style="-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;"/>
+                <Button fx:id="buttonNews" prefWidth="100" prefHeight="40" text="News"
+                        style="-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0;"/>
+                <Button fx:id="buttonMods" prefWidth="100" prefHeight="40" text="Mods"
+                        style="-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;"/>
+                <Button fx:id="buttonSettings" prefWidth="100" prefHeight="40" text="Settings"
+                        style="-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;"/>
             </VBox>
 
             <HBox alignment="BOTTOM_CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="0.0"
                   AnchorPane.leftAnchor="0.0" spacing="10">
-                <JFXButton fx:id="buttonPlay" prefWidth="100" prefHeight="40" buttonType="FLAT"
-                           style="-fx-text-fill:#f2f5f4; -fx-background-color:#ee4d2e; -fx-font-size:14px; -fx-font-weight: bold; -fx-background-radius: 0;"
-                           text="PLAY"/>
+                <Button fx:id="buttonPlay" prefWidth="100" prefHeight="40"
+                        style="-fx-text-fill:#f2f5f4; -fx-background-color:#ee4d2e; -fx-font-size:14px; -fx-font-weight: bold; -fx-background-radius: 0;"
+                        text="PLAY"/>
             </HBox>
 
         </children>
@@ -44,10 +43,10 @@
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
             </padding>
 
-            <JFXButton fx:id="buttonTeamspeak" text="Teamspeak" buttonType="FLAT"/>
-            <JFXButton fx:id="buttonForum" text="Forum" buttonType="FLAT"/>
-            <JFXButton fx:id="buttonServer" text="Server" buttonType="FLAT"/>
-            <JFXButton fx:id="buttonWiki" text="Wiki" buttonType="FLAT"/>
+            <Button fx:id="buttonTeamspeak" text="Teamspeak"/>
+            <Button fx:id="buttonForum" text="Forum"/>
+            <Button fx:id="buttonServer" text="Server"/>
+            <Button fx:id="buttonWiki" text="Wiki"/>
         </HBox>
 
         <StackPane VBox.vgrow="ALWAYS">

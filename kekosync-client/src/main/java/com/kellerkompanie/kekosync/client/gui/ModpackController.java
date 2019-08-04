@@ -1,11 +1,11 @@
 package com.kellerkompanie.kekosync.client.gui;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
 import com.kellerkompanie.kekosync.client.settings.Settings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -23,13 +23,13 @@ import java.util.ResourceBundle;
 public class ModpackController implements Initializable {
 
     @FXML
-    private JFXCheckBox checkBox;
+    private CheckBox checkBox;
     @FXML
-    private JFXButton buttonLocation;
+    private Button buttonLocation;
     @FXML
-    private JFXButton buttonUpdate;
+    private Button buttonUpdate;
     @FXML
-    private JFXButton buttonSettings;
+    private Button buttonSettings;
     @FXML
     private Label title;
     @FXML

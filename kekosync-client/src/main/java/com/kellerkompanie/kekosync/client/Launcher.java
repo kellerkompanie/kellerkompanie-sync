@@ -16,7 +16,7 @@ import java.io.IOException;
 /**
  * @author Schwaggot
  */
-public class LauncherMain extends Application {
+public class Launcher extends Application {
 
     private Stage stage;
     private Scene scene;

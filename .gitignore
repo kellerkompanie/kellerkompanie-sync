@@ -215,3 +215,26 @@ Temporary Items
 
 kekosync_config.json
 .serverinfo
+/kekosync-client/build/resources/main/css/custom.css
+/kekosync-client/build/resources/main/css/jfoenix-components.css
+/kekosync-client/build/resources/main/css/jfoenix-main-demo.css
+/kekosync-client/build/resources/main/drawable/svg/announcement.svg
+/kekosync-client/build/resources/main/drawable/svg/euro_symbol.svg
+/kekosync-client/build/resources/main/drawable/svg/language.svg
+/kekosync-client/build/resources/main/drawable/forum.png
+/kekosync-client/build/resources/main/drawable/headset.png
+/kekosync-client/build/resources/main/drawable/kk-logo-full.png
+/kekosync-client/build/resources/main/drawable/kk-signet-small-color.png
+/kekosync-client/build/resources/main/drawable/open_location.png
+/kekosync-client/build/resources/main/drawable/pause.png
+/kekosync-client/build/resources/main/drawable/play.png
+/kekosync-client/build/resources/main/drawable/server.png
+/kekosync-client/build/resources/main/drawable/settings.png
+/kekosync-client/build/resources/main/drawable/wiki.png
+/kekosync-client/build/resources/main/layout/Launcher.fxml
+/kekosync-client/build/resources/main/layout/Modpack.fxml
+/kekosync-client/build/resources/main/layout/Mods.fxml
+/kekosync-client/build/resources/main/layout/News.fxml
+/kekosync-client/build/resources/main/layout/root.fxml
+/kekosync-client/build/resources/main/layout/Settings.fxml
+/kekosync-core/build/tmp/jar/MANIFEST.MF

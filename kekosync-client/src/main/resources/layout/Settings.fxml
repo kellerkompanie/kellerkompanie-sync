@@ -17,9 +17,9 @@
         <HBox alignment="CENTER_LEFT" spacing="10">
             <Label text="ArmA3 executable location:" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;"/>
 
-            <JFXTextField fx:id="executableLocationTextField" style="" HBox.hgrow="ALWAYS" />
+            <TextField fx:id="executableLocationTextField" style="" HBox.hgrow="ALWAYS" />
 
-            <JFXButton alignment="CENTER" mnemonicParsing="false" onAction="#handleExecutableLocationAction"
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleExecutableLocationAction"
                        text="Select file..." prefWidth="100" prefHeight="32"
                        style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
         </HBox>
@@ -29,26 +29,26 @@
         <Label text="Launcher Parameters" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;"/>
         <HBox spacing="10">
             <VBox fx:id="paramVBox" spacing="10">
-                <JFXCheckBox text="show script errors" onAction="#handleCheckBoxStateChanged"
+                <CheckBox text="show script errors" onAction="#handleCheckBoxStateChanged"
                              style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="SHOW_SCRIPT_ERRORS"/>
                     </id>
-                </JFXCheckBox>
+                </CheckBox>
 
-                <JFXCheckBox text="no pause" onAction="#handleCheckBoxStateChanged"
+                <CheckBox text="no pause" onAction="#handleCheckBoxStateChanged"
                              style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="NO_PAUSE"/>
                     </id>
-                </JFXCheckBox>
+                </CheckBox>
 
-                <JFXCheckBox text="window mode" onAction="#handleCheckBoxStateChanged"
+                <CheckBox text="window mode" onAction="#handleCheckBoxStateChanged"
                              style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="WINDOW_MODE"/>
                     </id>
-                </JFXCheckBox>
+                </CheckBox>
 
                 <!--<JFXCheckBox text="file patching" onAction="#handleCheckBoxStateChanged"
                              style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
@@ -64,26 +64,26 @@
                     </id>
                 </JFXCheckBox>-->
 
-                <JFXCheckBox text="no splash screen" onAction="#handleCheckBoxStateChanged"
+                <CheckBox text="no splash screen" onAction="#handleCheckBoxStateChanged"
                              style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="NO_SPLASH"/>
                     </id>
-                </JFXCheckBox>
+                </CheckBox>
 
-                <JFXCheckBox text="default world empty" onAction="#handleCheckBoxStateChanged"
+                <CheckBox text="default world empty" onAction="#handleCheckBoxStateChanged"
                              style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="DEFUALT_WORLD_EMPTY"/>
                     </id>
-                </JFXCheckBox>
+                </CheckBox>
 
-                <JFXCheckBox text="no logs" onAction="#handleCheckBoxStateChanged"
+                <CheckBox text="no logs" onAction="#handleCheckBoxStateChanged"
                              style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="NO_LOGS"/>
                     </id>
-                </JFXCheckBox>
+                </CheckBox>
 
                 <!--<HBox alignment="CENTER_LEFT" spacing="10">
                     <JFXCheckBox text="CPU count" onAction="#handleCheckBoxStateChanged"
@@ -145,18 +145,18 @@
         </HBox>
 
         <HBox alignment="CENTER_LEFT" spacing="10">
-            <JFXCheckBox text="Custom" onAction="#handleCheckBoxStateChanged"
+            <CheckBox text="Custom" onAction="#handleCheckBoxStateChanged"
                          style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                 <id>
                     <ArmAParameter fx:constant="CUSTOM"/>
                 </id>
-            </JFXCheckBox>
-            <JFXTextField fx:id="customTextField"
+            </CheckBox>
+            <TextField fx:id="customTextField"
                           style="-fx-text-fill:#f2f5f4; -fx-background-radius: 0;" HBox.hgrow="ALWAYS">
                 <id>
                     <ArmAParameter fx:constant="CUSTOM"/>
                 </id>
-            </JFXTextField>
+            </TextField>
         </HBox>
 
         <Separator/>

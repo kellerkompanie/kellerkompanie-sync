@@ -4,7 +4,6 @@ import com.kellerkompanie.kekosync.client.arma.ArmALauncher;
 import com.kellerkompanie.kekosync.client.gui.task.ProgressTask;
 import com.kellerkompanie.kekosync.client.gui.task.ProgressTaskState;
 import com.kellerkompanie.kekosync.client.settings.Settings;
-import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
