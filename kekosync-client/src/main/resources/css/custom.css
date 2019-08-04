@@ -177,4 +177,18 @@
     -fx-font-size:14px;
     -fx-background-radius: 0;
     -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.button:focused {
+
+}
+
+.button:pressed {
+    -fx-text-fill: white;
+}
+
+.button:hover {
+    -fx-text-fill: white;
 }
