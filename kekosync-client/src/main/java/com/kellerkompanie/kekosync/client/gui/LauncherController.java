@@ -148,7 +148,7 @@ public final class LauncherController implements Initializable {
         buttonServer.setGraphic(getImageView("/drawable/server.png"));
 
         addForwardAction(buttonTeamspeak, "ts3server://ts.kellerkompanie.com?port=9987");
-        addForwardAction(buttonForum, "https://kellerkompanie.com/forum");
+        addForwardAction(buttonForum, "https://forum.kellerkompanie.com");
         addForwardAction(buttonWiki, "https://wiki.kellerkompanie.com");
         addForwardAction(buttonServer, "http://server.kellerkompanie.com");
 
