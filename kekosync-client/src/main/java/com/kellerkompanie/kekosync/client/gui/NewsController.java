@@ -14,17 +14,21 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -44,8 +48,8 @@ public class NewsController implements Initializable {
     private static NewsController instance;
     @FXML
     private ScrollPane scrollPane;
-//    @FXML
-//    private JFXMasonryPane masonryPane;
+    @FXML
+    private VBox masonryPane;
 
 
     public static NewsController getInstance() {
@@ -64,10 +68,8 @@ public class NewsController implements Initializable {
             StackPane newsCard = createNewsCard(news, Duration.millis(100 * i++ + 1000));
             children.add(newsCard);
         }
-//        masonryPane.getChildren().addAll(children);
-//        Platform.runLater(() -> scrollPane.requestLayout());
-//
-//        JFXScrollPane.smoothScrolling(scrollPane);
+        masonryPane.getChildren().addAll(children);
+        Platform.runLater(() -> scrollPane.requestLayout());
 
         log.info("updateNews finished");
     }
@@ -84,8 +86,6 @@ public class NewsController implements Initializable {
         child.setPrefWidth(width);
         double height = 50;
         child.setPrefHeight(height);
-        //JFXDepthManager.setDepth(child, 1);
-
 
         // create content
         StackPane header = new StackPane();
@@ -116,53 +116,52 @@ public class NewsController implements Initializable {
 
 
         // create button
-//        JFXButton button = new JFXButton("");
-//        button.setButtonType(ButtonType.RAISED);
-//        button.setStyle("-fx-background-radius: 40;-fx-background-color: #ee4d2e;");
-//        button.setPrefSize(40, 40);
-//        button.setRipplerFill(Color.valueOf("#ee4d2e"));
-//        button.setScaleX(0);
-//        button.setScaleY(0);
-//        String svgPath = "";
-//        switch (news.getNewsType()) {
-//            case NEWS:
-//                svgPath = SVGIcons.ANNOUNCEMENT;
-//                break;
-//            case MISSION:
-//                svgPath = SVGIcons.WEB;
-//                break;
-//            case DONATION:
-//                svgPath = SVGIcons.EURO;
-//                break;
-//        }
-//        SVGGlyph glyph = new SVGGlyph(-1, "test", svgPath, Color.WHITE);
-//        glyph.setSize(20, 20);
-//        button.setGraphic(glyph);
-//        button.translateYProperty().bind(Bindings.createDoubleBinding(() -> header.getBoundsInParent().getHeight() - button.getHeight() / 2, header.boundsInParentProperty(), button.heightProperty()));
-//        StackPane.setMargin(button, new Insets(0, 12, 0, 0));
-//        StackPane.setAlignment(button, Pos.TOP_RIGHT);
-//
-//        button.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                try {
-//                    Desktop.getDesktop().browse(new URI(news.getWeblink()));
-//                } catch (IOException | URISyntaxException e1) {
-//                    e1.printStackTrace();
-//                }
-//            }
-//        });
-//
-//        Timeline animation = new Timeline(new KeyFrame(Duration.millis(240),
-//                new KeyValue(button.scaleXProperty(),
-//                        1,
-//                        EASE_BOTH),
-//                new KeyValue(button.scaleYProperty(),
-//                        1,
-//                        EASE_BOTH)));
-//        animation.setDelay(duration);
-//        animation.play();
-//        child.getChildren().addAll(content, button);
+        Button button = new Button("");
+        button.setStyle("-fx-background-radius: 40;-fx-background-color: #ee4d2e;");
+        button.setPrefSize(40, 40);
+        button.setScaleX(0);
+        button.setScaleY(0);
+
+        String imagePath;
+        switch (news.getNewsType()) {
+            case NEWS:
+                imagePath = "/drawable/announcement.png";
+                break;
+            case MISSION:
+                imagePath = "/drawable/calendar.png";
+                break;
+            case DONATION:
+                imagePath = "/drawable/euro.png";
+                break;
+            default:
+                imagePath = "/drawable/link.png";
+                break;
+        }
+        Image image = new Image(this.getClass().getResourceAsStream(imagePath));
+        button.setGraphic(new ImageView(image));
+
+        button.translateYProperty().bind(Bindings.createDoubleBinding(() -> header.getBoundsInParent().getHeight() - button.getHeight() / 2, header.boundsInParentProperty(), button.heightProperty()));
+        StackPane.setMargin(button, new Insets(0, 12, 0, 0));
+        StackPane.setAlignment(button, Pos.TOP_RIGHT);
+
+        button.setOnAction(event -> {
+            try {
+                Desktop.getDesktop().browse(new URI(news.getWeblink()));
+            } catch (IOException | URISyntaxException e1) {
+                e1.printStackTrace();
+            }
+        });
+
+        Timeline animation = new Timeline(new KeyFrame(Duration.millis(240),
+                new KeyValue(button.scaleXProperty(),
+                        1,
+                        EASE_BOTH),
+                new KeyValue(button.scaleYProperty(),
+                        1,
+                        EASE_BOTH)));
+        animation.setDelay(duration);
+        animation.play();
+        child.getChildren().addAll(content, button);
 
         return child;
     }

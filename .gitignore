@@ -239,3 +239,7 @@ kekosync_config.json
 /kekosync-client/build/resources/main/layout/Settings.fxml
 /kekosync-core/build/tmp/jar/MANIFEST.MF
 /kekosync-client/build/resources/main/simplelogger.properties
+/kekosync-client/build/resources/main/drawable/announcement.png
+/kekosync-client/build/resources/main/drawable/calendar.png
+/kekosync-client/build/resources/main/drawable/euro.png
+/kekosync-client/build/resources/main/drawable/link.png
