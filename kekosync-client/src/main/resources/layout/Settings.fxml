@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
 <?import com.kellerkompanie.kekosync.client.arma.*?>
-<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import java.lang.*?>
 <ScrollPane VBox.vgrow="ALWAYS" fx:id="scrollPane" xmlns="http://javafx.com/javafx/8.0.121"
             xmlns:fx="http://javafx.com/fxml/1" hbarPolicy="NEVER" fitToHeight="true" fitToWidth="true"
             fx:controller="com.kellerkompanie.kekosync.client.gui.SettingsController" visible="false">
@@ -17,11 +14,11 @@
         <HBox alignment="CENTER_LEFT" spacing="10">
             <Label text="ArmA3 executable location:" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;"/>
 
-            <TextField fx:id="executableLocationTextField" style="" HBox.hgrow="ALWAYS" />
+            <TextField fx:id="executableLocationTextField" HBox.hgrow="ALWAYS"/>
 
             <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleExecutableLocationAction"
-                       text="Select file..." prefWidth="100" prefHeight="32"
-                       style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
+                    text="Select file..." prefWidth="100" prefHeight="32"
+                    style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
         </HBox>
 
         <Separator/>
@@ -30,115 +27,46 @@
         <HBox spacing="10">
             <VBox fx:id="paramVBox" spacing="10">
                 <CheckBox text="show script errors" onAction="#handleCheckBoxStateChanged"
-                             style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
+                          style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="SHOW_SCRIPT_ERRORS"/>
                     </id>
                 </CheckBox>
 
                 <CheckBox text="no pause" onAction="#handleCheckBoxStateChanged"
-                             style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
+                          style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="NO_PAUSE"/>
                     </id>
                 </CheckBox>
 
                 <CheckBox text="window mode" onAction="#handleCheckBoxStateChanged"
-                             style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
+                          style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="WINDOW_MODE"/>
                     </id>
                 </CheckBox>
 
-                <!--<JFXCheckBox text="file patching" onAction="#handleCheckBoxStateChanged"
-                             style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
-                    <id>
-                        <ArmAParameter fx:constant="FILE_PATCHING"/>
-                    </id>
-                </JFXCheckBox>-->
-
-                <!--<JFXCheckBox text="check signatures" onAction="#handleCheckBoxStateChanged"
-                             style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
-                    <id>
-                        <ArmAParameter fx:constant="CHECK_SIGNATURES"/>
-                    </id>
-                </JFXCheckBox>-->
-
                 <CheckBox text="no splash screen" onAction="#handleCheckBoxStateChanged"
-                             style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
+                          style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="NO_SPLASH"/>
                     </id>
                 </CheckBox>
 
                 <CheckBox text="default world empty" onAction="#handleCheckBoxStateChanged"
-                             style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
+                          style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="DEFUALT_WORLD_EMPTY"/>
                     </id>
                 </CheckBox>
 
                 <CheckBox text="no logs" onAction="#handleCheckBoxStateChanged"
-                             style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
+                          style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                     <id>
                         <ArmAParameter fx:constant="NO_LOGS"/>
                     </id>
                 </CheckBox>
-
-                <!--<HBox alignment="CENTER_LEFT" spacing="10">
-                    <JFXCheckBox text="CPU count" onAction="#handleCheckBoxStateChanged"
-                                 style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
-                        <id>
-                            <ArmAParameter fx:constant="CPU_COUNT"/>
-                        </id>
-                    </JFXCheckBox>
-                    <JFXComboBox onAction="#handleComboBoxStateChanged">
-                        <id>
-                            <ArmAParameter fx:constant="CPU_COUNT"/>
-                        </id>
-                        <items>
-                            <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="1"/>
-                                <String fx:value="2"/>
-                                <String fx:value="3"/>
-                                <String fx:value="4"/>
-                                <String fx:value="5"/>
-                                <String fx:value="6"/>
-                                <String fx:value="7"/>
-                                <String fx:value="8"/>
-                            </FXCollections>
-                        </items>
-                        <value>
-                            <String fx:value="1"/>
-                        </value>
-                    </JFXComboBox>
-                </HBox>-->
-
-                <!--<HBox alignment="CENTER_LEFT" spacing="10">
-                    <JFXCheckBox text="ExThreads" onAction="#handleCheckBoxStateChanged"
-                                 style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
-                        <id>
-                            <ArmAParameter fx:constant="EX_THREADS"/>
-                        </id>
-                    </JFXCheckBox>
-                    <JFXComboBox onAction="#handleComboBoxStateChanged">
-                        <id>
-                            <ArmAParameter fx:constant="EX_THREADS"/>
-                        </id>
-                        <items>
-                            <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="0"/>
-                                <String fx:value="1"/>
-                                <String fx:value="3"/>
-                                <String fx:value="5"/>
-                                <String fx:value="7"/>
-                            </FXCollections>
-                        </items>
-                        <value>
-                            <String fx:value="0"/>
-                        </value>
-                    </JFXComboBox>
-                </HBox>-->
             </VBox>
 
             <TextArea id="parameterTextArea" fx:id="parameterTextArea" editable="false"/>
@@ -146,13 +74,13 @@
 
         <HBox alignment="CENTER_LEFT" spacing="10">
             <CheckBox text="Custom" onAction="#handleCheckBoxStateChanged"
-                         style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
+                      style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;">
                 <id>
                     <ArmAParameter fx:constant="CUSTOM"/>
                 </id>
             </CheckBox>
             <TextField fx:id="customTextField"
-                          style="-fx-text-fill:#f2f5f4; -fx-background-radius: 0;" HBox.hgrow="ALWAYS">
+                       style="-fx-text-fill:#f2f5f4; -fx-background-radius: 0;" HBox.hgrow="ALWAYS">
                 <id>
                     <ArmAParameter fx:constant="CUSTOM"/>
                 </id>
@@ -162,7 +90,5 @@
         <Separator/>
 
         <Label text="Download Settings" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;"/>
-
-
     </VBox>
 </ScrollPane>

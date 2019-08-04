@@ -11,30 +11,26 @@
       fx:controller="com.kellerkompanie.kekosync.client.gui.LauncherController">
 
     <AnchorPane>
-        <children>
-            <VBox AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" alignment="TOP_CENTER" spacing="10">
-                <ImageView id="logo" fitWidth="128" preserveRatio="true">
-                    <image>
-                        <Image url="/drawable/kk-logo-full.png"/>
-                    </image>
-                </ImageView>
+        <VBox AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" alignment="TOP_CENTER" spacing="10">
+            <ImageView id="logo" fitWidth="128" preserveRatio="true">
+                <Image url="/drawable/kk-logo-full.png"/>
+            </ImageView>
 
-                <Button fx:id="buttonNews" prefWidth="100" prefHeight="40" text="News"
-                        style="-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0;"/>
-                <Button fx:id="buttonMods" prefWidth="100" prefHeight="40" text="Mods"
-                        style="-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;"/>
-                <Button fx:id="buttonSettings" prefWidth="100" prefHeight="40" text="Settings"
-                        style="-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;"/>
-            </VBox>
+            <Button fx:id="buttonNews" prefWidth="100" prefHeight="40" text="News"
+                    style="-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0;"/>
+            <Button fx:id="buttonMods" prefWidth="100" prefHeight="40" text="Mods"
+                    style="-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;"/>
+            <Button fx:id="buttonSettings" prefWidth="100" prefHeight="40" text="Settings"
+                    style="-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;"/>
+        </VBox>
 
-            <HBox alignment="BOTTOM_CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="0.0"
-                  AnchorPane.leftAnchor="0.0" spacing="10">
-                <Button fx:id="buttonPlay" prefWidth="100" prefHeight="40"
-                        style="-fx-text-fill:#f2f5f4; -fx-background-color:#ee4d2e; -fx-font-size:14px; -fx-font-weight: bold; -fx-background-radius: 0;"
-                        text="PLAY"/>
-            </HBox>
+        <HBox alignment="BOTTOM_CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.leftAnchor="0.0" spacing="10">
+            <Button fx:id="buttonPlay" prefWidth="100" prefHeight="40"
+                    style="-fx-text-fill:#f2f5f4; -fx-background-color:#ee4d2e; -fx-font-size:14px; -fx-font-weight: bold; -fx-background-radius: 0;"
+                    text="PLAY"/>
+        </HBox>
 
-        </children>
     </AnchorPane>
 
     <VBox HBox.hgrow="ALWAYS">

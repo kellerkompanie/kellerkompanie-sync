@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <HBox xmlns="http://javafx.com/javafx" alignment="CENTER_LEFT"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.kellerkompanie.kekosync.client.gui.ModpackController"
@@ -15,10 +15,11 @@
     </padding>
 
     <userData>
-        <fx:reference source="controller" />
+        <fx:reference source="controller"/>
     </userData>
 
-    <CheckBox fx:id="checkBox" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;" onAction="#handleCheckBoxStateChanged"/>
+    <CheckBox fx:id="checkBox" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px;"
+              onAction="#handleCheckBoxStateChanged"/>
 
     <VBox HBox.hgrow="ALWAYS">
         <padding>
@@ -26,7 +27,8 @@
         </padding>
 
         <HBox alignment="CENTER_LEFT">
-            <Label fx:id="title" text="Example Modpack" style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <Label fx:id="title" text="Example Modpack"
+                   style="-fx-text-fill: #f2f5f4; -fx-font-size: 14px; -fx-font-weight: bold;"/>
             <Button fx:id="buttonLocation" style="-fx-text-fill:#888888; -fx-background-radius: 0;"/>
         </HBox>
 
@@ -35,6 +37,7 @@
 
     <Button fx:id="buttonSettings" style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
 
-    <Button fx:id="buttonUpdate" text="Update" style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
+    <Button fx:id="buttonUpdate" text="Update"
+            style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
 
 </HBox>

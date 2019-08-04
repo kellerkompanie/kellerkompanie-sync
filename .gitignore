@@ -238,3 +238,4 @@ kekosync_config.json
 /kekosync-client/build/resources/main/layout/root.fxml
 /kekosync-client/build/resources/main/layout/Settings.fxml
 /kekosync-core/build/tmp/jar/MANIFEST.MF
+/kekosync-client/build/resources/main/simplelogger.properties
