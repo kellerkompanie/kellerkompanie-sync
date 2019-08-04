@@ -60,14 +60,32 @@
  *                                                                             *
  ******************************************************************************/
 
-.check-box {
-    -fx-background-color: transparent;
+
+.check-box .box {
+
+    -fx-background-color: black;
+    -fx-border-color:white;
+    -fx-border-radius:0px;
+
 }
 
+.check-box:hover{
+    -fx-cursor: hand;
+}
 .check-box .mark{
-     -fx-border-color: #f2f5f4;
+     -fx-border-color: black;
+     -fx-background-color:black;
 }
 
+.check-box:selected .mark {
+    -fx-background-color: white;
+    -fx-border-color:white;
+}
+
+.check-box:selected .box {
+
+    -fx-background-color: white;
+}
 /*******************************************************************************
  *                                                                             *
  * Combo Box			                                                       *
