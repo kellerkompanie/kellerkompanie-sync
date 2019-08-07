@@ -62,30 +62,34 @@
 
 
 .check-box .box {
-
-    -fx-background-color: black;
-    -fx-border-color:white;
-    -fx-border-radius:0px;
+    -fx-background-color: #161618;
+    -fx-border-color: #f2f5f4;
 
 }
 
 .check-box:hover{
     -fx-cursor: hand;
 }
+
 .check-box .mark{
-     -fx-border-color: black;
-     -fx-background-color:black;
+    -fx-cell-size: 0;
+     -fx-border-color: transparent;
+     -fx-background-color: transparent;
+
 }
 
 .check-box:selected .mark {
-    -fx-background-color: white;
-    -fx-border-color:white;
+    -fx-cell-size: 0;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+
 }
 
 .check-box:selected .box {
-
-    -fx-background-color: white;
+    -fx-background-color: #f2f5f4;
+    -fx-border-color: #161618;
 }
+
 /*******************************************************************************
  *                                                                             *
  * Combo Box			                                                       *
@@ -209,4 +213,5 @@
 
 .button:hover {
     -fx-text-fill: white;
+    -fx-cursor: hand;
 }
