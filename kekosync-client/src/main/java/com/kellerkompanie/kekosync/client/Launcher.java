@@ -50,8 +50,7 @@ public class Launcher extends Application {
 
         scene = new Scene(root, width, height);
         final ObservableList<String> stylesheets = scene.getStylesheets();
-        stylesheets.addAll(
-                getClass().getResource("/css/custom.css").toExternalForm());
+        stylesheets.addAll(getClass().getResource("/css/custom.css").toExternalForm());
 
         scene.widthProperty().addListener(this::onWindowSizeChanged);
         scene.heightProperty().addListener(this::onWindowSizeChanged);
