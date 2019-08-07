@@ -203,7 +203,7 @@ public final class LauncherController implements Initializable {
     private void switchContent(ContentMode contentMode) {
         switch (contentMode) {
             case NEWS:
-                buttonNews.setStyle("-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0;");
+                buttonNews.setStyle("-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0; -fx-border-style:solid; -fx-border-width: 2px; -fx-border-color: transparent transparent #ee4d2e transparent; -fx-paddong:0;");
                 buttonMods.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
                 buttonSettings.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
 
@@ -213,7 +213,7 @@ public final class LauncherController implements Initializable {
                 break;
             case MODS:
                 buttonNews.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
-                buttonMods.setStyle("-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0;");
+                buttonMods.setStyle("-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0; -fx-border-style:solid; -fx-border-width: 2px; -fx-border-color: transparent transparent #ee4d2e transparent; -fx-paddong:0;");
                 buttonSettings.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
 
                 newsRoot.setVisible(false);
@@ -223,7 +223,7 @@ public final class LauncherController implements Initializable {
             case SETTINGS:
                 buttonNews.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
                 buttonMods.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
-                buttonSettings.setStyle("-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0;");
+                buttonSettings.setStyle("-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0; -fx-border-style:solid; -fx-border-width: 2px; -fx-border-color: transparent transparent #ee4d2e transparent; -fx-paddong:0;");
 
                 newsRoot.setVisible(false);
                 modsRoot.setVisible(false);

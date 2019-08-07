@@ -212,6 +212,6 @@
 }
 
 .button:hover {
-    -fx-text-fill: white;
+    -fx-text-fill: #ee4d2e;
     -fx-cursor: hand;
 }
