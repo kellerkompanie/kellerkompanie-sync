@@ -79,8 +79,7 @@
                     <ArmAParameter fx:constant="CUSTOM"/>
                 </id>
             </CheckBox>
-            <TextField fx:id="customTextField"
-                       style="-fx-text-fill:#f2f5f4; -fx-background-radius: 0;" HBox.hgrow="ALWAYS">
+            <TextField fx:id="customTextField" HBox.hgrow="ALWAYS">
                 <id>
                     <ArmAParameter fx:constant="CUSTOM"/>
                 </id>

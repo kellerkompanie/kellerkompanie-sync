@@ -90,6 +90,10 @@
     -fx-border-color: #161618;
 }
 
+.check-box > .box {
+    -fx-padding: 0px;
+}
+
 /*******************************************************************************
  *                                                                             *
  * Combo Box			                                                       *
@@ -180,12 +184,22 @@
  *                                                                             *
  ******************************************************************************/
 
-.text-field{
-    -fx-background-color: transparent;
-    -fx-prompt-text-fill: #808080;
-    -fx-alignment: top-left;
-    -fx-text-fill:#f2f5f4;
+.text-field {
+    -fx-background-color: #212121;
+    /*-fx-prompt-text-fill: #808080;*/
+    -fx-text-fill: #f2f5f4;
+    -fx-font-size: 14px;
     -fx-background-radius: 0;
+ }
+
+.text-field .content {
+    -fx-background-color: #212121;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.text-field:focused {
+    -fx-background-color: #ee4d2e;
 }
 
 /*******************************************************************************
