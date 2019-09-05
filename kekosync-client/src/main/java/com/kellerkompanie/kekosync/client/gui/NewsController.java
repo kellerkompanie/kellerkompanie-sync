@@ -7,8 +7,6 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -26,9 +24,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -43,7 +39,6 @@ import static javafx.animation.Interpolator.EASE_BOTH;
 
 @Slf4j
 public class NewsController implements Initializable {
-
 
     private static NewsController instance;
     @FXML
@@ -61,7 +56,7 @@ public class NewsController implements Initializable {
         instance = this;
     }
 
-    public void updateNews(List<News> newsList) throws IOException {
+    public void updateNews(List<News> newsList) {
         ArrayList<Node> children = new ArrayList<>();
         int i = 0;
         for (News news : newsList) {
@@ -80,7 +75,7 @@ public class NewsController implements Initializable {
         LauncherController.getInstance().queueProgressTask(updateNewsTask);
     }
 
-    private StackPane createNewsCard(News news, Duration duration) throws IOException {
+    private StackPane createNewsCard(News news, Duration duration) {
         StackPane child = new StackPane();
         double width = 690;
         child.setPrefWidth(width);
@@ -114,7 +109,6 @@ public class NewsController implements Initializable {
         content.getChildren().addAll(header, body);
         body.setStyle("-fx-background-radius: 0 0 5 5; -fx-background-color: #f2f5f4;");
 
-
         // create button
         Button button = new Button("");
         button.setStyle("-fx-background-radius: 40;-fx-background-color: #ee4d2e;");
@@ -139,7 +133,6 @@ public class NewsController implements Initializable {
         }
         Image image = new Image(this.getClass().getResourceAsStream(imagePath));
         button.setGraphic(new ImageView(image));
-
         button.translateYProperty().bind(Bindings.createDoubleBinding(() -> header.getBoundsInParent().getHeight() - button.getHeight() / 2, header.boundsInParentProperty(), button.heightProperty()));
         StackPane.setMargin(button, new Insets(0, 12, 0, 0));
         StackPane.setAlignment(button, Pos.TOP_RIGHT);

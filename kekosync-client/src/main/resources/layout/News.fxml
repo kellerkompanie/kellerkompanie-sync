@@ -6,7 +6,7 @@
 <ScrollPane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
             hbarPolicy="NEVER" fitToHeight="true" fitToWidth="true"
             fx:controller="com.kellerkompanie.kekosync.client.gui.NewsController" fx:id="scrollPane">
-    <VBox fx:id="masonryPane" style="-fx-background-color: #161618;">
+    <VBox fx:id="masonryPane" style="-fx-background-color: #161618;" spacing="8">
         <padding>
             <Insets left="10" top="10" right="10" bottom="10"/>
         </padding>

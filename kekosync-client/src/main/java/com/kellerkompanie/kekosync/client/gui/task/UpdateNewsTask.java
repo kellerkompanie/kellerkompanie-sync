@@ -71,13 +71,9 @@ public class UpdateNewsTask extends ProgressTask<List<News>> {
     @Override
     public void onPostExecute(List<News> newsList) {
         Platform.runLater(() -> {
-            try {
-                NewsController.getInstance().updateNews(newsList);
-                LauncherController.getInstance().setProgressText("News up-to-date");
-                LauncherController.getInstance().setProgress(0);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            NewsController.getInstance().updateNews(newsList);
+            LauncherController.getInstance().setProgressText("News up-to-date");
+            LauncherController.getInstance().setProgress(0);
         });
     }
 
