@@ -86,8 +86,13 @@
 }
 
 .check-box:selected .box {
-    -fx-background-color: #f2f5f4;
-    -fx-border-color: #161618;
+    -fx-background-color: white;
+    -fx-border-color: #f2f5f4;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+    -fx-border-style: solid;
+    -fx-background-size: 0;
+
 }
 
 .check-box > .box {
