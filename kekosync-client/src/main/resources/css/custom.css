@@ -234,3 +234,30 @@
     -fx-text-fill: #ee4d2e;
     -fx-cursor: hand;
 }
+
+
+/*******************************************************************************
+ *                                                                             *
+ * NavMenu  		                                                       *
+ *                                                                             *
+ ******************************************************************************/
+
+.not-selected{
+    -fx-text-fill: #888888;
+    -fx-font-size: 14px;
+    -fx-background-radius: 0;
+}
+
+.not-selected:hover{
+    -fx-text-fill:#ee4d2e;
+}
+
+.selected{
+    -fx-text-fill: #ee4d2e;
+    -fx-font-size: 14px;
+    -fx-background-radius: 0;
+    -fx-border-style: solid;
+    -fx-border-width: 2px;
+    -fx-border-color: transparent transparent #ee4d2e transparent;
+    -fx-paddong:0;
+}

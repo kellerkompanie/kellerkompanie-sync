@@ -111,10 +111,10 @@ public class NewsController implements Initializable {
 
         // create button
         Button button = new Button("");
-        button.setStyle("-fx-background-radius: 40;-fx-background-color: #ee4d2e;");
-        button.setPrefSize(40, 40);
-        button.setMinSize(40, 40);
-        button.setMaxSize(40, 40);
+        button.setStyle("-fx-background-radius: 0;-fx-background-color:transparent;");
+        button.setPrefSize(25, 25);
+        button.setMinSize(20, 20);
+        button.setMaxSize(25, 25);
         button.setScaleX(0);
         button.setScaleY(0);
 
@@ -138,8 +138,8 @@ public class NewsController implements Initializable {
         imageView.setFitWidth(28);
         imageView.setFitHeight(28);
         button.setGraphic(imageView);
-        button.translateYProperty().bind(Bindings.createDoubleBinding(() -> header.getBoundsInParent().getHeight() - button.getHeight() / 2, header.boundsInParentProperty(), button.heightProperty()));
-        StackPane.setMargin(button, new Insets(0, 12, 0, 0));
+        button.translateYProperty().bind(Bindings.createDoubleBinding(() -> -1.0, header.boundsInParentProperty(), button.heightProperty()));
+        StackPane.setMargin(button, new Insets(2, 1, 0, 0));
         StackPane.setAlignment(button, Pos.TOP_RIGHT);
 
         button.setOnAction(event -> {

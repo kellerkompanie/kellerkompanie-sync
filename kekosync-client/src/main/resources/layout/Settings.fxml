@@ -18,7 +18,7 @@
 
             <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleExecutableLocationAction"
                     text="Select file..." prefWidth="100" prefHeight="32"
-                    style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0;"/>
+                    style="-fx-text-fill:#f2f5f4; -fx-font-size:14px; -fx-background-radius: 0; -fx-background-color:#ee4d2e;"/>
         </HBox>
 
         <Separator/>

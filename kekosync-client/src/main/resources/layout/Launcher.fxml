@@ -16,12 +16,9 @@
                 <Image url="/drawable/kk-logo-full.png"/>
             </ImageView>
 
-            <Button fx:id="buttonNews" prefWidth="60" prefHeight="40" text="News"
-                    style="-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0;  -fx-border-style:solid; -fx-border-width: 2px; -fx-border-color: transparent transparent #ee4d2e transparent; -fx-paddong:0;"/>
-            <Button fx:id="buttonMods" prefWidth="60" prefHeight="40" text="Mods"
-                    style="-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;"/>
-            <Button fx:id="buttonSettings" prefWidth="75" prefHeight="40" text="Settings"
-                    style="-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;"/>
+            <Button fx:id="buttonNews" prefWidth="60" prefHeight="40" text="News" styleClass="selected"/>
+            <Button fx:id="buttonMods" prefWidth="60" prefHeight="40" text="Mods" styleClass="not-selected"/>
+            <Button fx:id="buttonSettings" prefWidth="75" prefHeight="40" text="Settings" styleClass="not-selected"/>
         </VBox>
 
         <HBox alignment="BOTTOM_CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="0.0"

@@ -203,27 +203,44 @@ public final class LauncherController implements Initializable {
     private void switchContent(ContentMode contentMode) {
         switch (contentMode) {
             case NEWS:
-                buttonNews.setStyle("-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0; -fx-border-style:solid; -fx-border-width: 2px; -fx-border-color: transparent transparent #ee4d2e transparent; -fx-paddong:0;");
-                buttonMods.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
-                buttonSettings.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
+                buttonNews.getStyleClass().remove("not-selected");
+                buttonNews.getStyleClass().add("selected");
+
+                buttonMods.getStyleClass().remove("selected");
+                buttonMods.getStyleClass().add("not-selected");
+
+                buttonSettings.getStyleClass().remove("selected");
+                buttonSettings.getStyleClass().add("not-selected");
 
                 newsRoot.setVisible(true);
                 modsRoot.setVisible(false);
                 settingsRoot.setVisible(false);
                 break;
+
             case MODS:
-                buttonNews.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
-                buttonMods.setStyle("-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0; -fx-border-style:solid; -fx-border-width: 2px; -fx-border-color: transparent transparent #ee4d2e transparent; -fx-paddong:0;");
-                buttonSettings.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
+                buttonNews.getStyleClass().remove("selected");
+                buttonNews.getStyleClass().add("not-selected");
+
+                buttonMods.getStyleClass().remove("not-selected");
+                buttonMods.getStyleClass().add("selected");
+
+                buttonSettings.getStyleClass().remove("selected");
+                buttonSettings.getStyleClass().add("not-selected");
 
                 newsRoot.setVisible(false);
                 modsRoot.setVisible(true);
                 settingsRoot.setVisible(false);
                 break;
+
             case SETTINGS:
-                buttonNews.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
-                buttonMods.setStyle("-fx-text-fill:#888888; -fx-font-size:14px; -fx-background-radius: 0;");
-                buttonSettings.setStyle("-fx-text-fill:#ee4d2e; -fx-font-size:14px; -fx-background-radius: 0; -fx-border-style:solid; -fx-border-width: 2px; -fx-border-color: transparent transparent #ee4d2e transparent; -fx-paddong:0;");
+                buttonNews.getStyleClass().remove("selected");
+                buttonNews.getStyleClass().add("not-selected");
+
+                buttonMods.getStyleClass().remove("selected");
+                buttonMods.getStyleClass().add("not-selected");
+
+                buttonSettings.getStyleClass().remove("not-selected");
+                buttonSettings.getStyleClass().add("selected");
 
                 newsRoot.setVisible(false);
                 modsRoot.setVisible(false);
