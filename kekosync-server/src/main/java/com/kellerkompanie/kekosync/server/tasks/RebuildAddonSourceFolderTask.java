@@ -62,7 +62,7 @@ public class RebuildAddonSourceFolderTask {
         List<Path> subdirectories;
         try {
             subdirectories = Files.walk(Paths.get(addonSourceFolder), 1)
-                    .filter(p -> Files.isDirectory(p) && p.startsWith("@"))
+                    .filter(p -> Files.isDirectory(p))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             log.error("couldn't check subdirectories", e);
