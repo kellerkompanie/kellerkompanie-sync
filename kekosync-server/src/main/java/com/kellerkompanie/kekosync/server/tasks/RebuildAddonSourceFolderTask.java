@@ -13,12 +13,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -61,12 +62,18 @@ public class RebuildAddonSourceFolderTask {
         List<Path> subdirectories;
         try {
             subdirectories = Files.walk(Paths.get(addonSourceFolder), 1)
-                    .filter(p -> Files.isDirectory(p) && p.getFileName().startsWith("@"))
+                    .filter(p -> Files.isDirectory(p) && p.startsWith("@"))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             log.error("couldn't check subdirectories", e);
             return false;
         }
+
+        if (subdirectories.isEmpty()) {
+            log.error("folder {} does not contain any directories starting with @", addonSourceFolder);
+            return false;
+        }
+
         subdirectories.remove(0); //remove repositoryPath itself from the list
         for (Path subdirectory : subdirectories) {
             log.info("scanning subdirectory {}", subdirectory);
