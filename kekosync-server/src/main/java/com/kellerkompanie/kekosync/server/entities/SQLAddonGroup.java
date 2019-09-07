@@ -5,6 +5,11 @@ import lombok.Setter;
 
 import java.util.Objects;
 
+/**
+ * @author Schwaggot
+ * <p>
+ * Container for database table entries in the kekosync.addon_group table.
+ */
 public class SQLAddonGroup {
     @Getter
     @Setter

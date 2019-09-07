@@ -58,6 +58,14 @@ public class RebuildAddonSourceFolderTask {
         return true;
     }
 
+    /**
+     * Scans all subdirectories of the addon source folder that start with @ and checks whether they contain
+     * an .id file that contains the addon's UUID. If such UUID is found it is compared with the database and
+     * added to the database if not existent. If no .id file exists a new UUID is generated and the addon is
+     * added to the database.
+     *
+     * @return false if error occurred, true otherwise.
+     */
     private boolean ensureIdFileExistence() {
         List<Path> subdirectories;
         try {

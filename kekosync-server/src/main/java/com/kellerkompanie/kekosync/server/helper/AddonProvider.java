@@ -11,6 +11,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * @author Schwaggot
+ * <p>
+ * Helper for access to addons stored in database.
+ */
 @Slf4j
 public class AddonProvider {
 
@@ -28,6 +33,12 @@ public class AddonProvider {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static AddonProvider getInstance() {
+        if (instance == null)
+            instance = new AddonProvider();
+        return instance;
     }
 
     public boolean containsAddon(String uuid) {
@@ -76,12 +87,6 @@ public class AddonProvider {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyymmdd-hhmmss");
         return dateFormat.format(date);
-    }
-
-    public static AddonProvider getInstance() {
-        if (instance == null)
-            instance = new AddonProvider();
-        return instance;
     }
 
     public Set<Mod> getAllAddons() {

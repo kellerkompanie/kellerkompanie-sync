@@ -8,6 +8,11 @@ import com.kellerkompanie.kekosync.server.entities.ServerConfig;
 import java.sql.*;
 import java.util.HashMap;
 
+/**
+ * @author Schwaggot
+ * <p>
+ * Wrapper for access to the database.
+ */
 public class DatabaseHelper {
 
     private static DatabaseHelper instance;
