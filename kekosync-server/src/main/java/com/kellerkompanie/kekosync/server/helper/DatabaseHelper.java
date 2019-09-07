@@ -97,7 +97,7 @@ public class DatabaseHelper {
     }
 
     public int insertAddon(SQLAddon sqlAddon) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO addon VALUES (?,?,?,?)")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO addon (addon_uuid, addon_version, addon_foldername, addon_name) VALUES (?,?,?,?)")) {
             preparedStatement.setString(1, sqlAddon.getUuid());
             preparedStatement.setString(2, sqlAddon.getVersion());
             preparedStatement.setString(3, sqlAddon.getFoldername());
