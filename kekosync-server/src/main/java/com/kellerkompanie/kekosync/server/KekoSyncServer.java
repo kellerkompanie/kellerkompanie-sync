@@ -6,16 +6,15 @@ import com.kellerkompanie.kekosync.core.constants.Filenames;
 import com.kellerkompanie.kekosync.core.entities.ServerInfo;
 import com.kellerkompanie.kekosync.server.cli.CommandLineProcessor;
 import com.kellerkompanie.kekosync.server.entities.ServerConfig;
-import com.kellerkompanie.kekosync.server.entities.ServerRepository;
-import com.kellerkompanie.kekosync.server.tasks.RebuildRepositoryTask;
+import com.kellerkompanie.kekosync.server.helper.DatabaseHelper;
+import com.kellerkompanie.kekosync.server.tasks.RebuildAddonSourceFolderTask;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.ParseException;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.sql.SQLException;
 import java.util.Locale;
 
 /**
@@ -24,18 +23,16 @@ import java.util.Locale;
 @Slf4j
 public class KekoSyncServer {
 
-    private HashMap<String, ServerRepository> serverRepositories;
     private ServerConfig serverConfig;
 
     /**
      * @param jsonSettingsFile the path to the .json file containing the configuration.
      */
     public KekoSyncServer(String jsonSettingsFile) {
-        serverRepositories = new HashMap<>();
-
         try {
             readSettingsFromJson(jsonSettingsFile);
-        } catch (FileNotFoundException e) {
+            DatabaseHelper.setup(serverConfig);
+        } catch (FileNotFoundException | SQLException e) {
             e.printStackTrace();
             System.exit(1);
         }
@@ -58,52 +55,36 @@ public class KekoSyncServer {
     }
 
     /**
-     * Looks up the repository for givien repositoryIdentifier and builds the repository.
-     * If updateServerInfo is true the server info file will be updated afterwards.
-     *
-     * @param repositoryIdentifier the identifier of the repository to be build.
-     * @param updateServerInfo     if set to true the server info file will be updated afterwards.
-     */
-    public void buildRepository(String repositoryIdentifier, boolean updateServerInfo) {
-        ServerRepository serverRepository = serverRepositories.get(repositoryIdentifier);
-        buildRepository(serverRepository, updateServerInfo);
-    }
-
-    /**
      * Builds the specified repository.
      * If updateServerInfo is true the server info file will be updated afterwards.
      *
-     * @param serverRepository the repository to be build.
-     * @param updateServerInfo if set to true the server info file will be updated afterwards.
+     * @param addonSourceFolder the path of the folder to be build.
      */
-    private void buildRepository(ServerRepository serverRepository, boolean updateServerInfo) {
-        RebuildRepositoryTask rrTask = new RebuildRepositoryTask(serverRepository);
+    public void buildAddonSourceFolder(String addonSourceFolder) {
+        RebuildAddonSourceFolderTask rrTask = new RebuildAddonSourceFolderTask(addonSourceFolder);
         boolean success = rrTask.execute();
 
         if (success)
-            log.info("successfully built repository {}", serverRepository.getIdentifier());
+            log.info("successfully built addon source folder {}", addonSourceFolder);
         else
-            log.info("error building repository {}", serverRepository.getIdentifier());
-
-        if (updateServerInfo)
-            updateServerInfo();
+            log.info("error building addon source folder {}", addonSourceFolder);
     }
 
     /**
      * Builds all repositories and updates server info file afterwards.
      */
-    public void buildAllRepositories() {
-        for (ServerRepository serverRepository : serverRepositories.values()) {
-            buildRepository(serverRepository, false);
+    public void buildAllAddonSourceFolders() {
+        for (String addonSourceFolder : serverConfig.getAddonSourceFolders()) {
+            buildAddonSourceFolder(addonSourceFolder);
         }
 
         updateServerInfo();
     }
 
     /**
-     * Opens the provided .ini file and loads contained configuration settings.
+     * Opens the provided .json file and loads contained configuration settings.
      *
-     * @param jsonFilePath the path to the .ini file.
+     * @param jsonFilePath the path to the .json file.
      * @throws FileNotFoundException thrown if there is a problem with the provided file.
      */
     private void readSettingsFromJson(String jsonFilePath) throws FileNotFoundException {
@@ -125,19 +106,14 @@ public class KekoSyncServer {
                 out.print(jsonStr);
             }
         }
-
-        // additionally create a map for easy access to repositories based on identifier
-        for (ServerRepository serverRepository : serverConfig.getRepositories()) {
-            this.serverRepositories.put(serverRepository.getIdentifier(), serverRepository);
-        }
     }
 
     /**
      * Prints a list of all current repositories line-wise into the console, e.g., for use in list console command.
      */
-    public void printServerRepositories() {
-        for (ServerRepository serverRepository : serverRepositories.values()) {
-            System.out.println(serverRepository);
+    public void printAddonSourceFolders() {
+        for (String addonSourceDirectory : serverConfig.getAddonSourceFolders()) {
+            System.out.println(addonSourceDirectory);
         }
     }
 
@@ -145,10 +121,11 @@ public class KekoSyncServer {
      * Writes the current state into the .serverinfo file, including the baseURL, infoURL and all repositories.
      */
     private void updateServerInfo() {
-        ServerInfo serverInfo = new ServerInfo(serverConfig.getBaseURL(), serverConfig.getInfoURL(), serverRepositories.keySet());
+        // TODO update here information about addons and packs
+        ServerInfo serverInfo = new ServerInfo(serverConfig.getBaseURL(), serverConfig.getInfoURL());
         String serverInfoJson = new GsonBuilder().setPrettyPrinting().create().toJson(serverInfo);
         try {
-            Files.write(Paths.get("").resolve(Filenames.FILENAME_SERVERINFO), serverInfoJson.getBytes(StandardCharsets.UTF_8));
+            Files.writeString(Paths.get("").resolve(Filenames.FILENAME_SERVERINFO), serverInfoJson);
         } catch (IOException e) {
             log.error("could not write serverinfo file.", e);
         }

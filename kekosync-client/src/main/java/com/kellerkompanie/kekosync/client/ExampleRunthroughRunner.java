@@ -7,7 +7,6 @@ import com.kellerkompanie.kekosync.core.constants.Filenames;
 import com.kellerkompanie.kekosync.core.helper.FileindexEntry;
 import com.kellerkompanie.kekosync.core.entities.Mod;
 import com.kellerkompanie.kekosync.core.entities.ModGroup;
-import com.kellerkompanie.kekosync.core.entities.Repository;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Paths;

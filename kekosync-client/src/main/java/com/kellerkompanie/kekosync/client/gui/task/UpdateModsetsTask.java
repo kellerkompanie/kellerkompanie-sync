@@ -7,7 +7,6 @@ import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.kellerkompanie.kekosync.client.utils.LauncherUtils;
 import com.kellerkompanie.kekosync.core.entities.Mod;
 import com.kellerkompanie.kekosync.core.entities.ModGroup;
-import com.kellerkompanie.kekosync.core.entities.Repository;
 import com.kellerkompanie.kekosync.core.helper.FileSyncHelper;
 import com.kellerkompanie.kekosync.core.helper.FileindexEntry;
 import com.kellerkompanie.kekosync.core.helper.FileindexWithSyncEntry;

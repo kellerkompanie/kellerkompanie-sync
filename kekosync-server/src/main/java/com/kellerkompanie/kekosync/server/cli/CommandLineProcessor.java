@@ -19,9 +19,9 @@ public class CommandLineProcessor {
     public void process(String[] args) throws ParseException {
         Options options = new Options();
         options.addOption(CONFIG, true, "specify settings .json filepath to be loaded");
-        options.addOption(BUILD, true, "build repository");
-        options.addOption(BUILD_ALL, false, "build all repositories");
-        options.addOption(LIST, false, "list repositories");
+        options.addOption(BUILD, true, "build addon source folder");
+        options.addOption(BUILD_ALL, false, "build all addon source folders");
+        options.addOption(LIST, false, "list addon source folders");
         options.addOption(HELP, false, "list available commands");
 
         CommandLineParser parser = new DefaultParser();
@@ -35,12 +35,12 @@ public class CommandLineProcessor {
         KekoSyncServer kekoSyncServer = new KekoSyncServer(jsonFile);
 
         if (cmd.hasOption(BUILD)) {
-            String repositoryName = cmd.getOptionValue(BUILD);
-            kekoSyncServer.buildRepository(repositoryName, true);
+            String addonSourceFolder = cmd.getOptionValue(BUILD);
+            kekoSyncServer.buildAddonSourceFolder(addonSourceFolder);
         } else if (cmd.hasOption(BUILD_ALL)) {
-            kekoSyncServer.buildAllRepositories();
+            kekoSyncServer.buildAllAddonSourceFolders();
         } else if (cmd.hasOption(LIST)) {
-            kekoSyncServer.printServerRepositories();
+            kekoSyncServer.printAddonSourceFolders();
         } else if (cmd.hasOption(HELP)) {
             formatter.printHelp("utility-name", options);
             System.exit(0);

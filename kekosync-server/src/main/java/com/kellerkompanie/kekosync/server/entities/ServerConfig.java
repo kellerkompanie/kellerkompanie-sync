@@ -3,6 +3,10 @@ package com.kellerkompanie.kekosync.server.entities;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,40 +18,54 @@ public class ServerConfig {
     @Getter
     private final String infoURL;
     @Getter
-    private List<ServerRepository> repositories;
+    private final String databaseName;
+    @Getter
+    private final String databaseUser;
+    @Getter
+    private final String databasePassword;
 
-    public ServerConfig(String baseURL, String infoURL) {
+    private final List<String> addonSourceFolders;
+
+    public ServerConfig(String baseURL, String infoURL, String databaseName, String databaseUser, String databasePassword) {
         this.baseURL = baseURL;
         this.infoURL = infoURL;
-        this.repositories = new LinkedList<>();
+        this.databaseName = databaseName;
+        this.databaseUser = databaseUser;
+        this.databasePassword = databasePassword;
+        this.addonSourceFolders = new LinkedList<>();
     }
 
     public static ServerConfig getDefaultConfig() {
         String baseURL = "http://server.kellerkompanie.com/repository/";
         String infoURL = "http://server.kellerkompanie.com/modpack_info.json";
-        ServerConfig defaultConfig = new ServerConfig(baseURL, infoURL);
+        String databaseName = "kekosync";
+        String databaseUser = "user";
+        String databasePassword = "password";
+        ServerConfig defaultConfig = new ServerConfig(baseURL, infoURL, databaseName, databaseUser, databasePassword);
 
-        ServerRepository minimalRepository = new ServerRepository("kellerkompanie-minimal", "Kellerkompanie Minimal", "/home/arma3server/serverfiles/mods.minimal", baseURL + "minimal");
-        ServerRepository mainRepository = new ServerRepository("kellerkompanie-main", "Kellerkompanie Main", "/home/arma3server/serverfiles/mods.main", baseURL + "main");
-        ServerRepository eventRepository = new ServerRepository("kellerkompanie-event", "Kellerkompanie Event", "/home/arma3server/serverfiles/mods.event", baseURL + "event");
-        ServerRepository mapsRepository = new ServerRepository("kellerkompanie-maps", "Kellerkompanie Maps", "/home/arma3server/serverfiles/mods.maps", baseURL + "maps");
-        ServerRepository optionalRepository = new ServerRepository("kellerkompanie-optional", "Kellerkompanie Optional", "/home/arma3server/serverfiles/mods.optional", baseURL + "optional");
-        ServerRepository vietnamRepository = new ServerRepository("kellerkompanie-vietnam", "Kellerkompanie Vietnam", "/home/arma3server/serverfiles/mods.vietnam", baseURL + "vietnam");
-        ServerRepository ironfrontRepository = new ServerRepository("kellerkompanie-ironfront", "Kellerkompanie Ironfront", "/home/arma3server/serverfiles/mods.ironfront", baseURL + "ironfront");
-
-        defaultConfig.addRepository(minimalRepository);
-        defaultConfig.addRepository(mainRepository);
-        defaultConfig.addRepository(eventRepository);
-        defaultConfig.addRepository(mapsRepository);
-        defaultConfig.addRepository(optionalRepository);
-        defaultConfig.addRepository(vietnamRepository);
-        defaultConfig.addRepository(ironfrontRepository);
+        defaultConfig.addAddonSourceFolder("/home/arma3server/serverfiles/mods.main");
+        defaultConfig.addAddonSourceFolder("/home/arma3server/serverfiles/mods.event");
+        defaultConfig.addAddonSourceFolder("/home/arma3server/serverfiles/mods.maps");
+        defaultConfig.addAddonSourceFolder("/home/arma3server/serverfiles/mods.optional");
+        defaultConfig.addAddonSourceFolder("/home/arma3server/serverfiles/mods.vietnam");
+        defaultConfig.addAddonSourceFolder("/home/arma3server/serverfiles/mods.ironfront");
+        defaultConfig.addAddonSourceFolder("/home/arma3server/serverfiles/mods.scifi");
 
         return defaultConfig;
     }
 
-    public void addRepository(ServerRepository repository) {
-        repositories.add(repository);
+    private void addAddonSourceFolder(String addonSourceFolder) {
+        if (addonSourceFolder == null || addonSourceFolder.isEmpty())
+            throw new IllegalArgumentException("addon source folder cannot be null nor empty");
+
+        Path path = Paths.get(addonSourceFolder);
+        if (!Files.isReadable(path))
+            throw new IllegalArgumentException("cannot access provided path: " + addonSourceFolder);
+
+        addonSourceFolders.add(addonSourceFolder);
     }
 
+    public List<String> getAddonSourceFolders() {
+        return Collections.unmodifiableList(addonSourceFolders);
+    }
 }

@@ -5,16 +5,10 @@ import com.kellerkompanie.kekosync.core.helper.FileindexEntry;
 import com.kellerkompanie.kekosync.core.helper.HttpHelper;
 import com.kellerkompanie.kekosync.client.settings.Settings;
 import com.kellerkompanie.kekosync.core.constants.Filenames;
-import com.kellerkompanie.kekosync.core.entities.Repository;
 
 import java.util.LinkedList;
 
 public class LauncherUtils {
-
-    public static Repository getRepository(String repositoryIdentifier) throws Exception {
-        String repoJsonString = HttpHelper.readUrl(LauncherUtils.getRepositoryURL() + repositoryIdentifier + "/" + Filenames.FILENAME_MODGROUPS);
-        return new Gson().fromJson(repoJsonString, Repository.class);
-    }
 
     public static FileindexEntry getFileIndexEntry(String repositoryIdentifier) throws Exception {
         String indexJsonString = HttpHelper.readUrl(LauncherUtils.getRepositoryURL() + repositoryIdentifier + "/" + Filenames.FILENAME_INDEXFILE);
