@@ -99,7 +99,7 @@ public class RebuildAddonSourceFolderTask {
                     e.printStackTrace();
                     return false;
                 }
-                if(!AddonProvider.getInstance().containsAddon(uuid)) {
+                if (!AddonProvider.getInstance().containsAddon(uuid)) {
                     AddonProvider.getInstance().createNewAddon(uuid, foldername);
                 }
             }
