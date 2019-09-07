@@ -47,7 +47,7 @@ public class RebuildAddonSourceFolderTask {
         log.info("building repository " + addonSourceFolder + " ...");
 
         log.info("\t(1) checking for .id files ...");
-        if (!checkIdFileExistence()) return false;
+        if (!ensureIdFileExistence()) return false;
         /*log.info("\t(2) cleaning zsync ...");
         if (!cleanupZsync()) return false;
         log.info("\t(3) regenerating zsync ...");
@@ -58,7 +58,7 @@ public class RebuildAddonSourceFolderTask {
         return true;
     }
 
-    private boolean checkIdFileExistence() {
+    private boolean ensureIdFileExistence() {
         List<Path> subdirectories;
         try {
             subdirectories = Files.walk(Paths.get(addonSourceFolder), 1)
