@@ -75,12 +75,9 @@ public class RebuildAddonSourceFolderTask {
         }
 
         for (Path subdirectory : subdirectories) {
-            log.info("scanning subdirectory {}", subdirectory);
+            String foldername = subdirectory.getFileName().toString();
 
             if (!subdirectory.resolve(Filenames.FILENAME_MODID).toFile().exists()) {
-                log.info("fail! did not find {} in {}", Filenames.FILENAME_MODID, subdirectory);
-
-                String foldername = subdirectory.getFileName().toString();
                 String uuid = AddonProvider.getInstance().getAddonUuidByFoldername(foldername);
                 if (uuid == null) {
                     uuid = UUIDGenerator.generateUUID().toString();
@@ -94,7 +91,17 @@ public class RebuildAddonSourceFolderTask {
                     return false;
                 }
             } else {
-                log.info("success! found {} in {}", Filenames.FILENAME_MODID, subdirectory);
+                Path idFilePath = subdirectory.resolve(Filenames.FILENAME_MODID);
+                String uuid;
+                try {
+                    uuid = Files.readString(idFilePath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+                if(!AddonProvider.getInstance().containsAddon(uuid)) {
+                    AddonProvider.getInstance().createNewAddon(uuid, foldername);
+                }
             }
         }
         return true;
