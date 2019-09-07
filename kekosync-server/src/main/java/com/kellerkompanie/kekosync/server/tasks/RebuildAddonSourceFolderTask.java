@@ -71,6 +71,8 @@ public class RebuildAddonSourceFolderTask {
         for (Path subdirectory : subdirectories) {
             log.info("scanning subdirectory {}", subdirectory);
             if (!subdirectory.resolve(Filenames.FILENAME_MODID).toFile().exists()) {
+                log.info("fail! did not find {} in {}", Filenames.FILENAME_MODID, subdirectory);
+
                 String foldername = subdirectory.getFileName().toString();
                 String uuid = AddonProvider.getInstance().getAddonUuidByFoldername(foldername);
                 if (uuid == null) {
@@ -84,6 +86,8 @@ public class RebuildAddonSourceFolderTask {
                     log.error("Could not write .id-file.", e);
                     return false;
                 }
+            } else {
+                log.info("success! found {} in {}", Filenames.FILENAME_MODID, subdirectory);
             }
         }
         return true;
