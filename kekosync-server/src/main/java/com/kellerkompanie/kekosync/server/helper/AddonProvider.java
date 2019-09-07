@@ -4,12 +4,14 @@ import com.kellerkompanie.kekosync.core.entities.Mod;
 import com.kellerkompanie.kekosync.core.entities.ModGroup;
 import com.kellerkompanie.kekosync.server.entities.SQLAddon;
 import com.kellerkompanie.kekosync.server.entities.SQLAddonGroup;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Slf4j
 public class AddonProvider {
 
     private static AddonProvider instance;
@@ -52,6 +54,8 @@ public class AddonProvider {
      * adds a new addon that was not previously in the DB
      */
     public void createNewAddon(String uuid, String foldername) {
+        log.info("found new addon, adding {} to database as {}", foldername, uuid);
+
         SQLAddon sqlAddon = new SQLAddon();
         sqlAddon.setId(-1);
         sqlAddon.setUuid(uuid);
@@ -59,9 +63,13 @@ public class AddonProvider {
         sqlAddon.setName(foldername);
         sqlAddon.setVersion(generateVersionString());
 
-        int insertId = DatabaseHelper.getInstance().insertAddon(sqlAddon);
-        sqlAddon.setId(insertId);
-        sqlAddons.put(uuid, sqlAddon);
+        try {
+            int insertId = DatabaseHelper.getInstance().insertAddon(sqlAddon);
+            sqlAddon.setId(insertId);
+            sqlAddons.put(uuid, sqlAddon);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private String generateVersionString() {
