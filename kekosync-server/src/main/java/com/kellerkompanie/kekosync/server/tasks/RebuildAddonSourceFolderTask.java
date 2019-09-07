@@ -47,12 +47,12 @@ public class RebuildAddonSourceFolderTask {
 
         log.info("\t(1) checking for .id files ...");
         if (!checkIdFileExistence()) return false;
-        log.info("\t(2) cleaning zsync ...");
+        /*log.info("\t(2) cleaning zsync ...");
         if (!cleanupZsync()) return false;
         log.info("\t(3) regenerating zsync ...");
         if (!generateZsync()) return false;
         log.info("\t(4) generating file-index ...");
-        if (!generateFileindex()) return false;
+        if (!generateFileindex()) return false;*/
         log.info("done.\n");
         return true;
     }
