@@ -78,7 +78,8 @@ public class RebuildAddonSourceFolderTask {
         for (Path subdirectory : subdirectories) {
             log.info("scanning subdirectory {}", subdirectory);
 
-            log.info("subdirectory.getFileNam {}", subdirectory.getFileName());
+            log.info("subdirectory.getFileName {}", subdirectory.getFileName());
+            log.info("subdirectory.getFileName.startsWith('@') {}", subdirectory.getFileName().startsWith("@"));
 
             if (!subdirectory.resolve(Filenames.FILENAME_MODID).toFile().exists()) {
                 log.info("fail! did not find {} in {}", Filenames.FILENAME_MODID, subdirectory);
