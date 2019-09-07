@@ -69,6 +69,7 @@ public class RebuildAddonSourceFolderTask {
         }
         subdirectories.remove(0); //remove repositoryPath itself from the list
         for (Path subdirectory : subdirectories) {
+            log.info("scanning subdirectory {}", subdirectory);
             if (!subdirectory.resolve(Filenames.FILENAME_MODID).toFile().exists()) {
                 String foldername = subdirectory.getFileName().toString();
                 String uuid = AddonProvider.getInstance().getAddonUuidByFoldername(foldername);
