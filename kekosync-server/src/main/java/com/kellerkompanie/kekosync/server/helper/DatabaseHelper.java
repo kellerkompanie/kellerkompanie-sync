@@ -14,7 +14,7 @@ public class DatabaseHelper {
     private Connection connection;
 
     private DatabaseHelper(ServerConfig serverConfig) throws SQLException {
-        connection = DriverManager.getConnection("jdbc:mariadb://localhost/kekosync", serverConfig.getDatabaseUser(), serverConfig.getDatabasePassword());
+        connection = DriverManager.getConnection("jdbc:mariadb://localhost/" + serverConfig.getDatabaseName(), serverConfig.getDatabaseUser(), serverConfig.getDatabasePassword());
     }
 
     public static void setup(ServerConfig serverConfig) throws SQLException {
