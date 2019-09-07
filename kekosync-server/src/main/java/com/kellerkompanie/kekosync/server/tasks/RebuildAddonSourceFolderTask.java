@@ -62,7 +62,7 @@ public class RebuildAddonSourceFolderTask {
         List<Path> subdirectories;
         try {
             subdirectories = Files.walk(Paths.get(addonSourceFolder), 1)
-                    .filter(Files::isDirectory)
+                    .filter(p -> Files.isDirectory(p) && p.getFileName().toString().startsWith("@"))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             log.error("couldn't check subdirectories", e);
@@ -74,12 +74,8 @@ public class RebuildAddonSourceFolderTask {
             return false;
         }
 
-        subdirectories.remove(0); //remove repositoryPath itself from the list
         for (Path subdirectory : subdirectories) {
             log.info("scanning subdirectory {}", subdirectory);
-
-            log.info("subdirectory.getFileName {}", subdirectory.getFileName());
-            log.info("subdirectory.getFileName.startsWith('@') {}", subdirectory.getFileName().toString().startsWith("@"));
 
             if (!subdirectory.resolve(Filenames.FILENAME_MODID).toFile().exists()) {
                 log.info("fail! did not find {} in {}", Filenames.FILENAME_MODID, subdirectory);
