@@ -94,6 +94,13 @@ public class NewsController implements Initializable {
         StackPane.setAlignment(titleLabel, Pos.CENTER_LEFT);
         header.getChildren().add(titleLabel);
 
+        header.setOnMouseClicked(event -> {
+            try {
+                Desktop.getDesktop().browse(new URI(news.getWeblink()));
+            } catch (IOException | URISyntaxException e1) {
+                e1.printStackTrace();
+            }});
+
         StackPane body = new StackPane();
         Label contentLabel = new Label();
         contentLabel.setText(news.getContent());
@@ -108,6 +115,14 @@ public class NewsController implements Initializable {
         VBox content = new VBox();
         content.getChildren().addAll(header, body);
         body.setStyle("-fx-background-radius: 0 0 5 5; -fx-background-color: #f2f5f4;");
+
+        contentLabel.setOnMouseClicked(event -> {
+            try {
+                Desktop.getDesktop().browse(new URI(news.getWeblink()));
+            } catch (IOException | URISyntaxException e1) {
+                e1.printStackTrace();
+            }});
+
 
         // create button
         Button button = new Button("");
